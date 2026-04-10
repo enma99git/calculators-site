@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Ovulation Calculator</h1>
+
+<input type="date" id="last">
+<input id="cycle" placeholder="Cycle length (days)">
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let d = new Date(last.value);
+d.setDate(d.getDate() + (cycle.value - 14));
+r.innerHTML = "Estimated ovulation: " + d.toDateString();
+}
+</script>
+</body>
+</html>
