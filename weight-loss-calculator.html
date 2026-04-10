@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Weight Loss Calculator</h1>
+
+<input id="start" placeholder="Start weight">
+<input id="end" placeholder="Goal weight">
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let loss = start.value - end.value;
+r.innerHTML = "Weight to lose: " + loss;
+}
+</script>
+</body>
+</html>
