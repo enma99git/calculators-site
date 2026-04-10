@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Macros Calculator</h1>
+
+<input id="cal" placeholder="Calories">
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let protein = cal.value * 0.3 / 4;
+let carbs = cal.value * 0.4 / 4;
+let fat = cal.value * 0.3 / 9;
+
+r.innerHTML = 
+"Protein: " + protein.toFixed(1) + "g<br>" +
+"Carbs: " + carbs.toFixed(1) + "g<br>" +
+"Fat: " + fat.toFixed(1) + "g";
+}
+</script>
+</body>
+</html>
