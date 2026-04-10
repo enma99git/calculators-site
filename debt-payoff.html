@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Debt Payoff Calculator</h1>
+
+<input id="d" placeholder="Debt">
+<input id="p" placeholder="Monthly payment">
+
+<button onclick="calc()">Calculate</button>
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+let months=d.value/p.value;
+r.innerHTML="Months: "+months.toFixed(0);
+}
+</script>
+</body>
+</html>
