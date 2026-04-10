@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>GPA Calculator</h1>
+
+<input id="g" placeholder="Total grade points">
+<input id="c" placeholder="Credits">
+
+<button onclick="calc()">Calculate</button>
+<h2 id="r"></h2>
+
+<script>
+function calc(){
+r.innerHTML="GPA: "+(g.value/c.value).toFixed(2);
+}
+</script>
+</body>
+</html>
