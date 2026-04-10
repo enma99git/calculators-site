@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Simple Interest Calculator</h1>
+
+<input id="p" placeholder="Principal">
+<input id="r" placeholder="Rate %">
+<input id="t" placeholder="Time (years)">
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="r2"></h2>
+
+<script>
+function calc(){
+let interest = p.value * (r.value/100) * t.value;
+r2.innerHTML = "Interest: $" + interest.toFixed(2);
+}
+</script>
+</body>
+</html>
