@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hourly to Salary Calculator</title>
+<meta name="description" content="Convert hourly wage to yearly and monthly salary instantly.">
+</head>
+<body>
+<h1>Hourly to Salary Calculator</h1>
+
+<label>Hourly Rate ($):</label>
+<input type="number" id="hourly"><br><br>
+
+<label>Hours per week:</label>
+<input type="number" id="hours"><br><br>
+
+<button onclick="calc()">Calculate</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calc(){
+let h = document.getElementById("hourly").value;
+let w = document.getElementById("hours").value;
+
+let yearly = h * w * 52;
+let monthly = yearly / 12;
+
+document.getElementById("result").innerHTML =
+"Yearly: $" + yearly.toFixed(2) + "<br>Monthly: $" + monthly.toFixed(2);
+}
+</script>
+
+</body>
+</html>
