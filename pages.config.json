@@ -1,0 +1,74 @@
+{
+  "siteUrl": "https://enmahub.github.io/calculators-site",
+  "generatedIndexFile": "generated-calculators.html",
+  "defaults": {
+    "lang": "en",
+    "includeRobotsMeta": true
+  },
+  "families": {
+    "currencyConverter": {
+      "enabled": true,
+      "categoryLabel": "Currency",
+      "pairs": [
+        ["usd", "eur"],
+        ["eur", "usd"],
+        ["usd", "cop"],
+        ["cop", "usd"],
+        ["usd", "gbp"],
+        ["gbp", "usd"],
+        ["usd", "cad"],
+        ["cad", "usd"],
+        ["usd", "mxn"],
+        ["mxn", "usd"],
+        ["usd", "jpy"],
+        ["jpy", "usd"],
+        ["usd", "inr"],
+        ["inr", "usd"],
+        ["usd", "aud"],
+        ["aud", "usd"],
+        ["usd", "brl"],
+        ["brl", "usd"],
+        ["usd", "ars"],
+        ["ars", "usd"],
+        ["eur", "gbp"],
+        ["gbp", "eur"],
+        ["eur", "cop"],
+        ["cop", "eur"],
+        ["eur", "cad"],
+        ["cad", "eur"],
+        ["eur", "mxn"],
+        ["mxn", "eur"],
+        ["eur", "jpy"],
+        ["jpy", "eur"],
+        ["eur", "inr"],
+        ["inr", "eur"],
+        ["usd", "chf"],
+        ["chf", "usd"],
+        ["usd", "sek"],
+        ["sek", "usd"],
+        ["usd", "nok"],
+        ["nok", "usd"],
+        ["usd", "dkk"],
+        ["dkk", "usd"]
+      ]
+    },
+    "loanPaymentByAmount": {
+      "enabled": true,
+      "categoryLabel": "Financial",
+      "amounts": [
+        5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000,
+        55000, 60000, 65000, 70000, 75000, 80000, 85000, 90000, 95000, 100000,
+        110000, 120000, 130000, 140000, 150000, 175000, 200000, 225000, 250000, 300000
+      ]
+    },
+    "salaryToHourlyByAmount": {
+      "enabled": true,
+      "categoryLabel": "Career",
+      "amounts": [
+        30000, 35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000, 75000,
+        80000, 85000, 90000, 95000, 100000, 110000, 120000, 130000, 140000, 150000,
+        160000, 170000, 180000, 190000, 200000, 220000, 240000, 260000, 280000, 300000
+      ]
+    }
+  }
+}

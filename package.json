@@ -1,0 +1,10 @@
+{
+  "name": "calculators-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static calculator pages with generation and validation tooling",
+  "scripts": {
+    "generate:pages": "node scripts/generate-pages.js",
+    "validate:pages": "node scripts/validate-pages.js"
+  }
+}
