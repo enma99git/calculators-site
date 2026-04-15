@@ -7,7 +7,10 @@ This project now includes a config-driven generator so you can scale from tens o
 - `pages.config.json`: Source of truth for what pages to generate.
 - `scripts/generate-pages.js`: Builds pages from config and updates:
   - generated pages (`*.html`)
+  - related-calculator links within generated pages
   - `generated-calculators.html`
+  - per-category generated indexes (`generated-<category>-calculators.html`)
+  - main category hubs (`financial-calculators.html`, `conversion-calculators.html`, `career-calculators.html`, `health-calculators.html`) with generated link sections
   - `sitemap.xml`
 - `scripts/validate-pages.js`: Validates metadata/link quality.
 - `package.json`: Includes npm scripts.
@@ -43,6 +46,7 @@ With current config, generation target is 100 pages.
 Generator is safe by default:
 
 - It skips existing files unless `--overwrite` is used.
+- It always refreshes generated index pages and sitemap.
 
 Manual overwrite:
 

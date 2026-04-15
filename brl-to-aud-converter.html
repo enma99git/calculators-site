@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>BRL to AUD Converter (Free) - Convert BRL to AUD</title>
+<meta name="description" content="Convert BRL to AUD instantly with this free currency converter calculator.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>BRL to AUD Converter</h1>
+<p>Convert Brazilian Real (BRL) to Australian Dollar (AUD) using a manual exchange rate.</p>
+
+<label>BRL Amount:</label>
+<input type="number" id="amount" value="100"><br><br>
+<label>Exchange Rate (BRL to AUD):</label>
+<input type="number" id="rate" value="1.00" step="0.0001"><br><br>
+
+<button onclick="convert()">Convert</button>
+<h2 id="result"></h2>
+
+<script>
+function convert() {
+  const amount = parseFloat(document.getElementById("amount").value) || 0;
+  const rate = parseFloat(document.getElementById("rate").value) || 0;
+  const converted = amount * rate;
+  document.getElementById("result").innerHTML = converted.toFixed(2) + " AUD";
+}
+</script>
+<p>Related Calculators:</p>
+<ul>
+<li><a href="usd-to-eur-converter.html">USD to EUR Converter</a></li>
+<li><a href="eur-to-usd-converter.html">EUR to USD Converter</a></li>
+<li><a href="usd-to-gbp-converter.html">USD to GBP Converter</a></li>
+<li><a href="gbp-to-usd-converter.html">GBP to USD Converter</a></li>
+<li><a href="usd-to-cad-converter.html">USD to CAD Converter</a></li>
+<li><a href="cad-to-usd-converter.html">CAD to USD Converter</a></li>
+<li><a href="usd-to-aud-converter.html">USD to AUD Converter</a></li>
+<li><a href="aud-to-usd-converter.html">AUD to USD Converter</a></li>
+</ul>
+<hr>
+<p>Browse Categories:</p>
+<a href="financial-calculators.html">Financial</a> |
+<a href="health-calculators.html">Health</a> |
+<a href="conversion-calculators.html">Conversions</a> |
+<a href="career-calculators.html">Career</a>
+<p><a href="generated-calculators.html">Generated Calculators Index</a></p>
+<p><a href="index.html">Home</a></p>
+</body>
+</html>
