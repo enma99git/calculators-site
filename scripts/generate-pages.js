@@ -122,7 +122,6 @@ ${body}
 <a href="health-calculators.html">Health</a> |
 <a href="conversion-calculators.html">Conversions</a> |
 <a href="career-calculators.html">Career</a>
-<p><a href="generated-calculators.html">Generated Calculators Index</a></p>
 <p><a href="index.html">Home</a></p>
 </body>
 </html>
@@ -351,41 +350,14 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
-function getCategoryIndexFile(category) {
-  return `generated-${categorySlug(category)}-calculators.html`;
-}
-
-function writeCategoryIndexes(entries) {
-  const byCategory = entries.reduce((acc, entry) => {
+function groupEntriesByCategory(entries) {
+  return entries.reduce((acc, entry) => {
     if (!acc[entry.category]) {
       acc[entry.category] = [];
     }
     acc[entry.category].push(entry);
     return acc;
   }, {});
-
-  const indexFiles = [];
-  for (const [category, items] of Object.entries(byCategory)) {
-    const listItems = items
-      .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
-      .join("\n");
-
-    const fileName = getCategoryIndexFile(category);
-    const page = htmlShell({
-      title: `${category} Generated Calculators`,
-      description: `Browse generated ${category.toLowerCase()} calculators.`,
-      body: `<h1>${escapeHtml(category)} Generated Calculators</h1>
-<p>This page is generated automatically from <code>pages.config.json</code>.</p>
-<ul>
-${listItems}
-</ul>`
-    });
-
-    fs.writeFileSync(path.join(root, fileName), page, "utf8");
-    indexFiles.push({ category, fileName, count: items.length });
-  }
-
-  return indexFiles;
 }
 
 function upsertCategoryHubSection(fileName, heading, items) {
@@ -401,7 +373,7 @@ function upsertCategoryHubSection(fileName, heading, items) {
     .join("\n");
   const section = `${startMarker}
 <h2>${escapeHtml(heading)}</h2>
-<p>Auto-generated links from <code>pages.config.json</code>.</p>
+<!-- Generated from pages.config.json -->
 <ul>
 ${itemLinks}
 </ul>
@@ -425,70 +397,143 @@ ${endMarker}`;
   fs.writeFileSync(filePath, content, "utf8");
 }
 
+function removeCategoryHubSection(fileName) {
+  const filePath = path.join(root, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+  const startMarker = "<!-- GENERATED_CATEGORY_LINKS_START -->";
+  const endMarker = "<!-- GENERATED_CATEGORY_LINKS_END -->";
+  let content = fs.readFileSync(filePath, "utf8");
+  if (content.includes(startMarker) && content.includes(endMarker)) {
+    const replacePattern = new RegExp(`\\n?${startMarker}[\\s\\S]*?${endMarker}\\n?`, "m");
+    content = content.replace(replacePattern, "\n");
+    fs.writeFileSync(filePath, content, "utf8");
+  }
+}
+
 function syncMainCategoryPages(entries) {
   const financialGenerated = entries.filter((entry) => entry.category === "Financial");
   const conversionGenerated = entries.filter((entry) => entry.category === "Conversions");
   const careerGenerated = entries.filter((entry) => entry.category === "Career");
   const healthGenerated = entries.filter((entry) => entry.category === "Health");
 
-  upsertCategoryHubSection(
-    "financial-calculators.html",
-    `More Financial Calculators (${financialGenerated.length})`,
-    financialGenerated
-  );
-  upsertCategoryHubSection(
-    "conversion-calculators.html",
-    `More Conversion Calculators (${conversionGenerated.length})`,
-    conversionGenerated
-  );
-  upsertCategoryHubSection(
-    "career-calculators.html",
-    `More Career Calculators (${careerGenerated.length})`,
-    careerGenerated
-  );
-  upsertCategoryHubSection(
-    "health-calculators.html",
-    `More Health Calculators (${healthGenerated.length})`,
-    healthGenerated
-  );
+  if (financialGenerated.length > 0) {
+    upsertCategoryHubSection(
+      "financial-calculators.html",
+      `More Financial Calculators (${financialGenerated.length})`,
+      financialGenerated
+    );
+  }
+  if (conversionGenerated.length > 0) {
+    upsertCategoryHubSection(
+      "conversion-calculators.html",
+      `More Conversion Calculators (${conversionGenerated.length})`,
+      conversionGenerated
+    );
+  }
+  if (careerGenerated.length > 0) {
+    upsertCategoryHubSection(
+      "career-calculators.html",
+      `More Career Calculators (${careerGenerated.length})`,
+      careerGenerated
+    );
+  } else {
+    removeCategoryHubSection("career-calculators.html");
+  }
+  if (healthGenerated.length > 0) {
+    upsertCategoryHubSection(
+      "health-calculators.html",
+      `More Health Calculators (${healthGenerated.length})`,
+      healthGenerated
+    );
+  } else {
+    removeCategoryHubSection("health-calculators.html");
+  }
 }
 
 function writeGeneratedIndex(entries) {
-  const byCategory = entries.reduce((acc, entry) => {
-    if (!acc[entry.category]) {
-      acc[entry.category] = [];
-    }
-    acc[entry.category].push(entry);
-    return acc;
-  }, {});
-
-  const sections = Object.entries(byCategory)
-    .map(([category, items]) => {
-      const categoryIndexFile = getCategoryIndexFile(category);
-      const listItems = items
-        .slice(0, 15)
-        .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
-        .join("\n");
-      const hasMore = items.length > 15
-        ? `<p><a href="${categoryIndexFile}">View all ${items.length} ${escapeHtml(category)} calculators</a></p>`
-        : "";
-      return `<h2>${escapeHtml(category)}</h2>\n<ul>\n${listItems}\n</ul>\n${hasMore}`;
-    })
-    .join("\n\n");
-
-  const page = htmlShell({
-    title: "Generated Calculators Index",
-    description: "Browse generated calculator pages by category.",
-    body: `<h1>Generated Calculators Index</h1>
-<p>This page is generated automatically from <code>pages.config.json</code>.</p>
-${sections}`
-  });
+  const page = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Generated Calculators Index</title>
+<meta name="description" content="Legacy URL redirecting to home calculator index.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="index.html">
+<meta http-equiv="refresh" content="0; url=index.html">
+<!-- Generated from pages.config.json -->
+</head>
+<body>
+<h1>Generated Calculators Index</h1>
+<p>This page moved to <a href="index.html">Home</a>.</p>
+<script>
+window.location.replace("index.html");
+</script>
+</body>
+</html>
+`;
 
   const indexPath = path.join(root, config.generatedIndexFile || "generated-calculators.html");
   fs.writeFileSync(indexPath, page, "utf8");
 }
 
-function writeSitemap(entries, categoryIndexes) {
+function writeHomeIndex(entries) {
+  const byCategory = groupEntriesByCategory(entries);
+  const categoryHubMap = {
+    Financial: "financial-calculators.html",
+    Health: "health-calculators.html",
+    Conversions: "conversion-calculators.html",
+    Career: "career-calculators.html"
+  };
+  const sections = Object.entries(byCategory)
+    .map(([category, items]) => {
+      const listItems = items
+        .slice(0, 12)
+        .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
+        .join("\n");
+      const hub = categoryHubMap[category];
+      const viewAll = hub
+        ? `<p><a href="${hub}">View all ${items.length} ${escapeHtml(category)} calculators</a></p>`
+        : "";
+      return `<h2>${escapeHtml(category)}</h2>\n${viewAll}\n<ul>\n${listItems}\n</ul>`;
+    })
+    .join("\n\n");
+
+  const page = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Free Online Calculators - Financial, Health, Conversion & More</title>
+<meta name="description" content="Use free online calculators for finance, health, conversions, and more. Simple tools with instant results.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Free Online Calculators</h1>
+<p>Browse calculators by category.</p>
+<!-- Home index generated from pages.config.json -->
+<h2>Categories</h2>
+<ul>
+<li><a href="financial-calculators.html">Financial Calculators</a></li>
+<li><a href="health-calculators.html">Health Calculators</a></li>
+<li><a href="conversion-calculators.html">Conversion Calculators</a></li>
+<li><a href="career-calculators.html">Career Calculators</a></li>
+</ul>
+${sections}
+<hr>
+<p>Browse Categories:</p>
+<a href="financial-calculators.html">Financial</a> |
+<a href="health-calculators.html">Health</a> |
+<a href="conversion-calculators.html">Conversions</a> |
+<a href="career-calculators.html">Career</a>
+</body>
+</html>
+`;
+  fs.writeFileSync(path.join(root, "index.html"), page, "utf8");
+}
+
+function writeSitemap(entries) {
   if (!config.siteUrl) {
     return;
   }
@@ -500,9 +545,6 @@ function writeSitemap(entries, categoryIndexes) {
 
   const urls = new Set(htmlFiles.map((file) => `${base}/${file}`));
   urls.add(`${base}/${config.generatedIndexFile || "generated-calculators.html"}`);
-  for (const categoryIndex of categoryIndexes) {
-    urls.add(`${base}/${categoryIndex.fileName}`);
-  }
   for (const entry of entries) {
     urls.add(`${base}/${entry.fileName}`);
   }
@@ -537,16 +579,14 @@ function main() {
   }
 
   syncMainCategoryPages(entries);
-  const categoryIndexes = writeCategoryIndexes(entries);
+  writeHomeIndex(entries);
   writeGeneratedIndex(entries);
-  writeSitemap(entries, categoryIndexes);
+  writeSitemap(entries);
 
   console.log(`Generated entries configured: ${entries.length}`);
   console.log(`Pages created/updated: ${created}`);
   console.log(`Pages skipped (existing): ${skipped}`);
-  console.log(
-    `Wrote ${config.generatedIndexFile || "generated-calculators.html"}, ${categoryIndexes.length} category indexes, and sitemap.xml`
-  );
+  console.log(`Wrote index.html, ${config.generatedIndexFile || "generated-calculators.html"}, and sitemap.xml`);
 }
 
 main();

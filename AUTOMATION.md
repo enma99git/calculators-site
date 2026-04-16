@@ -8,8 +8,8 @@ This project now includes a config-driven generator so you can scale from tens o
 - `scripts/generate-pages.js`: Builds pages from config and updates:
   - generated pages (`*.html`)
   - related-calculator links within generated pages
-  - `generated-calculators.html`
-  - per-category generated indexes (`generated-<category>-calculators.html`)
+  - `generated-calculators.html` (legacy redirect to `index.html`)
+  - `index.html` (primary generated navigation index)
   - main category hubs (`financial-calculators.html`, `conversion-calculators.html`, `career-calculators.html`, `health-calculators.html`) with generated link sections
   - `sitemap.xml`
 - `scripts/validate-pages.js`: Validates metadata/link quality.
@@ -30,7 +30,7 @@ Configured in `pages.config.json`:
 - `loanPaymentByAmount` (amount-based pages)
 - `salaryToHourlyByAmount` (amount-based pages)
 
-With current config, generation target is 100 pages.
+With current config, generation target is ~300 total pages.
 
 ## How to Scale to 300+
 
