@@ -133,12 +133,67 @@ ${body}
 <a class="category-link" href="career-calculators.html">Career</a>
 </div>
 <p><a class="home-link" href="index.html">Home</a></p>
+${footerInfoLinksHtml}
 </div>
 </div>
 </body>
 </html>
 `;
 }
+
+const homeSections = [
+  {
+    category: "Financial",
+    hub: "financial-calculators.html",
+    items: [
+      { fileName: "mortgage-calculator.html", h1: "Mortgage Calculator" },
+      { fileName: "loan-calculator.html", h1: "Loan Calculator" },
+      { fileName: "compound-interest.html", h1: "Compound Interest" },
+      { fileName: "savings-calculator.html", h1: "Savings Calculator" },
+      { fileName: "retirement-calculator.html", h1: "Retirement Calculator" }
+    ]
+  },
+  {
+    category: "Conversions",
+    hub: "conversion-calculators.html",
+    items: [
+      { fileName: "unit-converter.html", h1: "Unit Converter" },
+      { fileName: "time-calculator.html", h1: "Time Calculator" },
+      { fileName: "percentage-calculator.html", h1: "Percentage Calculator" },
+      { fileName: "usd-to-eur.html", h1: "Currency Converter" },
+      { fileName: "age-calculator.html", h1: "Age Calculator" }
+    ]
+  },
+  {
+    category: "Health",
+    hub: "health-calculators.html",
+    items: [
+      { fileName: "bmi-calculator.html", h1: "BMI Calculator" },
+      { fileName: "calorie-calculator.html", h1: "Calorie Calculator" },
+      { fileName: "weight-loss-calculator.html", h1: "Weight Loss Calculator" },
+      { fileName: "ovulation-calculator.html", h1: "Ovulation Calculator" },
+      { fileName: "macros-calculator.html", h1: "Macros Calculator" }
+    ]
+  },
+  {
+    category: "Career",
+    hub: "career-calculators.html",
+    items: [
+      { fileName: "salary-calculator.html", h1: "Salary Calculator" },
+      { fileName: "gpa-calculator.html", h1: "GPA Calculator" },
+      { fileName: "30000-salary-to-hourly-calculator.html", h1: "$30,000 Salary to Hourly Calculator" },
+      { fileName: "50000-salary-to-hourly-calculator.html", h1: "$50,000 Salary to Hourly Calculator" },
+      { fileName: "100000-salary-to-hourly-calculator.html", h1: "$100,000 Salary to Hourly Calculator" }
+    ]
+  }
+];
+
+const footerInfoLinksHtml = `<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>`;
 
 function pickRelatedEntries(entries, entry, limit = 8) {
   return pickStructuredRelated(entries, entry).primary.slice(0, limit);
@@ -297,16 +352,9 @@ function currencyTemplate(entry, entries) {
 <input type="number" id="rate" value="1.00" step="0.0001"><br><br>
 
 <button onclick="convert()">Convert</button>
-<h2 id="result" class="result"></h2>
+<h2 id="result" class="result">Result: -</h2>
 
-<script>
-function convert() {
-  const amount = parseFloat(document.getElementById("amount").value) || 0;
-  const rate = parseFloat(document.getElementById("rate").value) || 0;
-  const converted = amount * rate;
-  document.getElementById("result").innerHTML = converted.toFixed(2) + " ${entry.toCode}";
-}
-</script>
+<script src="currency-rates.js" data-currency-page data-from="${entry.fromCode}" data-to="${entry.toCode}" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
 ${relatedHtml(entries, entry)}`
   });
 }
@@ -328,7 +376,7 @@ function loanTemplate(entry, entries) {
 <input type="number" id="years" value="5"><br><br>
 
 <button onclick="calcPayment()">Calculate Payment</button>
-<h2 id="result" class="result"></h2>
+<h2 id="result" class="result">Result: -</h2>
 
 <script>
 function calcPayment() {
@@ -369,7 +417,7 @@ function salaryTemplate(entry, entries) {
 <input type="number" id="weeks" value="52"><br><br>
 
 <button onclick="calcHourly()">Calculate Hourly</button>
-<h2 id="result" class="result"></h2>
+<h2 id="result" class="result">Result: -</h2>
 
 <script>
 function calcHourly() {
@@ -616,23 +664,17 @@ window.location.replace("index.html");
 
 function writeHomeIndex(entries) {
   const byCategory = groupEntriesByCategory(entries);
-  const categoryHubMap = {
-    Financial: "financial-calculators.html",
-    Health: "health-calculators.html",
-    Conversions: "conversion-calculators.html",
-    Career: "career-calculators.html"
-  };
-  const sections = Object.entries(byCategory)
-    .map(([category, items]) => {
-      const listItems = items
-        .slice(0, 12)
+  const sections = homeSections
+    .map((section) => {
+      const generatedCount = byCategory[section.category]?.length || 0;
+      const listItems = section.items
         .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
         .join("\n");
-      const hub = categoryHubMap[category];
-      const viewAll = hub
-        ? `<p><a href="${hub}">View all ${items.length} ${escapeHtml(category)} calculators</a></p>`
-        : "";
-      return `<h2>${escapeHtml(category)}</h2>\n${viewAll}\n<ul>\n${listItems}\n</ul>`;
+      const viewAllCount = generatedCount > section.items.length ? generatedCount : undefined;
+      const viewAll = viewAllCount
+        ? `<p><a href="${section.hub}">View all ${viewAllCount} ${escapeHtml(section.category)} calculators</a></p>`
+        : `<p><a href="${section.hub}">Browse all ${escapeHtml(section.category)} calculators</a></p>`;
+      return `<h2>${escapeHtml(section.category)}</h2>\n${viewAll}\n<ul>\n${listItems}\n</ul>`;
     })
     .join("\n\n");
 
@@ -673,6 +715,7 @@ ${sections}
 <a class="category-link" href="conversion-calculators.html">Conversions</a>
 <a class="category-link" href="career-calculators.html">Career</a>
 </div>
+${footerInfoLinksHtml}
 </div>
 </div>
 </body>

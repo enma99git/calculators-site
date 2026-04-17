@@ -15,19 +15,18 @@
 </div>
 <div class="wrap">
 <div class="card">
+</div>
+</div>
+</div>
+</div>
 <h1>USD to EUR Converter</h1>
 
 <input id="usd" placeholder="USD">
 <button onclick="calc()">Convert</button>
 
-<h2 class="result" id="r"></h2>
+<h2 class="result" id="r">Result: -</h2>
 
-<script>
-function calc(){
-let rate = 0.92; // static example rate
-r.innerHTML = (usd.value * rate).toFixed(2) + " EUR";
-}
-</script>
+<script src="currency-rates.js" data-currency-page data-from="USD" data-to="EUR" data-amount-id="usd" data-result-id="r" defer></script>
 <hr>
 
 <p>Related Calculators:</p>
@@ -49,6 +48,12 @@ r.innerHTML = (usd.value * rate).toFixed(2) + " EUR";
 <a class="category-link" href="career-calculators.html">Career</a>
 </div>
 <p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
 </div>
 </div>
 </body>

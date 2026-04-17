@@ -15,6 +15,10 @@
 </div>
 <div class="wrap">
 <div class="card">
+</div>
+</div>
+</div>
+</div>
 <h1>ARS to AUD Converter</h1>
 <p class="desc">Convert Argentine Peso (ARS) to Australian Dollar (AUD) using a manual exchange rate.</p>
 
@@ -25,16 +29,9 @@
 <input type="number" id="rate" value="1.00" step="0.0001">
 
 <button onclick="convert()">Convert</button>
-<h2 id="result" class="result"></h2>
+<h2 id="result" class="result">Result: -</h2>
 
-<script>
-function convert() {
-  const amount = parseFloat(document.getElementById("amount").value) || 0;
-  const rate = parseFloat(document.getElementById("rate").value) || 0;
-  const converted = amount * rate;
-  document.getElementById("result").innerHTML = converted.toFixed(2) + " AUD";
-}
-</script>
+<script src="currency-rates.js" data-currency-page data-from="ARS" data-to="AUD" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
 <h2>Related Calculators</h2>
 <ul>
 <li><a href="aud-to-ars-converter.html">AUD to ARS Converter</a></li>
@@ -50,45 +47,6 @@ function convert() {
 </ul>
 </div>
 
-
-<div class="footer">
-</div>
-<details>
-<summary>More related calculators</summary>
-<ul>
-<li><a href="dkk-to-aud-converter.html">DKK to AUD Converter</a></li>
-<li><a href="eur-to-aud-converter.html">EUR to AUD Converter</a></li>
-<li><a href="gbp-to-aud-converter.html">GBP to AUD Converter</a></li>
-<li><a href="inr-to-aud-converter.html">INR to AUD Converter</a></li>
-<li><a href="jpy-to-aud-converter.html">JPY to AUD Converter</a></li>
-<li><a href="mxn-to-aud-converter.html">MXN to AUD Converter</a></li>
-<li><a href="nok-to-aud-converter.html">NOK to AUD Converter</a></li>
-<li><a href="sek-to-aud-converter.html">SEK to AUD Converter</a></li>
-<li><a href="sgd-to-aud-converter.html">SGD to AUD Converter</a></li>
-<li><a href="usd-to-aud-converter.html">USD to AUD Converter</a></li>
-<li><a href="zar-to-aud-converter.html">ZAR to AUD Converter</a></li>
-<li><a href="aud-to-aed-converter.html">AUD to AED Converter</a></li>
-<li><a href="aud-to-brl-converter.html">AUD to BRL Converter</a></li>
-<li><a href="aud-to-cad-converter.html">AUD to CAD Converter</a></li>
-<li><a href="aud-to-chf-converter.html">AUD to CHF Converter</a></li>
-<li><a href="aud-to-cop-converter.html">AUD to COP Converter</a></li>
-<li><a href="aud-to-dkk-converter.html">AUD to DKK Converter</a></li>
-<li><a href="aud-to-eur-converter.html">AUD to EUR Converter</a></li>
-<li><a href="aud-to-gbp-converter.html">AUD to GBP Converter</a></li>
-<li><a href="aud-to-inr-converter.html">AUD to INR Converter</a></li>
-<li><a href="aud-to-jpy-converter.html">AUD to JPY Converter</a></li>
-<li><a href="aud-to-mxn-converter.html">AUD to MXN Converter</a></li>
-<li><a href="aud-to-nok-converter.html">AUD to NOK Converter</a></li>
-<li><a href="aud-to-sek-converter.html">AUD to SEK Converter</a></li>
-<li><a href="aud-to-sgd-converter.html">AUD to SGD Converter</a></li>
-<li><a href="aud-to-usd-converter.html">AUD to USD Converter</a></li>
-<li><a href="aud-to-zar-converter.html">AUD to ZAR Converter</a></li>
-<li><a href="cad-to-ars-converter.html">CAD to ARS Converter</a></li>
-<li><a href="eur-to-ars-converter.html">EUR to ARS Converter</a></li>
-<li><a href="gbp-to-ars-converter.html">GBP to ARS Converter</a></li>
-</ul>
-</details>
-
 <div class="footer">
 <p>Browse Categories</p>
 <div class="category-grid">
@@ -98,6 +56,12 @@ function convert() {
 <a class="category-link" href="career-calculators.html">Career</a>
 </div>
 <p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
 </div>
 </div>
 </body>

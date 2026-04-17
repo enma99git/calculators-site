@@ -53,10 +53,28 @@ function addDescClass(mainHtml) {
 
 function addResultClasses(mainHtml) {
   return mainHtml.replace(/<([a-z0-9]+)([^>]*\bid=["'][^"']*result[^"']*["'][^>]*)>/gi, (m, tag, attrs) => {
+    if (tag.toLowerCase() === "script") {
+      return m;
+    }
     return appendClassToTag(`<${tag}${attrs}>`, "result");
   }).replace(/<([a-z0-9]+)([^>]*\bid=["'](?:r|res|output)["'][^>]*)>/gi, (m, tag, attrs) => {
+    if (tag.toLowerCase() === "script") {
+      return m;
+    }
     return appendClassToTag(`<${tag}${attrs}>`, "result");
   });
+}
+
+function addResultPlaceholders(mainHtml) {
+  return mainHtml.replace(
+    /<([a-z0-9]+)([^>]*\bclass=["'][^"']*\bresult\b[^"']*["'][^>]*)>\s*<\/\1>/gi,
+    (m, tag, attrs) => {
+      if (tag.toLowerCase() === "script") {
+        return m;
+      }
+      return `<${tag}${attrs}>Result: -</${tag}>`;
+    }
+  );
 }
 
 function splitFooter(mainHtml) {
@@ -98,6 +116,12 @@ function buildFooterMarkup() {
 <a class="category-link" href="career-calculators.html">Career</a>
 </div>
 <p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
 </div>`;
 }
 
@@ -128,6 +152,7 @@ function migrateFile(filePath) {
   bodyInner = removeExistingShell(bodyInner);
   bodyInner = addDescClass(bodyInner);
   bodyInner = addResultClasses(bodyInner);
+  bodyInner = addResultPlaceholders(bodyInner);
   bodyInner = normalizeSpacing(bodyInner);
   const split = splitFooter(bodyInner);
   const detailSplit = extractDetails(split.main);
