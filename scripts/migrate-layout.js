@@ -37,10 +37,17 @@ function appendClassToTag(tag, className) {
 
 function removeExistingShell(content) {
   let updated = content;
-  updated = updated.replace(/<div class="top">[\s\S]*?<\/div>\s*/i, "");
-  updated = updated.replace(/<div class="wrap">\s*<div class="card">\s*/i, "");
-  updated = updated.replace(/\s*<\/div>\s*<div class="footer">[\s\S]*?<\/div>\s*<\/div>\s*$/i, "");
-  updated = updated.replace(/\s*<\/div>\s*<\/div>\s*$/i, "");
+  updated = updated.replace(
+    /<div class="top">\s*<div class="wrap top-inner">[\s\S]*?<\/div>\s*<\/div>\s*/i,
+    ""
+  );
+  updated = updated.replace(/^\s*<div class="wrap">\s*<div class="card">\s*/i, "");
+  updated = updated.replace(
+    /\s*<\/div>\s*<div class="footer">[\s\S]*?<\/div>\s*<\/div>\s*$/i,
+    ""
+  );
+  updated = updated.replace(/^(?:\s*<\/div>\s*)+/i, "");
+  updated = updated.replace(/(?:\s*<\/div>\s*)+$/i, "");
   return updated.trim();
 }
 
@@ -78,7 +85,7 @@ function addResultPlaceholders(mainHtml) {
 }
 
 function splitFooter(mainHtml) {
-  const footerPattern = /(?:<hr>\s*)?<p>Browse Categories:<\/p>[\s\S]*$/i;
+  const footerPattern = /(?:<hr>\s*)?<p>Browse Categories:?<\/p>[\s\S]*$/i;
   const match = mainHtml.match(footerPattern);
   if (!match) {
     return { main: mainHtml.trim(), footer: "" };
