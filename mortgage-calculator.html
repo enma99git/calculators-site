@@ -5,10 +5,10 @@
 <meta name="description" content="Calculate your monthly mortgage payment based on loan amount, interest rate, and term instantly.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://enmahub.github.io/practical-calculators/mortgage-calculator.html">
 <link rel="stylesheet" href="styles.css">
 <script src="site-analytics.js" data-analytics-page defer></script>
 </head>
-  
 <body>
 <div class="top">
 <div class="wrap top-inner">
@@ -39,19 +39,10 @@ result.innerHTML="Monthly: $"+m.toFixed(2);
 document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "mortgage" } }));
 }
 </script>
-<div class="trust-block">
-<h2>How this estimate works</h2>
-<p class="desc">This mortgage output is a simplified estimate using the values entered on this page.</p>
-<ul>
-<li>Taxes, insurance, HOA, and lender fees are not included by default.</li>
-<li>Rate assumptions may differ from your final offer.</li>
-<li>Verify all key decisions with your lender and advisor.</li>
-</ul>
-<p class="small">Last reviewed: 2026-04-17</p>
-</div>
+
 <hr>
 
-<p>Related Calculators:</p>
+<h2>Related Calculators</h2>
 <ul>
 <li><a href="mortgage-calculator.html">Mortgage Calculator</a></li>
 <li><a href="loan-calculator.html">Loan Calculator</a></li>
@@ -66,8 +57,18 @@ document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type:
 <li><a href="discount-calculator.html">Discount Calculator</a></li>
 <li><a href="tip-calculator.html">Tip Calculator</a></li>
 </ul>
+<div class="trust-block">
+<h2>How this result is estimated</h2>
+<p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<ul>
+<li>Inputs are user-provided and may include rounding.</li>
+<li>Results are informational and not financial, tax, legal, or medical advice.</li>
+<li>For high-impact decisions, confirm with a licensed professional.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
 </div>
 
+</div>
 <div class="footer">
 <p>Browse Categories</p>
 <div class="category-grid">

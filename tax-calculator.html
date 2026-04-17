@@ -5,6 +5,7 @@
 <meta name="description" content="Calculate income tax quickly and estimate how much you owe with this free tax calculator.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://enmahub.github.io/practical-calculators/tax-calculator.html">
 <link rel="stylesheet" href="styles.css">
 <script src="site-analytics.js" data-analytics-page defer></script>
 </head>
@@ -32,19 +33,10 @@ r.innerHTML = "Tax: $" + t.toFixed(2);
 document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "tax" } }));
 }
 </script>
-<div class="trust-block">
-<h2>How this estimate works</h2>
-<p class="desc">This tax estimate is for educational use and uses a simplified rate input.</p>
-<ul>
-<li>Actual taxes vary by filing status, deductions, and jurisdiction.</li>
-<li>This page does not replace professional tax advice.</li>
-<li>Validate key numbers with an accountant or tax software.</li>
-</ul>
-<p class="small">Last reviewed: 2026-04-17</p>
-</div>
+
 <hr>
 
-<p>Related Calculators:</p>
+<h2>Related Calculators</h2>
 <ul>
 <li><a href="mortgage-calculator.html">Mortgage Calculator</a></li>
 <li><a href="loan-calculator.html">Loan Calculator</a></li>
@@ -59,8 +51,18 @@ document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type:
 <li><a href="discount-calculator.html">Discount Calculator</a></li>
 <li><a href="tip-calculator.html">Tip Calculator</a></li>
 </ul>
+<div class="trust-block">
+<h2>How this result is estimated</h2>
+<p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<ul>
+<li>Inputs are user-provided and may include rounding.</li>
+<li>Results are informational and not financial, tax, legal, or medical advice.</li>
+<li>For high-impact decisions, confirm with a licensed professional.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
 </div>
 
+</div>
 <div class="footer">
 <p>Browse Categories</p>
 <div class="category-grid">

@@ -3,12 +3,16 @@ const path = require("path");
 
 const root = process.cwd();
 const configPath = path.join(root, "pages.config.json");
+const legacyConfigPath = path.join(root, "legacy-pages.config.json");
 
 if (!fs.existsSync(configPath)) {
   throw new Error("Missing pages.config.json");
 }
 
 const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+const legacyConfig = fs.existsSync(legacyConfigPath)
+  ? JSON.parse(fs.readFileSync(legacyConfigPath, "utf8"))
+  : { pages: [] };
 const existingHtml = new Set(
   fs
     .readdirSync(root)
@@ -135,6 +139,126 @@ const SPANISH_CATEGORY_LABELS = {
   Health: "Salud",
   Career: "Carrera"
 };
+
+const EN_INFO_PAGES = [
+  {
+    fileName: "about.html",
+    title: "About Practical Calculators",
+    description: "Learn about Practical Calculators and our goal of offering free, easy-to-use online calculation tools.",
+    body: `<h1>About Practical Calculators</h1>
+<p class="desc">Practical Calculators is a free website that provides simple online calculators and conversion tools for everyday use.</p>
+<p>The goal of this site is to make common calculations easier to access without downloads or signups.</p>
+<p>Topics include finance, loans, percentages, currency conversion, business tools, savings, and other practical utilities.</p>
+<p>New tools may be added over time as the site grows.</p>
+<p>If you notice an issue or would like to suggest a calculator, please use the <a href="contact.html">contact page</a>.</p>`
+  },
+  {
+    fileName: "contact.html",
+    title: "Contact Practical Calculators",
+    description: "Contact Practical Calculators with questions, feedback, and calculator suggestions.",
+    body: `<h1>Contact Practical Calculators</h1>
+<p class="desc">Questions, feedback, or calculator suggestions are welcome.</p>
+<h2>Contact Form</h2>
+<form action="https://formspree.io/f/xbdqgnky" method="POST">
+<label for="contact-name">Name</label>
+<input id="contact-name" name="name" type="text" placeholder="Your name" required>
+<label for="contact-email">Email</label>
+<input id="contact-email" name="email" type="email" placeholder="you@example.com" required>
+<label for="contact-message">Message</label>
+<textarea id="contact-message" name="message" placeholder="How can we help?" required></textarea>
+<input type="hidden" name="_subject" value="New message from Practical Calculators">
+<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+<button type="submit">Send</button>
+</form>
+<p class="small">This form is powered by Formspree.</p>
+<p>Response times may vary.</p>`
+  },
+  {
+    fileName: "privacy.html",
+    title: "Privacy Policy | Practical Calculators",
+    description: "Read the Practical Calculators privacy policy and how limited usage information may be handled.",
+    body: `<h1>Privacy Policy</h1>
+<p class="desc">Practical Calculators respects your privacy.</p>
+<p>This website may collect limited non-personal data such as browser type, device information, pages visited, and usage statistics through analytics or hosting providers.</p>
+<p>If advertising services are used, third-party vendors may use cookies to serve ads or measure performance.</p>
+<p>This site does not require account creation.</p>
+<p>If you contact us by email, the information you provide may be used only to respond to your message.</p>
+<p>External links may lead to third-party websites with their own privacy practices.</p>
+<p>This policy may be updated over time.</p>`
+  },
+  {
+    fileName: "terms.html",
+    title: "Terms of Use | Practical Calculators",
+    description: "Review the terms of use for Practical Calculators and the limitations of calculator outputs.",
+    body: `<h1>Terms of Use</h1>
+<p class="desc">By using Practical Calculators, you agree to use the website for lawful purposes only.</p>
+<p>The calculators and tools are provided for general informational use. Results are estimates based on the values entered.</p>
+<p>No guarantee is made regarding completeness or suitability for financial, legal, tax, medical, or professional decisions.</p>
+<p>Users should verify important results independently.</p>
+<p>This website may update, change, or remove tools at any time without notice.</p>
+<p>Use of this site is at your own risk.</p>`
+  }
+];
+
+const ES_INFO_PAGES = [
+  {
+    fileName: "es/about.html",
+    title: "Acerca de Practical Calculators",
+    description: "Conoce Practical Calculators y su objetivo de ofrecer herramientas gratuitas de cálculo en español.",
+    body: `<h1>Acerca de Practical Calculators</h1>
+<p class="desc">Practical Calculators es un sitio web gratuito con calculadoras en línea y herramientas de conversión para usos cotidianos.</p>
+<p>El objetivo del sitio es facilitar cálculos comunes sin descargas ni registros.</p>
+<p>Incluye herramientas de finanzas, préstamos, porcentajes, conversión de divisas, negocios, ahorro y otras utilidades prácticas.</p>
+<p>Se pueden agregar nuevas herramientas con el tiempo.</p>
+<p>Si encuentras un problema o deseas sugerir una calculadora, visita la <a href="../es/contact.html">página de contacto</a>.</p>`
+  },
+  {
+    fileName: "es/contact.html",
+    title: "Contacto | Practical Calculators",
+    description: "Contacta a Practical Calculators con preguntas, comentarios y sugerencias de nuevas calculadoras.",
+    body: `<h1>Contacto</h1>
+<p class="desc">Se aceptan preguntas, comentarios y sugerencias de nuevas calculadoras.</p>
+<p>Usa el formulario de contacto disponible en esta página.</p>
+<form action="https://formspree.io/f/xbdqgnky" method="POST">
+<label for="contact-name">Nombre</label>
+<input id="contact-name" name="name" type="text" placeholder="Tu nombre" required>
+<label for="contact-email">Correo electrónico</label>
+<input id="contact-email" name="email" type="email" placeholder="tu@correo.com" required>
+<label for="contact-message">Mensaje</label>
+<textarea id="contact-message" name="message" placeholder="¿Cómo podemos ayudarte?" required></textarea>
+<input type="hidden" name="_subject" value="Nuevo mensaje desde Practical Calculators (ES)">
+<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+<button type="submit">Enviar</button>
+</form>
+<p class="small">Este formulario funciona con Formspree.</p>
+<p>Los tiempos de respuesta pueden variar.</p>`
+  },
+  {
+    fileName: "es/privacy.html",
+    title: "Privacidad | Practical Calculators",
+    description: "Lee la política de privacidad de Practical Calculators en español.",
+    body: `<h1>Política de Privacidad</h1>
+<p class="desc">Practical Calculators respeta tu privacidad.</p>
+<p>Este sitio puede recopilar datos no personales limitados, como tipo de navegador, dispositivo, páginas visitadas y estadísticas de uso mediante herramientas de análisis o proveedores de alojamiento.</p>
+<p>Si se utilizan servicios publicitarios, terceros pueden usar cookies para mostrar anuncios o medir rendimiento.</p>
+<p>Este sitio no requiere creación de cuentas.</p>
+<p>Si nos contactas mediante formulario o correo, la información enviada puede usarse únicamente para responder tu mensaje.</p>
+<p>Los enlaces externos pueden dirigir a sitios de terceros con sus propias políticas.</p>
+<p>Esta política puede actualizarse con el tiempo.</p>`
+  },
+  {
+    fileName: "es/terms.html",
+    title: "Términos de Uso | Practical Calculators",
+    description: "Revisa los términos de uso de Practical Calculators en español.",
+    body: `<h1>Términos de Uso</h1>
+<p class="desc">Al utilizar Practical Calculators, aceptas usar este sitio solo con fines legales.</p>
+<p>Las calculadoras y herramientas se ofrecen para uso informativo general. Los resultados son estimaciones basadas en los valores ingresados.</p>
+<p>No se garantiza integridad, disponibilidad o idoneidad para decisiones financieras, legales, fiscales, médicas o profesionales.</p>
+<p>Se recomienda verificar resultados importantes de forma independiente.</p>
+<p>Este sitio puede actualizar, cambiar o eliminar herramientas en cualquier momento y sin aviso previo.</p>
+<p>El uso del sitio es bajo tu propia responsabilidad.</p>`
+  }
+];
 
 function collectHtmlPaths(baseDir, currentDir = "") {
   const dirPath = path.join(baseDir, currentDir);
@@ -1028,6 +1152,35 @@ ${relatedHtml(entries, entry)}`
   });
 }
 
+function legacyStaticTemplate(entry, entries) {
+  let normalizedBody = String(entry.body || "");
+  normalizedBody = normalizedBody.replace(/<p>\s*Related Calculators:\s*<\/p>/gi, "<h2>Related Calculators</h2>");
+  normalizedBody = normalizedBody.replace(/<input([^>]*?)class="([^"]*?)"([^>]*?)>/gi, (full, before, classes, after) => {
+    const filtered = classes
+      .split(/\s+/)
+      .map((item) => item.trim())
+      .filter((item) => item && item.toLowerCase() !== "result");
+    if (filtered.length === 0) {
+      return `<input${before}${after}>`;
+    }
+    return `<input${before}class="${filtered.join(" ")}"${after}>`;
+  });
+  const hasRelatedSection =
+    /<h2>\s*Related Calculators\s*<\/h2>/i.test(normalizedBody) ||
+    /<h2>\s*Calculadoras relacionadas\s*<\/h2>/i.test(normalizedBody);
+  const relatedSection = hasRelatedSection ? "" : relatedHtml(entries, entry);
+  return htmlShell({
+    title: entry.title,
+    description: entry.description,
+    lang: entry.lang || "en",
+    pagePath: entry.pagePath || entry.fileName,
+    canonicalPath: entry.pagePath || entry.fileName,
+    body: `${normalizedBody}
+${trustBlockHtml(entry.trustTopic || "calculator", entry.lang || "en")}
+${relatedSection}`
+  });
+}
+
 function buildEntries() {
   const entries = [];
   const families = config.families || {};
@@ -1153,6 +1306,29 @@ function buildEntries() {
     });
   }
 
+  const legacyPages = Array.isArray(legacyConfig.pages) ? legacyConfig.pages : [];
+  for (const page of legacyPages) {
+    if (!page || !page.fileName || !page.body) {
+      continue;
+    }
+    entries.push({
+      family: "legacyStaticPage",
+      marketId: page.marketId || "en",
+      lang: page.lang || "en",
+      category: page.category || "Financial",
+      slug: slugify(page.fileName.replace(/\.html$/i, "")),
+      fileName: normalizePath(page.fileName),
+      pagePath: normalizePath(page.pagePath || page.fileName),
+      hubPath: normalizePath(page.hubPath || "financial-calculators.html"),
+      title: page.title || "Practical Calculators",
+      description: page.description || "Practical calculators and conversion tools.",
+      h1: page.h1 || "Calculator",
+      trustTopic: page.trustTopic || "calculator",
+      body: page.body,
+      indexable: page.indexable !== false
+    });
+  }
+
   return entries;
 }
 
@@ -1171,6 +1347,9 @@ function renderPage(entry, entries) {
   }
   if (entry.family === "statePaycheckPilotPage") {
     return statePaycheckTemplate(entry, entries);
+  }
+  if (entry.family === "legacyStaticPage") {
+    return legacyStaticTemplate(entry, entries);
   }
   throw new Error(`Unknown family: ${entry.family}`);
 }
@@ -1525,66 +1704,23 @@ ${Array.from(urls)
   fs.writeFileSync(path.join(root, "sitemap.xml"), content, "utf8");
 }
 
-function shouldUpgradeLegacyPage(fileName, content, generatedPaths) {
-  const normalized = normalizePath(fileName);
-  if (generatedPaths.has(normalized)) {
-    return false;
+function writeInformationalPages() {
+  const pages = [...EN_INFO_PAGES, ...ES_INFO_PAGES];
+  for (const page of pages) {
+    const lang = page.fileName.startsWith("es/") ? "es" : "en";
+    const body = `${page.body}
+${trustBlockHtml("general", lang)}`;
+    const html = htmlShell({
+      title: page.title,
+      description: page.description,
+      body,
+      lang,
+      pagePath: page.fileName
+    });
+    const targetPath = path.join(root, page.fileName);
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    fs.writeFileSync(targetPath, html, "utf8");
   }
-  const skipFiles = new Set([
-    "index.html",
-    "generated-calculators.html",
-    "financial-calculators.html",
-    "conversion-calculators.html",
-    "career-calculators.html",
-    "health-calculators.html",
-    "about.html",
-    "contact.html",
-    "privacy.html",
-    "terms.html",
-    "google00989570bfb5b7e8.html"
-  ]);
-  if (skipFiles.has(normalized)) {
-    return false;
-  }
-  if (!/<html[^>]*lang=["']en["']/i.test(content)) {
-    return false;
-  }
-  if (!/<button\b/i.test(content)) {
-    return false;
-  }
-  if (content.includes('class="trust-block"')) {
-    return false;
-  }
-  return true;
-}
-
-function upgradeLegacyEnglishPages(entries) {
-  const generatedPaths = new Set(
-    entries.map((entry) => normalizePath(entry.pagePath || entry.fileName))
-  );
-  const htmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html"));
-  let updated = 0;
-  for (const fileName of htmlFiles) {
-    const filePath = path.join(root, fileName);
-    const content = fs.readFileSync(filePath, "utf8");
-    if (!shouldUpgradeLegacyPage(fileName, content, generatedPaths)) {
-      continue;
-    }
-    const trustHtml = trustBlockHtml("calculator", "en");
-    let next = content;
-    if (/<div class="footer">/i.test(next)) {
-      next = next.replace(/<div class="footer">/i, `${trustHtml}\n<div class="footer">`);
-    } else if (/<\/div>\s*<\/body>/i.test(next)) {
-      next = next.replace(/<\/div>\s*<\/body>/i, `${trustHtml}\n</div>\n</body>`);
-    } else if (/<\/body>/i.test(next)) {
-      next = next.replace(/<\/body>/i, `${trustHtml}\n</body>`);
-    } else {
-      continue;
-    }
-    fs.writeFileSync(filePath, next, "utf8");
-    updated += 1;
-  }
-  return updated;
 }
 
 function main() {
@@ -1611,13 +1747,12 @@ function main() {
   writeHomeIndex(entries);
   writeMarketPilotIndexes(entries);
   writeGeneratedIndex(entries);
-  const upgradedLegacyCount = upgradeLegacyEnglishPages(entries);
+  writeInformationalPages();
   writeSitemap(entries);
 
   console.log(`Generated entries configured: ${entries.length}`);
   console.log(`Pages created/updated: ${created}`);
   console.log(`Pages skipped (existing): ${skipped}`);
-  console.log(`Legacy English pages upgraded: ${upgradedLegacyCount}`);
   console.log(`Wrote index.html, ${config.generatedIndexFile || "generated-calculators.html"}, and sitemap.xml`);
 }
 
