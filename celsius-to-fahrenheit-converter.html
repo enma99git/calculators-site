@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Celsius to Fahrenheit Converter (Free)</title>
+<meta name="description" content="Convert Celsius to Fahrenheit and Fahrenheit to Celsius instantly with this free bidirectional converter.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="index.html">Practical Calculators</a>
+</div>
+</div>
+<div class="wrap">
+<div class="card">
+<h1>Celsius and Fahrenheit Converter</h1>
+<p class="desc">Enter either Celsius or Fahrenheit, then convert both ways.</p>
+<label for="celsius">Celsius</label>
+<input type="number" id="celsius" step="any" placeholder="Enter Celsius">
+<label for="fahrenheit">Fahrenheit</label>
+<input type="number" id="fahrenheit" step="any" placeholder="Enter Fahrenheit">
+<button onclick="convert()">Convert</button>
+<h2 class="result" id="result">Result: -</h2>
+<script>
+function convert() {
+  const cField = document.getElementById("celsius");
+  const fField = document.getElementById("fahrenheit");
+  const c = parseFloat(cField.value);
+  const f = parseFloat(fField.value);
+  if (Number.isFinite(c) && !Number.isFinite(f)) {
+    const out = (c * 9 / 5) + 32;
+    fField.value = out.toFixed(4);
+    document.getElementById("result").innerHTML = c.toFixed(4) + " C = " + out.toFixed(4) + " F";
+    return;
+  }
+  if (!Number.isFinite(c) && Number.isFinite(f)) {
+    const out = (f - 32) * 5 / 9;
+    cField.value = out.toFixed(4);
+    document.getElementById("result").innerHTML = f.toFixed(4) + " F = " + out.toFixed(4) + " C";
+    return;
+  }
+  document.getElementById("result").innerHTML = "Fill exactly one field to convert.";
+}
+</script>
+<h2>Related Calculators</h2>
+<ul>
+<li><a href="kilometers-to-miles-converter.html">Kilometers to Miles Converter</a></li>
+<li><a href="kilograms-to-pounds-converter.html">Kilograms to Pounds Converter</a></li>
+<li><a href="liters-to-gallons-converter.html">Liters to Gallons Converter</a></li>
+<li><a href="seconds-to-minutes-converter.html">Seconds to Minutes Converter</a></li>
+<li><a href="percentage-calculator.html">Percentage Calculator</a></li>
+</ul>
+</div>
+
+<div class="footer">
+<p>Browse Categories</p>
+<div class="category-grid">
+<a class="category-link" href="financial-calculators.html">Financial</a>
+<a class="category-link" href="health-calculators.html">Health</a>
+<a class="category-link" href="conversion-calculators.html">Conversions</a>
+<a class="category-link" href="career-calculators.html">Career</a>
+</div>
+<p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
+</div>
+</div>
+</body>
+</html>

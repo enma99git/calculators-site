@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Liters to Gallons Converter (Free)</title>
+<meta name="description" content="Convert liters to gallons and gallons to liters instantly with this free bidirectional converter.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="index.html">Practical Calculators</a>
+</div>
+</div>
+<div class="wrap">
+<div class="card">
+<h1>Liters and Gallons Converter</h1>
+<p class="desc">Enter either liters or US gallons, then convert both ways.</p>
+<label for="liters">Liters</label>
+<input type="number" id="liters" step="any" placeholder="Enter liters">
+<label for="gallons">Gallons (US)</label>
+<input type="number" id="gallons" step="any" placeholder="Enter gallons">
+<button onclick="convert()">Convert</button>
+<h2 class="result" id="result">Result: -</h2>
+<script>
+function convert() {
+  const lField = document.getElementById("liters");
+  const gField = document.getElementById("gallons");
+  const l = parseFloat(lField.value);
+  const g = parseFloat(gField.value);
+  if (Number.isFinite(l) && !Number.isFinite(g)) {
+    const out = l * 0.2641720524;
+    gField.value = out.toFixed(6);
+    document.getElementById("result").innerHTML = l.toFixed(6) + " L = " + out.toFixed(6) + " gal";
+    return;
+  }
+  if (!Number.isFinite(l) && Number.isFinite(g)) {
+    const out = g / 0.2641720524;
+    lField.value = out.toFixed(6);
+    document.getElementById("result").innerHTML = g.toFixed(6) + " gal = " + out.toFixed(6) + " L";
+    return;
+  }
+  document.getElementById("result").innerHTML = "Fill exactly one field to convert.";
+}
+</script>
+<h2>Related Calculators</h2>
+<ul>
+<li><a href="kilometers-to-miles-converter.html">Kilometers to Miles Converter</a></li>
+<li><a href="celsius-to-fahrenheit-converter.html">Celsius to Fahrenheit Converter</a></li>
+<li><a href="kilograms-to-pounds-converter.html">Kilograms to Pounds Converter</a></li>
+<li><a href="hours-to-days-converter.html">Hours to Days Converter</a></li>
+<li><a href="percentage-calculator.html">Percentage Calculator</a></li>
+</ul>
+</div>
+
+<div class="footer">
+<p>Browse Categories</p>
+<div class="category-grid">
+<a class="category-link" href="financial-calculators.html">Financial</a>
+<a class="category-link" href="health-calculators.html">Health</a>
+<a class="category-link" href="conversion-calculators.html">Conversions</a>
+<a class="category-link" href="career-calculators.html">Career</a>
+</div>
+<p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
+</div>
+</div>
+</body>
+</html>

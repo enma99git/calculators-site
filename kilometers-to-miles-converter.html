@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kilometers to Miles Converter (Free)</title>
+<meta name="description" content="Convert kilometers to miles and miles to kilometers instantly with this free bidirectional converter.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="index.html">Practical Calculators</a>
+</div>
+</div>
+<div class="wrap">
+<div class="card">
+<h1>Kilometers and Miles Converter</h1>
+<p class="desc">Enter either kilometers or miles, then convert both ways.</p>
+<label for="km">Kilometers</label>
+<input type="number" id="km" step="any" placeholder="Enter kilometers">
+<label for="mi">Miles</label>
+<input type="number" id="mi" step="any" placeholder="Enter miles">
+<button onclick="convert()">Convert</button>
+<h2 class="result" id="result">Result: -</h2>
+<script>
+function convert() {
+  const kmField = document.getElementById("km");
+  const miField = document.getElementById("mi");
+  const km = parseFloat(kmField.value);
+  const mi = parseFloat(miField.value);
+  if (Number.isFinite(km) && !Number.isFinite(mi)) {
+    const out = km * 0.621371;
+    miField.value = out.toFixed(6);
+    document.getElementById("result").innerHTML = km.toFixed(6) + " km = " + out.toFixed(6) + " mi";
+    return;
+  }
+  if (!Number.isFinite(km) && Number.isFinite(mi)) {
+    const out = mi / 0.621371;
+    kmField.value = out.toFixed(6);
+    document.getElementById("result").innerHTML = mi.toFixed(6) + " mi = " + out.toFixed(6) + " km";
+    return;
+  }
+  document.getElementById("result").innerHTML = "Fill exactly one field to convert.";
+}
+</script>
+<h2>Related Calculators</h2>
+<ul>
+<li><a href="celsius-to-fahrenheit-converter.html">Celsius to Fahrenheit Converter</a></li>
+<li><a href="kilograms-to-pounds-converter.html">Kilograms to Pounds Converter</a></li>
+<li><a href="liters-to-gallons-converter.html">Liters to Gallons Converter</a></li>
+<li><a href="seconds-to-minutes-converter.html">Seconds to Minutes Converter</a></li>
+<li><a href="percentage-calculator.html">Percentage Calculator</a></li>
+</ul>
+</div>
+
+<div class="footer">
+<p>Browse Categories</p>
+<div class="category-grid">
+<a class="category-link" href="financial-calculators.html">Financial</a>
+<a class="category-link" href="health-calculators.html">Health</a>
+<a class="category-link" href="conversion-calculators.html">Conversions</a>
+<a class="category-link" href="career-calculators.html">Career</a>
+</div>
+<p><a class="home-link" href="index.html">Home</a></p>
+<p class="footer-meta">
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a>
+</p>
+</div>
+</div>
+</body>
+</html>

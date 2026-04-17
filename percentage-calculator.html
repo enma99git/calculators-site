@@ -16,27 +16,46 @@
 <div class="wrap">
 <div class="card">
 <h1>Percentage Calculator</h1>
-
-<label>Value:</label>
-<input id="value">
-
-
-<label>Percentage (%):</label>
-<input id="percent">
-
-
+<p class="desc">Calculate percentages in both directions: value from percent, or percent from two values.</p>
+<label for="mode">Mode:</label>
+<select id="mode">
+<option value="part">Find value (X% of Y)</option>
+<option value="percent">Find percent (X is what % of Y)</option>
+</select>
+<label for="valueA" id="labelA">Percentage (%):</label>
+<input id="valueA" type="number" step="any" placeholder="e.g. 15">
+<label for="valueB" id="labelB">Base value:</label>
+<input id="valueB" type="number" step="any" placeholder="e.g. 240">
 <button onclick="calc()">Calculate</button>
-
 <h2 class="result" id="result">Result: -</h2>
 
 <script>
+function syncLabels() {
+  const mode = document.getElementById("mode").value;
+  document.getElementById("labelA").innerHTML = mode === "part" ? "Percentage (%):" : "Part value:";
+  document.getElementById("labelB").innerHTML = mode === "part" ? "Base value:" : "Total value:";
+}
+document.getElementById("mode").addEventListener("change", syncLabels);
+syncLabels();
 function calc(){
-let v = document.getElementById("value").value;
-let p = document.getElementById("percent").value;
-
-let result = v * (p/100);
-
-document.getElementById("result").innerHTML = result;
+const mode = document.getElementById("mode").value;
+const a = parseFloat(document.getElementById("valueA").value);
+const b = parseFloat(document.getElementById("valueB").value);
+if (!Number.isFinite(a) || !Number.isFinite(b)) {
+  document.getElementById("result").innerHTML = "Enter valid values.";
+  return;
+}
+if (mode === "part") {
+  const result = b * (a / 100);
+  document.getElementById("result").innerHTML = "Result: " + result.toFixed(2);
+  return;
+}
+if (b === 0) {
+  document.getElementById("result").innerHTML = "Total value cannot be zero.";
+  return;
+}
+const result = (a / b) * 100;
+document.getElementById("result").innerHTML = "Result: " + result.toFixed(2) + "%";
 }
 </script>
 
@@ -44,11 +63,11 @@ document.getElementById("result").innerHTML = result;
 
 <p>Related Calculators:</p>
 <ul>
-<li><a href="unit-converter.html">Unit Converter</a></li>
-<li><a href="time-calculator.html">Time Calculator</a></li>
-<li><a href="percentage-calculator.html">Percentage Calculator</a></li>
-<li><a href="usd-to-eur.html">Currency Converter</a></li>
-<li><a href="age-calculator.html">Age Calculator</a></li>
+<li><a href="seconds-to-minutes-converter.html">Seconds to Minutes Converter</a></li>
+<li><a href="minutes-to-hours-converter.html">Minutes to Hours Converter</a></li>
+<li><a href="hours-to-days-converter.html">Hours to Days Converter</a></li>
+<li><a href="kilometers-to-miles-converter.html">Kilometers to Miles Converter</a></li>
+<li><a href="celsius-to-fahrenheit-converter.html">Celsius to Fahrenheit Converter</a></li>
 </ul>
 </div>
 

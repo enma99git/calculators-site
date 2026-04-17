@@ -16,18 +16,33 @@
 <div class="wrap">
 <div class="card">
 <h1>Macros Calculator</h1>
-
-<input id="cal" placeholder="Calories">
-
+<p class="desc">Enter your calorie target and choose a goal style to get daily macro gram targets.</p>
+<label for="cal">Calorie Target</label>
+<input id="cal" type="number" min="1" step="any" placeholder="Calories per day">
+<label for="ratio">Goal Style / Ratio</label>
+<select id="ratio">
+<option value="30,40,30">Balanced (30% Protein / 40% Carbs / 30% Fat)</option>
+<option value="35,35,30">High Protein (35% Protein / 35% Carbs / 30% Fat)</option>
+<option value="30,50,20">High Carb (30% Protein / 50% Carbs / 20% Fat)</option>
+<option value="35,20,45">Low Carb (35% Protein / 20% Carbs / 45% Fat)</option>
+<option value="25,5,70">Keto Style (25% Protein / 5% Carbs / 70% Fat)</option>
+</select>
 <button onclick="calc()">Calculate</button>
 
 <h2 class="result" id="r">Result: -</h2>
 
 <script>
 function calc(){
-let protein = cal.value * 0.3 / 4;
-let carbs = cal.value * 0.4 / 4;
-let fat = cal.value * 0.3 / 9;
+const calories = parseFloat(document.getElementById("cal").value);
+const ratio = document.getElementById("ratio").value.split(",").map(Number);
+if (!Number.isFinite(calories)) {
+  r.innerHTML = "Please enter a valid calorie target.";
+  return;
+}
+
+const protein = calories * (ratio[0] / 100) / 4;
+const carbs = calories * (ratio[1] / 100) / 4;
+const fat = calories * (ratio[2] / 100) / 9;
 
 r.innerHTML = 
 "Protein: " + protein.toFixed(1) + "g<br>" +

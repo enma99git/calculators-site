@@ -25,8 +25,22 @@
 
 <script>
 function calc(){
-let bmi=w.value/(h.value*h.value);
-r.innerHTML="BMI: "+bmi.toFixed(2);
+const weight = parseFloat(w.value);
+const height = parseFloat(h.value);
+if (!Number.isFinite(weight) || !Number.isFinite(height) || height <= 0) {
+  r.innerHTML = "Please enter valid weight and height.";
+  return;
+}
+const bmi = weight / (height * height);
+let tag = "Obese";
+if (bmi < 18.5) {
+  tag = "Underweight";
+} else if (bmi < 25) {
+  tag = "Normal";
+} else if (bmi < 30) {
+  tag = "Overweight";
+}
+r.innerHTML="BMI: " + bmi.toFixed(2) + " (" + tag + ")";
 }
 </script>
 <hr>

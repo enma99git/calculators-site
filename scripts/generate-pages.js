@@ -157,11 +157,11 @@ const homeSections = [
     category: "Conversions",
     hub: "conversion-calculators.html",
     items: [
-      { fileName: "unit-converter.html", h1: "Unit Converter" },
-      { fileName: "time-calculator.html", h1: "Time Calculator" },
+      { fileName: "kilometers-to-miles-converter.html", h1: "Kilometers to Miles Converter" },
+      { fileName: "celsius-to-fahrenheit-converter.html", h1: "Celsius to Fahrenheit Converter" },
+      { fileName: "seconds-to-minutes-converter.html", h1: "Seconds to Minutes Converter" },
       { fileName: "percentage-calculator.html", h1: "Percentage Calculator" },
-      { fileName: "usd-to-eur.html", h1: "Currency Converter" },
-      { fileName: "age-calculator.html", h1: "Age Calculator" }
+      { fileName: "minutes-to-hours-converter.html", h1: "Minutes to Hours Converter" }
     ]
   },
   {
