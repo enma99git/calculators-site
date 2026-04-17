@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="stylesheet" href="styles.css">
+<script src="site-analytics.js" data-analytics-page defer></script>
 </head>
   
 <body>
@@ -35,8 +36,19 @@ let r=rate.value/100/12;
 let n=years.value*12;
 let m=(P*r)/(1-Math.pow(1+r,-n));
 result.innerHTML="Monthly: $"+m.toFixed(2);
+document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "mortgage" } }));
 }
 </script>
+<div class="trust-block">
+<h2>How this estimate works</h2>
+<p class="desc">This mortgage output is a simplified estimate using the values entered on this page.</p>
+<ul>
+<li>Taxes, insurance, HOA, and lender fees are not included by default.</li>
+<li>Rate assumptions may differ from your final offer.</li>
+<li>Verify all key decisions with your lender and advisor.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
+</div>
 <hr>
 
 <p>Related Calculators:</p>

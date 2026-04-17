@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="stylesheet" href="styles.css">
+<script src="site-analytics.js" data-analytics-page defer></script>
 </head>
 <body>
 <div class="top">
@@ -39,8 +40,20 @@ let monthly = yearly / 12;
 
 document.getElementById("result").innerHTML =
 "Yearly: $" + yearly.toFixed(2) + "<br>Monthly: $" + monthly.toFixed(2);
+document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "salary" } }));
 }
 </script>
+
+<div class="trust-block">
+<h2>How this estimate works</h2>
+<p class="desc">This salary conversion assumes a fixed schedule and does not include overtime or regional tax differences.</p>
+<ul>
+<li>Default assumptions may not match your contract terms.</li>
+<li>Results are informational estimates only.</li>
+<li>For payroll planning, confirm with your HR or payroll provider.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
+</div>
 
 <hr>
 

@@ -5,6 +5,146 @@
     "lang": "en",
     "includeRobotsMeta": true
   },
+  "analytics": {
+    "measurementId": ""
+  },
+  "trust": {
+    "updatedDate": "2026-04-17"
+  },
+  "qualityRules": {
+    "currencyIndexCore": ["USD", "EUR", "GBP", "CAD", "AUD", "MXN", "JPY", "COP"],
+    "loanIndexMinAmount": 25000,
+    "loanIndexStep": 25000,
+    "salaryIndexMinAmount": 40000,
+    "salaryIndexStep": 20000
+  },
+  "markets": [
+    {
+      "id": "en",
+      "lang": "en",
+      "pathSegment": "",
+      "numberLocale": "en-US",
+      "label": "English"
+    },
+    {
+      "id": "es",
+      "lang": "es",
+      "pathSegment": "es",
+      "numberLocale": "es-419",
+      "label": "Espanol LATAM"
+    }
+  ],
+  "pilots": {
+    "spanishPages": [
+      {
+        "slug": "calculadora-porcentaje",
+        "title": "Calculadora de Porcentaje Gratis",
+        "description": "Calcula porcentajes en ambas direcciones con resultados inmediatos.",
+        "h1": "Calculadora de Porcentaje",
+        "intro": "Calcula un valor a partir de un porcentaje o descubre que porcentaje representa un valor sobre otro.",
+        "category": "Conversions",
+        "hubPath": "es/conversion-calculators.html",
+        "formulaType": "percentage"
+      },
+      {
+        "slug": "calculadora-imc",
+        "title": "Calculadora de IMC Gratis",
+        "description": "Calcula tu indice de masa corporal y su clasificacion.",
+        "h1": "Calculadora de IMC",
+        "intro": "Ingresa estatura y peso para calcular el IMC y ver una clasificacion general.",
+        "category": "Health",
+        "hubPath": "es/health-calculators.html",
+        "formulaType": "bmi"
+      },
+      {
+        "slug": "calculadora-hipoteca",
+        "title": "Calculadora de Hipoteca Gratis",
+        "description": "Estima pago mensual de una hipoteca con tasa y plazo.",
+        "h1": "Calculadora de Hipoteca",
+        "intro": "Usa monto, tasa y anos para estimar el pago mensual de una hipoteca.",
+        "category": "Financial",
+        "hubPath": "es/financial-calculators.html",
+        "formulaType": "loan"
+      },
+      {
+        "slug": "calculadora-prestamo",
+        "title": "Calculadora de Prestamo Gratis",
+        "description": "Calcula pagos mensuales de prestamo en segundos.",
+        "h1": "Calculadora de Prestamo",
+        "intro": "Calcula pagos mensuales segun monto, tasa anual y plazo en anos.",
+        "category": "Financial",
+        "hubPath": "es/financial-calculators.html",
+        "formulaType": "loan"
+      },
+      {
+        "slug": "calculadora-ahorro",
+        "title": "Calculadora de Ahorro Gratis",
+        "description": "Proyecta ahorro futuro con aportes mensuales e interes.",
+        "h1": "Calculadora de Ahorro",
+        "intro": "Proyecta tu saldo futuro usando aporte inicial, aporte mensual, tasa y anos.",
+        "category": "Financial",
+        "hubPath": "es/financial-calculators.html",
+        "formulaType": "savings"
+      },
+      {
+        "slug": "convertidor-kilometros-millas",
+        "title": "Convertidor de Kilometros a Millas",
+        "description": "Convierte kilometros y millas en ambas direcciones.",
+        "h1": "Convertidor de Kilometros y Millas",
+        "intro": "Ingresa kilometros o millas y convierte en ambas direcciones.",
+        "category": "Conversions",
+        "hubPath": "es/conversion-calculators.html",
+        "formulaType": "kmMi"
+      },
+      {
+        "slug": "convertidor-celsius-fahrenheit",
+        "title": "Convertidor de Celsius a Fahrenheit",
+        "description": "Convierte temperaturas en Celsius y Fahrenheit.",
+        "h1": "Convertidor de Celsius y Fahrenheit",
+        "intro": "Convierte temperaturas facilmente de Celsius a Fahrenheit y viceversa.",
+        "category": "Conversions",
+        "hubPath": "es/conversion-calculators.html",
+        "formulaType": "cF"
+      },
+      {
+        "slug": "calculadora-salario-hora",
+        "title": "Calculadora de Salario a Hora",
+        "description": "Convierte salario anual a pago por hora.",
+        "h1": "Calculadora de Salario a Hora",
+        "intro": "Convierte salario anual en tarifa por hora usando horas y semanas trabajadas.",
+        "category": "Career",
+        "hubPath": "es/career-calculators.html",
+        "formulaType": "salary"
+      },
+      {
+        "slug": "calculadora-descuento",
+        "title": "Calculadora de Descuento",
+        "description": "Calcula precio final despues de un descuento.",
+        "h1": "Calculadora de Descuento",
+        "intro": "Ingresa precio original y porcentaje de descuento para ver el precio final.",
+        "category": "Financial",
+        "hubPath": "es/financial-calculators.html",
+        "formulaType": "discount"
+      },
+      {
+        "slug": "calculadora-propinas",
+        "title": "Calculadora de Propinas",
+        "description": "Calcula total con propina rapidamente.",
+        "h1": "Calculadora de Propinas",
+        "intro": "Ingresa total de cuenta y porcentaje de propina para calcular total a pagar.",
+        "category": "Financial",
+        "hubPath": "es/financial-calculators.html",
+        "formulaType": "tip"
+      }
+    ],
+    "statePages": [
+      { "stateCode": "ca", "stateName": "California", "incomeTaxRate": 0.082 },
+      { "stateCode": "tx", "stateName": "Texas", "incomeTaxRate": 0 },
+      { "stateCode": "fl", "stateName": "Florida", "incomeTaxRate": 0 },
+      { "stateCode": "ny", "stateName": "New York", "incomeTaxRate": 0.064 },
+      { "stateCode": "wa", "stateName": "Washington", "incomeTaxRate": 0 }
+    ]
+  },
   "families": {
     "currencyConverter": {
       "enabled": true,

@@ -52,6 +52,51 @@ function slugify(input) {
     .replace(/^-+|-+$/g, "");
 }
 
+function normalizePath(value) {
+  return String(value || "").replace(/\\/g, "/").replace(/^\/+/, "");
+}
+
+function pathDepth(pagePath) {
+  const normalized = normalizePath(pagePath);
+  if (!normalized) {
+    return 0;
+  }
+  const parts = normalized.split("/");
+  return Math.max(parts.length - 1, 0);
+}
+
+function relativePrefix(pagePath) {
+  const depth = pathDepth(pagePath);
+  if (depth <= 0) {
+    return "";
+  }
+  return "../".repeat(depth);
+}
+
+function toHref(pagePath, targetPath) {
+  const prefix = relativePrefix(pagePath);
+  return `${prefix}${normalizePath(targetPath)}`;
+}
+
+function collectHtmlPaths(baseDir, currentDir = "") {
+  const dirPath = path.join(baseDir, currentDir);
+  const rows = [];
+  for (const item of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    if (item.name.startsWith(".")) {
+      continue;
+    }
+    const relative = normalizePath(path.join(currentDir, item.name));
+    if (item.isDirectory()) {
+      rows.push(...collectHtmlPaths(baseDir, relative));
+      continue;
+    }
+    if (item.isFile() && item.name.endsWith(".html")) {
+      rows.push(relative);
+    }
+  }
+  return rows;
+}
+
 function buildRange(rangeConfig = {}) {
   const start = Number(rangeConfig.start);
   const end = Number(rangeConfig.end);
@@ -102,22 +147,52 @@ function getCurrencyPairs(currencyFamily) {
   return pairs;
 }
 
-function htmlShell({ title, description, body, lang = "en" }) {
+function htmlShell({
+  title,
+  description,
+  body,
+  lang = "en",
+  pagePath = "",
+  robotsDirective = "index, follow",
+  canonicalPath = ""
+}) {
   const robots = config.defaults?.includeRobotsMeta
-    ? '<meta name="robots" content="index, follow">\n'
+    ? `<meta name="robots" content="${robotsDirective}">\n`
     : "";
+  const canonicalHref = canonicalPath
+    ? (config.siteUrl
+        ? `${config.siteUrl.replace(/\/$/, "")}/${normalizePath(canonicalPath)}`
+        : normalizePath(canonicalPath))
+    : "";
+  const canonical = canonicalHref
+    ? `<link rel="canonical" href="${canonicalHref}">\n`
+    : "";
+  const stylesHref = toHref(pagePath, "styles.css");
+  const homeHref = toHref(pagePath, "index.html");
+  const financialHref = toHref(pagePath, "financial-calculators.html");
+  const healthHref = toHref(pagePath, "health-calculators.html");
+  const conversionsHref = toHref(pagePath, "conversion-calculators.html");
+  const careerHref = toHref(pagePath, "career-calculators.html");
+  const analyticsLoader = `<script src="${toHref(pagePath, "site-analytics.js")}" data-analytics-page defer></script>`;
+  const footerInfoLinksHtml = `<p class="footer-meta">
+<a href="${toHref(pagePath, "about.html")}">About</a> |
+<a href="${toHref(pagePath, "contact.html")}">Contact</a> |
+<a href="${toHref(pagePath, "privacy.html")}">Privacy</a> |
+<a href="${toHref(pagePath, "terms.html")}">Terms</a>
+</p>`;
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
 <title>${title}</title>
 <meta name="description" content="${description}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-${robots}<link rel="stylesheet" href="styles.css">
+${robots}${canonical}<link rel="stylesheet" href="${stylesHref}">
+${analyticsLoader}
 </head>
 <body>
 <div class="top">
 <div class="wrap top-inner">
-<a class="brand" href="index.html">Practical Calculators</a>
+<a class="brand" href="${homeHref}">Practical Calculators</a>
 </div>
 </div>
 <div class="wrap">
@@ -127,12 +202,12 @@ ${body}
 <div class="footer">
 <p>Browse Categories</p>
 <div class="category-grid">
-<a class="category-link" href="financial-calculators.html">Financial</a>
-<a class="category-link" href="health-calculators.html">Health</a>
-<a class="category-link" href="conversion-calculators.html">Conversions</a>
-<a class="category-link" href="career-calculators.html">Career</a>
+<a class="category-link" href="${financialHref}">Financial</a>
+<a class="category-link" href="${healthHref}">Health</a>
+<a class="category-link" href="${conversionsHref}">Conversions</a>
+<a class="category-link" href="${careerHref}">Career</a>
 </div>
-<p><a class="home-link" href="index.html">Home</a></p>
+<p><a class="home-link" href="${homeHref}">Home</a></p>
 ${footerInfoLinksHtml}
 </div>
 </div>
@@ -195,6 +270,48 @@ const footerInfoLinksHtml = `<p class="footer-meta">
 <a href="terms.html">Terms</a>
 </p>`;
 
+const trustUpdatedDate = config.trust?.updatedDate || "2026-04-17";
+
+function trustBlockHtml(topic = "calculator") {
+  return `<div class="trust-block">
+<h2>How this result is estimated</h2>
+<p class="desc">This ${escapeHtml(topic)} provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<ul>
+<li>Inputs are user-provided and may include rounding.</li>
+<li>Results are informational and not financial, tax, legal, or medical advice.</li>
+<li>For high-impact decisions, confirm with a licensed professional.</li>
+</ul>
+<p class="small">Last reviewed: ${escapeHtml(trustUpdatedDate)}</p>
+</div>`;
+}
+
+function shouldIndexCurrencyPair(fromCode, toCode) {
+  const core = new Set((config.qualityRules?.currencyIndexCore || []).map((item) => String(item).toUpperCase()));
+  return core.has(fromCode) || core.has(toCode);
+}
+
+function isStepMatch(value, step, min) {
+  if (!Number.isFinite(step) || step <= 0) {
+    return true;
+  }
+  if (!Number.isFinite(value) || !Number.isFinite(min)) {
+    return false;
+  }
+  return (value - min) % step === 0;
+}
+
+function shouldIndexLoanAmount(amount) {
+  const min = Number(config.qualityRules?.loanIndexMinAmount || 0);
+  const step = Number(config.qualityRules?.loanIndexStep || 0);
+  return Number(amount) >= min && isStepMatch(Number(amount), step, min);
+}
+
+function shouldIndexSalaryAmount(amount) {
+  const min = Number(config.qualityRules?.salaryIndexMinAmount || 0);
+  const step = Number(config.qualityRules?.salaryIndexStep || 0);
+  return Number(amount) >= min && isStepMatch(Number(amount), step, min);
+}
+
 function pickRelatedEntries(entries, entry, limit = 8) {
   return pickStructuredRelated(entries, entry).primary.slice(0, limit);
 }
@@ -210,6 +327,10 @@ function uniqueByFileName(items) {
     unique.push(item);
   }
   return unique;
+}
+
+function isSameMarket(entry, candidate) {
+  return (entry.marketId || "en") === (candidate.marketId || "en");
 }
 
 function sortByAmountProximity(candidates, targetAmount) {
@@ -268,7 +389,10 @@ function pickStructuredRelated(entries, entry) {
   ) {
     const sameFamily = entries.filter(
       (candidate) =>
-        candidate.fileName !== entry.fileName && candidate.family === entry.family
+        candidate.pagePath !== entry.pagePath &&
+        candidate.family === entry.family &&
+        isSameMarket(entry, candidate) &&
+        candidate.indexable !== false
     );
     const sorted = sortByAmountProximity(sameFamily, entry.amount);
     return {
@@ -279,7 +403,12 @@ function pickStructuredRelated(entries, entry) {
 
   if (entry.family === "currencyConverter") {
     const scored = entries
-      .filter((candidate) => candidate.family === "currencyConverter")
+      .filter(
+        (candidate) =>
+          candidate.family === "currencyConverter" &&
+          isSameMarket(entry, candidate) &&
+          candidate.indexable !== false
+      )
       .map((candidate) => ({ candidate, score: scoreCurrencyCandidate(entry, candidate) }))
       .filter((row) => row.score > 0)
       .sort((a, b) => {
@@ -298,7 +427,10 @@ function pickStructuredRelated(entries, entry) {
 
   const sameCategory = entries.filter(
     (candidate) =>
-      candidate.fileName !== entry.fileName && candidate.category === entry.category
+      candidate.pagePath !== entry.pagePath &&
+      candidate.category === entry.category &&
+      isSameMarket(entry, candidate) &&
+      candidate.indexable !== false
   );
   const primary = sameCategory.slice(0, primaryLimit);
   const expanded = sameCategory.slice(primaryLimit, primaryLimit + expandedLimit);
@@ -316,11 +448,11 @@ function relatedHtml(entries, entry) {
   }
 
   const primaryLinks = primary
-    .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
+    .map((item) => `<li><a href="${toHref(entry.pagePath, item.pagePath || item.fileName)}">${escapeHtml(item.h1)}</a></li>`)
     .join("\n");
 
   const expandedLinks = expanded
-    .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
+    .map((item) => `<li><a href="${toHref(entry.pagePath, item.pagePath || item.fileName)}">${escapeHtml(item.h1)}</a></li>`)
     .join("\n");
 
   const expandedBlock = expanded.length
@@ -332,7 +464,11 @@ ${expandedLinks}
 </details>`
     : "";
 
-  return `<h2>Related Calculators</h2>
+  const hubHref = toHref(entry.pagePath, entry.hubPath || "index.html");
+  const homeHref = toHref(entry.pagePath, "index.html");
+
+  return `<p><a href="${homeHref}">Home</a> | <a href="${hubHref}">Category Hub</a></p>
+<h2>Related Calculators</h2>
 <ul>
 ${primaryLinks}
 </ul>
@@ -340,9 +476,14 @@ ${expandedBlock}`;
 }
 
 function currencyTemplate(entry, entries) {
+  const currencyScriptHref = toHref(entry.pagePath, "currency-rates.js");
   return htmlShell({
     title: entry.title,
     description: entry.description,
+    lang: entry.lang || config.defaults?.lang || "en",
+    pagePath: entry.pagePath,
+    robotsDirective: entry.indexable === false ? "noindex, follow" : "index, follow",
+    canonicalPath: entry.canonicalPath || entry.pagePath,
     body: `<h1>${entry.h1}</h1>
 <p class="desc">Convert ${entry.fromName} (${entry.fromCode}) to ${entry.toName} (${entry.toCode}) using a manual exchange rate.</p>
 
@@ -354,7 +495,8 @@ function currencyTemplate(entry, entries) {
 <button onclick="convert()">Convert</button>
 <h2 id="result" class="result">Result: -</h2>
 
-<script src="currency-rates.js" data-currency-page data-from="${entry.fromCode}" data-to="${entry.toCode}" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
+<script src="${currencyScriptHref}" data-currency-page data-from="${entry.fromCode}" data-to="${entry.toCode}" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
+${trustBlockHtml("currency converter")}
 ${relatedHtml(entries, entry)}`
   });
 }
@@ -363,6 +505,10 @@ function loanTemplate(entry, entries) {
   return htmlShell({
     title: entry.title,
     description: entry.description,
+    lang: entry.lang || config.defaults?.lang || "en",
+    pagePath: entry.pagePath,
+    robotsDirective: entry.indexable === false ? "noindex, follow" : "index, follow",
+    canonicalPath: entry.canonicalPath || entry.pagePath,
     body: `<h1>${entry.h1}</h1>
 <p class="desc">Estimate monthly payment for a $${formatAmount(
       entry.amount
@@ -392,12 +538,15 @@ function calcPayment() {
   if (monthlyRate === 0) {
     const noInterestPayment = amount / months;
     document.getElementById("result").innerHTML = "Monthly Payment: $" + noInterestPayment.toFixed(2);
+    document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
     return;
   }
   const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
   document.getElementById("result").innerHTML = "Monthly Payment: $" + payment.toFixed(2);
+  document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
 }
 </script>
+${trustBlockHtml("loan calculator")}
 ${relatedHtml(entries, entry)}`
   });
 }
@@ -406,6 +555,10 @@ function salaryTemplate(entry, entries) {
   return htmlShell({
     title: entry.title,
     description: entry.description,
+    lang: entry.lang || config.defaults?.lang || "en",
+    pagePath: entry.pagePath,
+    robotsDirective: entry.indexable === false ? "noindex, follow" : "index, follow",
+    canonicalPath: entry.canonicalPath || entry.pagePath,
     body: `<h1>${entry.h1}</h1>
 <p class="desc">Convert a $${formatAmount(entry.amount)} yearly salary into hourly pay.</p>
 
@@ -431,8 +584,277 @@ function calcHourly() {
   }
   const hourly = salary / denominator;
   document.getElementById("result").innerHTML = "Hourly Rate: $" + hourly.toFixed(2);
+  document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "salary" } }));
 }
 </script>
+${trustBlockHtml("salary calculator")}
+${relatedHtml(entries, entry)}`
+  });
+}
+
+function spanishFormulaScript(formulaType) {
+  if (formulaType === "bmi") {
+    return `<label for="altura">Estatura (cm):</label>
+<input type="number" id="altura" step="any" placeholder="Ej. 170"><br><br>
+<label for="peso">Peso (kg):</label>
+<input type="number" id="peso" step="any" placeholder="Ej. 70"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const alturaCm = parseFloat(document.getElementById("altura").value);
+  const pesoKg = parseFloat(document.getElementById("peso").value);
+  if (!Number.isFinite(alturaCm) || !Number.isFinite(pesoKg) || alturaCm <= 0 || pesoKg <= 0) {
+    document.getElementById("result").textContent = "Ingresa datos validos.";
+    return;
+  }
+  const alturaM = alturaCm / 100;
+  const bmi = pesoKg / (alturaM * alturaM);
+  let etiqueta = "Obeso";
+  if (bmi < 18.5) etiqueta = "Bajo peso";
+  else if (bmi < 25) etiqueta = "Normal";
+  else if (bmi < 30) etiqueta = "Sobrepeso";
+  document.getElementById("result").textContent = "IMC: " + bmi.toFixed(2) + " (" + etiqueta + ")";
+}
+</script>`;
+  }
+  if (formulaType === "loan") {
+    return `<label for="monto">Monto:</label>
+<input type="number" id="monto" value="150000"><br><br>
+<label for="tasa">Tasa anual (%):</label>
+<input type="number" id="tasa" value="9" step="0.1"><br><br>
+<label for="anos">Plazo (anos):</label>
+<input type="number" id="anos" value="15"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const monto = parseFloat(document.getElementById("monto").value) || 0;
+  const tasaAnual = parseFloat(document.getElementById("tasa").value) || 0;
+  const anos = parseFloat(document.getElementById("anos").value) || 0;
+  const meses = anos * 12;
+  if (meses <= 0) {
+    document.getElementById("result").textContent = "Ingresa un plazo valido.";
+    return;
+  }
+  const tasaMensual = tasaAnual / 100 / 12;
+  if (tasaMensual === 0) {
+    document.getElementById("result").textContent = "Pago mensual: $" + (monto / meses).toFixed(2);
+    return;
+  }
+  const pago = monto * (tasaMensual * Math.pow(1 + tasaMensual, meses)) / (Math.pow(1 + tasaMensual, meses) - 1);
+  document.getElementById("result").textContent = "Pago mensual: $" + pago.toFixed(2);
+}
+</script>`;
+  }
+  if (formulaType === "savings") {
+    return `<label for="inicial">Monto inicial:</label>
+<input type="number" id="inicial" value="1000"><br><br>
+<label for="mensual">Aporte mensual:</label>
+<input type="number" id="mensual" value="150"><br><br>
+<label for="tasa">Tasa anual (%):</label>
+<input type="number" id="tasa" value="5"><br><br>
+<label for="anos">Anos:</label>
+<input type="number" id="anos" value="10"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const inicial = parseFloat(document.getElementById("inicial").value) || 0;
+  const mensual = parseFloat(document.getElementById("mensual").value) || 0;
+  const tasa = (parseFloat(document.getElementById("tasa").value) || 0) / 100 / 12;
+  const meses = (parseFloat(document.getElementById("anos").value) || 0) * 12;
+  if (meses <= 0) {
+    document.getElementById("result").textContent = "Ingresa anos validos.";
+    return;
+  }
+  let saldo = inicial;
+  for (let i = 0; i < meses; i += 1) {
+    saldo = saldo * (1 + tasa) + mensual;
+  }
+  document.getElementById("result").textContent = "Saldo estimado: $" + saldo.toFixed(2);
+}
+</script>`;
+  }
+  if (formulaType === "kmMi") {
+    return `<label for="km">Kilometros:</label>
+<input type="number" id="km" step="any"><br><br>
+<label for="mi">Millas:</label>
+<input type="number" id="mi" step="any"><br><br>
+<button onclick="calcular()">Convertir</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const km = parseFloat(document.getElementById("km").value);
+  const mi = parseFloat(document.getElementById("mi").value);
+  if (Number.isFinite(km)) {
+    const out = km * 0.621371;
+    document.getElementById("mi").value = out.toFixed(4);
+    document.getElementById("result").textContent = km.toFixed(2) + " km = " + out.toFixed(2) + " mi";
+    return;
+  }
+  if (Number.isFinite(mi)) {
+    const out = mi / 0.621371;
+    document.getElementById("km").value = out.toFixed(4);
+    document.getElementById("result").textContent = mi.toFixed(2) + " mi = " + out.toFixed(2) + " km";
+    return;
+  }
+  document.getElementById("result").textContent = "Ingresa un valor para convertir.";
+}
+</script>`;
+  }
+  if (formulaType === "cF") {
+    return `<label for="c">Celsius:</label>
+<input type="number" id="c" step="any"><br><br>
+<label for="f">Fahrenheit:</label>
+<input type="number" id="f" step="any"><br><br>
+<button onclick="calcular()">Convertir</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const c = parseFloat(document.getElementById("c").value);
+  const f = parseFloat(document.getElementById("f").value);
+  if (Number.isFinite(c)) {
+    const out = (c * 9 / 5) + 32;
+    document.getElementById("f").value = out.toFixed(2);
+    document.getElementById("result").textContent = c.toFixed(2) + " C = " + out.toFixed(2) + " F";
+    return;
+  }
+  if (Number.isFinite(f)) {
+    const out = (f - 32) * 5 / 9;
+    document.getElementById("c").value = out.toFixed(2);
+    document.getElementById("result").textContent = f.toFixed(2) + " F = " + out.toFixed(2) + " C";
+    return;
+  }
+  document.getElementById("result").textContent = "Ingresa un valor para convertir.";
+}
+</script>`;
+  }
+  if (formulaType === "salary") {
+    return `<label for="salario">Salario anual:</label>
+<input type="number" id="salario" value="52000"><br><br>
+<label for="horas">Horas por semana:</label>
+<input type="number" id="horas" value="40"><br><br>
+<label for="semanas">Semanas por ano:</label>
+<input type="number" id="semanas" value="52"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const salario = parseFloat(document.getElementById("salario").value) || 0;
+  const horas = parseFloat(document.getElementById("horas").value) || 0;
+  const semanas = parseFloat(document.getElementById("semanas").value) || 0;
+  if (horas <= 0 || semanas <= 0) {
+    document.getElementById("result").textContent = "Ingresa horas y semanas validas.";
+    return;
+  }
+  const tarifa = salario / (horas * semanas);
+  document.getElementById("result").textContent = "Pago por hora: $" + tarifa.toFixed(2);
+}
+</script>`;
+  }
+  if (formulaType === "discount") {
+    return `<label for="precio">Precio original:</label>
+<input type="number" id="precio" value="100"><br><br>
+<label for="descuento">Descuento (%):</label>
+<input type="number" id="descuento" value="15"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const precio = parseFloat(document.getElementById("precio").value) || 0;
+  const descuento = (parseFloat(document.getElementById("descuento").value) || 0) / 100;
+  const final = precio * (1 - descuento);
+  document.getElementById("result").textContent = "Precio final: $" + final.toFixed(2);
+}
+</script>`;
+  }
+  if (formulaType === "tip") {
+    return `<label for="cuenta">Cuenta:</label>
+<input type="number" id="cuenta" value="70"><br><br>
+<label for="propina">Propina (%):</label>
+<input type="number" id="propina" value="15"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const cuenta = parseFloat(document.getElementById("cuenta").value) || 0;
+  const propina = (parseFloat(document.getElementById("propina").value) || 0) / 100;
+  const total = cuenta * (1 + propina);
+  document.getElementById("result").textContent = "Total con propina: $" + total.toFixed(2);
+}
+</script>`;
+  }
+
+  return `<label for="valorA">Valor A:</label>
+<input type="number" id="valorA" step="any"><br><br>
+<label for="valorB">Valor B:</label>
+<input type="number" id="valorB" step="any"><br><br>
+<button onclick="calcular()">Calcular</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcular() {
+  const a = parseFloat(document.getElementById("valorA").value) || 0;
+  const b = parseFloat(document.getElementById("valorB").value) || 0;
+  if (b === 0) {
+    document.getElementById("result").textContent = "Ingresa valores validos.";
+    return;
+  }
+  const p = (a / b) * 100;
+  document.getElementById("result").textContent = a.toFixed(2) + " es " + p.toFixed(2) + "% de " + b.toFixed(2);
+}
+</script>`;
+}
+
+function spanishPilotTemplate(entry, entries) {
+  return htmlShell({
+    title: entry.title,
+    description: entry.description,
+    lang: "es",
+    pagePath: entry.pagePath,
+    robotsDirective: "index, follow",
+    canonicalPath: entry.pagePath,
+    body: `<h1>${entry.h1}</h1>
+<p class="desc">${entry.intro}</p>
+${spanishFormulaScript(entry.formulaType)}
+${trustBlockHtml("calculadora")}
+${relatedHtml(entries, entry)}`
+  });
+}
+
+function statePaycheckTemplate(entry, entries) {
+  return htmlShell({
+    title: entry.title,
+    description: entry.description,
+    lang: "en",
+    pagePath: entry.pagePath,
+    robotsDirective: "index, follow",
+    canonicalPath: entry.pagePath,
+    body: `<h1>${entry.h1}</h1>
+<p class="desc">Estimate paycheck outcomes for ${entry.stateName} using a transparent state tax assumption (${(entry.stateTaxRate * 100).toFixed(1)}%).</p>
+<label for="salary">Annual Gross Salary ($):</label>
+<input type="number" id="salary" value="70000"><br><br>
+<label for="filing">Federal Tax Estimate (%):</label>
+<input type="number" id="filing" value="18" step="0.1"><br><br>
+<button onclick="calcPaycheck()">Calculate</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcPaycheck() {
+  const gross = parseFloat(document.getElementById("salary").value) || 0;
+  const fedRate = (parseFloat(document.getElementById("filing").value) || 0) / 100;
+  const stateRate = ${entry.stateTaxRate};
+  if (gross <= 0) {
+    document.getElementById("result").textContent = "Enter a valid salary.";
+    return;
+  }
+  const netAnnual = gross * (1 - fedRate - stateRate);
+  const monthly = netAnnual / 12;
+  const biweekly = netAnnual / 26;
+  const weekly = netAnnual / 52;
+  document.getElementById("result").innerHTML = "Estimated net annual: $" + netAnnual.toFixed(2) + "<br>Monthly: $" + monthly.toFixed(2) + "<br>Biweekly: $" + biweekly.toFixed(2) + "<br>Weekly: $" + weekly.toFixed(2);
+}
+</script>
+${trustBlockHtml("paycheck calculator")}
 ${relatedHtml(entries, entry)}`
   });
 }
@@ -448,18 +870,24 @@ function buildEntries() {
       const fromName = codeNames[from] || fromCode;
       const toName = codeNames[to] || toCode;
       const slug = slugify(`${from}-to-${to}-converter`);
+      const fileName = `${slug}.html`;
       entries.push({
         family: "currencyConverter",
+        marketId: "en",
+        lang: "en",
         category: families.currencyConverter.categoryLabel || "Currency",
         slug,
-        fileName: `${slug}.html`,
+        fileName,
+        pagePath: fileName,
+        hubPath: "conversion-calculators.html",
         title: `${fromCode} to ${toCode} Converter (Free) - Convert ${fromCode} to ${toCode}`,
         description: `Convert ${fromCode} to ${toCode} instantly with this free currency converter calculator.`,
         h1: `${fromCode} to ${toCode} Converter`,
         fromCode,
         toCode,
         fromName,
-        toName
+        toName,
+        indexable: shouldIndexCurrencyPair(fromCode, toCode)
       });
     }
   }
@@ -467,15 +895,21 @@ function buildEntries() {
   if (families.loanPaymentByAmount?.enabled) {
     for (const amount of getAmounts(families.loanPaymentByAmount)) {
       const slug = slugify(`${amount}-loan-payment-calculator`);
+      const fileName = `${slug}.html`;
       entries.push({
         family: "loanPaymentByAmount",
+        marketId: "en",
+        lang: "en",
         category: families.loanPaymentByAmount.categoryLabel || "Financial",
         slug,
-        fileName: `${slug}.html`,
+        fileName,
+        pagePath: fileName,
+        hubPath: "financial-calculators.html",
         title: `${formatAmount(amount)} Loan Payment Calculator (Free)`,
         description: `Estimate monthly payment for a $${formatAmount(amount)} loan with this free calculator.`,
         h1: `$${formatAmount(amount)} Loan Payment Calculator`,
-        amount
+        amount,
+        indexable: shouldIndexLoanAmount(Number(amount))
       });
     }
   }
@@ -483,17 +917,71 @@ function buildEntries() {
   if (families.salaryToHourlyByAmount?.enabled) {
     for (const amount of getAmounts(families.salaryToHourlyByAmount)) {
       const slug = slugify(`${amount}-salary-to-hourly-calculator`);
+      const fileName = `${slug}.html`;
       entries.push({
         family: "salaryToHourlyByAmount",
+        marketId: "en",
+        lang: "en",
         category: families.salaryToHourlyByAmount.categoryLabel || "Career",
         slug,
-        fileName: `${slug}.html`,
+        fileName,
+        pagePath: fileName,
+        hubPath: "career-calculators.html",
         title: `${formatAmount(amount)} Salary to Hourly Calculator (Free)`,
         description: `Convert a $${formatAmount(amount)} annual salary into hourly pay instantly.`,
         h1: `$${formatAmount(amount)} Salary to Hourly Calculator`,
-        amount
+        amount,
+        indexable: shouldIndexSalaryAmount(Number(amount))
       });
     }
+  }
+
+  const spanishPages = config.pilots?.spanishPages || [];
+  for (const page of spanishPages) {
+    const fileName = `${slugify(page.slug || page.h1 || "calculadora")}.html`;
+    entries.push({
+      family: "spanishPilotPage",
+      marketId: "es",
+      lang: "es",
+      category: page.category || "Financial",
+      slug: slugify(page.slug || page.h1 || "calculadora"),
+      fileName,
+      pagePath: normalizePath(`es/${fileName}`),
+      hubPath: normalizePath(page.hubPath || "es/index.html"),
+      title: page.title || "Calculadora",
+      description: page.description || "Herramienta gratuita",
+      h1: page.h1 || "Calculadora",
+      intro: page.intro || "",
+      formulaType: page.formulaType || "percentage",
+      indexable: true
+    });
+  }
+
+  const statePages = config.pilots?.statePages || [];
+  for (const state of statePages) {
+    const stateCode = String(state.stateCode || "").toLowerCase();
+    const stateName = state.stateName || stateCode.toUpperCase();
+    if (!stateCode) {
+      continue;
+    }
+    const fileName = "paycheck-calculator.html";
+    entries.push({
+      family: "statePaycheckPilotPage",
+      marketId: "us",
+      lang: "en",
+      category: "Financial",
+      slug: `${stateCode}-paycheck-calculator`,
+      fileName,
+      pagePath: normalizePath(`us/${stateCode}/${fileName}`),
+      hubPath: "financial-calculators.html",
+      title: `${stateName} Paycheck Calculator (Estimate)`,
+      description: `Estimate paycheck amounts in ${stateName} using gross salary and a state tax assumption.`,
+      h1: `${stateName} Paycheck Calculator`,
+      stateName,
+      stateCode,
+      stateTaxRate: Number(state.incomeTaxRate || 0),
+      indexable: true
+    });
   }
 
   return entries;
@@ -508,6 +996,12 @@ function renderPage(entry, entries) {
   }
   if (entry.family === "salaryToHourlyByAmount") {
     return salaryTemplate(entry, entries);
+  }
+  if (entry.family === "spanishPilotPage") {
+    return spanishPilotTemplate(entry, entries);
+  }
+  if (entry.family === "statePaycheckPilotPage") {
+    return statePaycheckTemplate(entry, entries);
   }
   throw new Error(`Unknown family: ${entry.family}`);
 }
@@ -542,8 +1036,9 @@ function upsertCategoryHubSection(fileName, heading, items) {
 
   const startMarker = "<!-- GENERATED_CATEGORY_LINKS_START -->";
   const endMarker = "<!-- GENERATED_CATEGORY_LINKS_END -->";
+  const hubPath = normalizePath(fileName);
   const itemLinks = items
-    .map((item) => `<li><a href="${item.fileName}">${escapeHtml(item.h1)}</a></li>`)
+    .map((item) => `<li><a href="${toHref(hubPath, item.pagePath || item.fileName)}">${escapeHtml(item.h1)}</a></li>`)
     .join("\n");
   const section = `${startMarker}
 <h2>${escapeHtml(heading)}</h2>
@@ -587,10 +1082,13 @@ function removeCategoryHubSection(fileName) {
 }
 
 function syncMainCategoryPages(entries) {
-  const financialGenerated = entries.filter((entry) => entry.category === "Financial");
-  const conversionGenerated = entries.filter((entry) => entry.category === "Conversions");
-  const careerGenerated = entries.filter((entry) => entry.category === "Career");
-  const healthGenerated = entries.filter((entry) => entry.category === "Health");
+  const englishEntries = entries.filter(
+    (entry) => (entry.marketId || "en") === "en" && entry.indexable !== false
+  );
+  const financialGenerated = englishEntries.filter((entry) => entry.category === "Financial");
+  const conversionGenerated = englishEntries.filter((entry) => entry.category === "Conversions");
+  const careerGenerated = englishEntries.filter((entry) => entry.category === "Career");
+  const healthGenerated = englishEntries.filter((entry) => entry.category === "Health");
 
   if (financialGenerated.length > 0) {
     upsertCategoryHubSection(
@@ -626,6 +1124,90 @@ function syncMainCategoryPages(entries) {
   }
 }
 
+function writeMarketPilotIndexes(entries) {
+  const spanishEntries = entries.filter((entry) => entry.marketId === "es");
+  if (spanishEntries.length > 0) {
+    const byCategory = groupEntriesByCategory(spanishEntries);
+    const spanishHubMap = {
+      Financial: "es/financial-calculators.html",
+      Conversions: "es/conversion-calculators.html",
+      Health: "es/health-calculators.html",
+      Career: "es/career-calculators.html"
+    };
+    const sections = Object.keys(byCategory)
+      .sort()
+      .map((category) => {
+        const hubPath = spanishHubMap[category] || "es/index.html";
+        const links = byCategory[category]
+          .map((entry) => `<li><a href="${toHref("es/index.html", entry.pagePath)}">${escapeHtml(entry.h1)}</a></li>`)
+          .join("\n");
+        const hubLink = `<p><a href="${toHref("es/index.html", hubPath)}">Ver indice de ${escapeHtml(category)}</a></p>`;
+        return `<h2>${escapeHtml(category)}</h2>\n${hubLink}\n<ul>\n${links}\n</ul>`;
+      })
+      .join("\n\n");
+
+    const esIndex = htmlShell({
+      title: "Calculadoras Gratis en Espanol",
+      description: "Indice de calculadoras en espanol para LATAM y audiencias bilingues.",
+      lang: "es",
+      pagePath: "es/index.html",
+      robotsDirective: "index, follow",
+      canonicalPath: "es/index.html",
+      body: `<h1>Calculadoras en Espanol</h1>
+<p class="desc">Version piloto para audiencias de LATAM. Incluye herramientas financieras, de conversion y salud.</p>
+${sections}`
+    });
+    fs.mkdirSync(path.join(root, "es"), { recursive: true });
+    fs.writeFileSync(path.join(root, "es", "index.html"), esIndex, "utf8");
+
+    for (const [category, hubPath] of Object.entries(spanishHubMap)) {
+      const categoryEntries = (byCategory[category] || []).slice().sort((a, b) => a.h1.localeCompare(b.h1));
+      if (!categoryEntries.length) {
+        continue;
+      }
+      const hubLinks = categoryEntries
+        .map((entry) => `<li><a href="${toHref(hubPath, entry.pagePath)}">${escapeHtml(entry.h1)}</a></li>`)
+        .join("\n");
+      const hubPage = htmlShell({
+        title: `Calculadoras de ${category}`,
+        description: `Listado de calculadoras de ${category.toLowerCase()} en espanol.`,
+        lang: "es",
+        pagePath: hubPath,
+        robotsDirective: "index, follow",
+        canonicalPath: hubPath,
+        body: `<h1>Calculadoras de ${escapeHtml(category)}</h1>
+<p class="desc">Indice piloto para herramientas de ${escapeHtml(category.toLowerCase())}.</p>
+<ul>
+${hubLinks}
+</ul>`
+      });
+      fs.writeFileSync(path.join(root, hubPath), hubPage, "utf8");
+    }
+  }
+
+  const stateEntries = entries.filter((entry) => entry.family === "statePaycheckPilotPage");
+  if (stateEntries.length > 0) {
+    const stateLinks = stateEntries
+      .map((entry) => `<li><a href="${toHref("us/index.html", entry.pagePath)}">${escapeHtml(entry.stateName)} Paycheck Calculator</a></li>`)
+      .join("\n");
+    const usIndex = htmlShell({
+      title: "US State Paycheck Calculators",
+      description: "Pilot set of U.S. state paycheck calculators using transparent assumptions.",
+      lang: "en",
+      pagePath: "us/index.html",
+      robotsDirective: "index, follow",
+      canonicalPath: "us/index.html",
+      body: `<h1>U.S. State Paycheck Calculators</h1>
+<p class="desc">Pilot rollout of state-specific paycheck estimators.</p>
+<ul>
+${stateLinks}
+</ul>`
+    });
+    fs.mkdirSync(path.join(root, "us"), { recursive: true });
+    fs.writeFileSync(path.join(root, "us", "index.html"), usIndex, "utf8");
+  }
+}
+
 function writeGeneratedIndex(entries) {
   const page = `<!DOCTYPE html>
 <html lang="en">
@@ -633,7 +1215,7 @@ function writeGeneratedIndex(entries) {
 <title>Generated Calculators Index</title>
 <meta name="description" content="Legacy URL redirecting to home calculator index.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, follow">
 <link rel="canonical" href="index.html">
 <meta http-equiv="refresh" content="0; url=index.html">
 <link rel="stylesheet" href="styles.css">
@@ -663,7 +1245,8 @@ window.location.replace("index.html");
 }
 
 function writeHomeIndex(entries) {
-  const byCategory = groupEntriesByCategory(entries);
+  const englishEntries = entries.filter((entry) => (entry.marketId || "en") === "en");
+  const byCategory = groupEntriesByCategory(englishEntries);
   const sections = homeSections
     .map((section) => {
       const generatedCount = byCategory[section.category]?.length || 0;
@@ -705,6 +1288,11 @@ function writeHomeIndex(entries) {
 <a class="category-link" href="conversion-calculators.html">Conversion Calculators</a>
 <a class="category-link" href="career-calculators.html">Career Calculators</a>
 </div>
+<h2>Regional Indexes</h2>
+<ul>
+<li><a href="es/index.html">Spanish and LATAM Calculators (Pilot)</a></li>
+<li><a href="us/index.html">U.S. State Calculators (Pilot)</a></li>
+</ul>
 ${sections}
 </div>
 <div class="footer">
@@ -730,14 +1318,25 @@ function writeSitemap(entries) {
   }
 
   const base = config.siteUrl.replace(/\/$/, "");
-  const htmlFiles = fs
-    .readdirSync(root)
-    .filter((name) => name.endsWith(".html"));
-
-  const urls = new Set(htmlFiles.map((file) => `${base}/${file}`));
-  urls.add(`${base}/${config.generatedIndexFile || "generated-calculators.html"}`);
+  const excludedPaths = new Set([normalizePath(config.generatedIndexFile || "generated-calculators.html")]);
+  const htmlFiles = collectHtmlPaths(root).filter((name) => !excludedPaths.has(normalizePath(name)));
+  const urls = new Set(htmlFiles.map((file) => `${base}/${normalizePath(file)}`));
+  const noindexPaths = new Set(
+    entries
+      .filter((entry) => entry.indexable === false)
+      .map((entry) => normalizePath(entry.pagePath || entry.fileName))
+  );
+  for (const noindexPath of noindexPaths) {
+    urls.delete(`${base}/${noindexPath}`);
+  }
   for (const entry of entries) {
-    urls.add(`${base}/${entry.fileName}`);
+    if (entry.indexable === false) {
+      continue;
+    }
+    const entryPath = normalizePath(entry.pagePath || entry.fileName);
+    if (!excludedPaths.has(entryPath)) {
+      urls.add(`${base}/${entryPath}`);
+    }
   }
 
   const content = `<?xml version="1.0" encoding="UTF-8"?>
@@ -759,8 +1358,11 @@ function main() {
   let skipped = 0;
 
   for (const entry of entries) {
-    const outputPath = path.join(root, entry.fileName);
-    const fileExists = fs.existsSync(outputPath) || existingHtml.has(entry.fileName.toLowerCase());
+    const outputPath = path.join(root, normalizePath(entry.pagePath || entry.fileName));
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    const fileExists =
+      fs.existsSync(outputPath) ||
+      existingHtml.has(normalizePath(entry.fileName || "").toLowerCase());
     if (fileExists && !overwrite) {
       skipped += 1;
       continue;
@@ -771,6 +1373,7 @@ function main() {
 
   syncMainCategoryPages(entries);
   writeHomeIndex(entries);
+  writeMarketPilotIndexes(entries);
   writeGeneratedIndex(entries);
   writeSitemap(entries);
 

@@ -2,7 +2,31 @@ const fs = require("fs");
 const path = require("path");
 
 const root = process.cwd();
-const htmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html"));
+
+function normalizePath(value) {
+  return String(value || "").replace(/\\/g, "/").replace(/^\/+/, "");
+}
+
+function collectHtmlFiles(baseDir, currentDir = "") {
+  const dirPath = path.join(baseDir, currentDir);
+  const rows = [];
+  for (const item of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    if (item.name.startsWith(".")) {
+      continue;
+    }
+    const rel = normalizePath(path.join(currentDir, item.name));
+    if (item.isDirectory()) {
+      rows.push(...collectHtmlFiles(baseDir, rel));
+      continue;
+    }
+    if (item.isFile() && item.name.endsWith(".html")) {
+      rows.push(rel);
+    }
+  }
+  return rows;
+}
+
+const htmlFiles = collectHtmlFiles(root);
 const htmlSet = new Set(htmlFiles.map((name) => name.toLowerCase()));
 
 const errors = [];
@@ -23,6 +47,9 @@ function trackDupes(map, key, file) {
 for (const file of htmlFiles) {
   const fullPath = path.join(root, file);
   const content = fs.readFileSync(fullPath, "utf8");
+  if (/^google[0-9a-z]+\.html$/i.test(path.basename(file))) {
+    continue;
+  }
 
   const hasLang = /<html[^>]*\slang=["'][^"']+["']/i.test(content);
   const hasViewport = /<meta\s+name=["']viewport["']/i.test(content);
@@ -67,8 +94,11 @@ for (const file of htmlFiles) {
       href.startsWith("//");
 
     if (!skip) {
-      const pathOnly = href.split("#")[0].split("?")[0].replace(/^.\//, "");
-      if (pathOnly.endsWith(".html") && !htmlSet.has(pathOnly.toLowerCase())) {
+      const pathOnly = href.split("#")[0].split("?")[0].replace(/^\.\//, "");
+      const resolvedPath = normalizePath(
+        path.posix.normalize(path.posix.join(path.posix.dirname(file), pathOnly))
+      );
+      if (resolvedPath.endsWith(".html") && !htmlSet.has(resolvedPath.toLowerCase())) {
         errors.push(`${file}: broken internal link -> ${href}`);
       }
     }

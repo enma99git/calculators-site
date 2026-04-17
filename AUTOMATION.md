@@ -7,11 +7,14 @@ This project now includes a config-driven generator so you can scale from tens o
 - `pages.config.json`: Source of truth for what pages to generate.
 - `scripts/generate-pages.js`: Builds pages from config and updates:
   - generated pages (`*.html`)
+  - pilot folders (`es/*.html`, `us/<state>/*.html`)
   - related-calculator links within generated pages
   - `generated-calculators.html` (legacy redirect to `index.html`)
   - `index.html` (primary generated navigation index)
   - main category hubs (`financial-calculators.html`, `conversion-calculators.html`, `career-calculators.html`, `health-calculators.html`) with generated link sections
   - `sitemap.xml`
+- `robots.txt`: Includes explicit sitemap declaration for crawler discovery.
+- `site-analytics.js`: Centralized GA4/event hook loader (safe if GA ID is blank).
 - `scripts/validate-pages.js`: Validates metadata/link quality.
 - `package.json`: Includes npm scripts.
 
@@ -29,8 +32,29 @@ Configured in `pages.config.json`:
 - `currencyConverter` (from/to pairs)
 - `loanPaymentByAmount` (amount-based pages)
 - `salaryToHourlyByAmount` (amount-based pages)
+- `pilots.spanishPages` (`/es/` pilot pages)
+- `pilots.statePages` (`/us/<state>/paycheck-calculator.html` pilot pages)
 
 With current config, generation target is ~300 total pages.
+
+## Quality and Indexing Rules
+
+Configured in `pages.config.json` under `qualityRules`:
+
+- Tail templates can be generated but marked `noindex, follow`.
+- `sitemap.xml` automatically excludes pages marked `noindex`.
+- Main generated category sections only include indexable generated pages.
+- `generated-calculators.html` stays as legacy redirect and is removed from sitemap.
+
+This keeps long-tail templates available for users while reducing index bloat/cannibalization risk.
+
+## Analytics Baseline
+
+- Set your GA4 measurement ID in `site-analytics.js` (`GA_ID`).
+- Once set, two key events are emitted:
+  - `calculator_button_click`
+  - `calculator_result_rendered`
+- Use `MONETIZATION_WEEKLY_CHECKLIST.md` for ongoing review cadence.
 
 ## How to Scale to 300+
 

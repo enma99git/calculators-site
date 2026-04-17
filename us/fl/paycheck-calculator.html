@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Florida Paycheck Calculator (Estimate)</title>
+<meta name="description" content="Estimate paycheck amounts in Florida using gross salary and a state tax assumption.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://enmahub.github.io/practical-calculators/us/fl/paycheck-calculator.html">
+<link rel="stylesheet" href="../../styles.css">
+<script src="../../site-analytics.js" data-analytics-page defer></script>
+</head>
+<body>
+<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="../../index.html">Practical Calculators</a>
+</div>
+</div>
+<div class="wrap">
+<div class="card">
+<h1>Florida Paycheck Calculator</h1>
+<p class="desc">Estimate paycheck outcomes for Florida using a transparent state tax assumption (0.0%).</p>
+<label for="salary">Annual Gross Salary ($):</label>
+<input type="number" id="salary" value="70000"><br><br>
+<label for="filing">Federal Tax Estimate (%):</label>
+<input type="number" id="filing" value="18" step="0.1"><br><br>
+<button onclick="calcPaycheck()">Calculate</button>
+<h2 id="result" class="result">Result: -</h2>
+<script>
+function calcPaycheck() {
+  const gross = parseFloat(document.getElementById("salary").value) || 0;
+  const fedRate = (parseFloat(document.getElementById("filing").value) || 0) / 100;
+  const stateRate = 0;
+  if (gross <= 0) {
+    document.getElementById("result").textContent = "Enter a valid salary.";
+    return;
+  }
+  const netAnnual = gross * (1 - fedRate - stateRate);
+  const monthly = netAnnual / 12;
+  const biweekly = netAnnual / 26;
+  const weekly = netAnnual / 52;
+  document.getElementById("result").innerHTML = "Estimated net annual: $" + netAnnual.toFixed(2) + "<br>Monthly: $" + monthly.toFixed(2) + "<br>Biweekly: $" + biweekly.toFixed(2) + "<br>Weekly: $" + weekly.toFixed(2);
+}
+</script>
+<div class="trust-block">
+<h2>How this result is estimated</h2>
+<p class="desc">This paycheck calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<ul>
+<li>Inputs are user-provided and may include rounding.</li>
+<li>Results are informational and not financial, tax, legal, or medical advice.</li>
+<li>For high-impact decisions, confirm with a licensed professional.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
+</div>
+<p><a href="../../index.html">Home</a> | <a href="../../financial-calculators.html">Category Hub</a></p>
+<h2>Related Calculators</h2>
+<ul>
+<li><a href="../../us/ca/paycheck-calculator.html">California Paycheck Calculator</a></li>
+</ul>
+
+</div>
+<div class="footer">
+<p>Browse Categories</p>
+<div class="category-grid">
+<a class="category-link" href="../../financial-calculators.html">Financial</a>
+<a class="category-link" href="../../health-calculators.html">Health</a>
+<a class="category-link" href="../../conversion-calculators.html">Conversions</a>
+<a class="category-link" href="../../career-calculators.html">Career</a>
+</div>
+<p><a class="home-link" href="../../index.html">Home</a></p>
+<p class="footer-meta">
+<a href="../../about.html">About</a> |
+<a href="../../contact.html">Contact</a> |
+<a href="../../privacy.html">Privacy</a> |
+<a href="../../terms.html">Terms</a>
+</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://enmahub.github.io/practical-calculators/sitemap.xml

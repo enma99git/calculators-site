@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="stylesheet" href="styles.css">
+<script src="site-analytics.js" data-analytics-page defer></script>
 </head>
 <body>
 <div class="top">
@@ -43,8 +44,20 @@ let payment = (P*r)/(1-Math.pow(1+r,-n));
 
 document.getElementById("result").innerHTML =
 "Monthly Payment: $" + payment.toFixed(2);
+document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
 }
 </script>
+
+<div class="trust-block">
+<h2>How this estimate works</h2>
+<p class="desc">This loan result is estimate-level and depends on the assumptions entered here. Confirm critical decisions with a licensed professional.</p>
+<ul>
+<li>Inputs can include rounding and do not reflect lender-specific fees.</li>
+<li>Result is informational only, not financial or legal advice.</li>
+<li>Always compare lender disclosures before committing.</li>
+</ul>
+<p class="small">Last reviewed: 2026-04-17</p>
+</div>
 
 <hr>
 

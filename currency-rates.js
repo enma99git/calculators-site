@@ -80,6 +80,11 @@
 
     const converted = amount * rate;
     showMessage(`${converted.toFixed(2)} ${toCode}`);
+    document.dispatchEvent(
+      new CustomEvent("pc:calculator_result", {
+        detail: { type: "currency" }
+      })
+    );
   }
 
   window.convert = calculate;
