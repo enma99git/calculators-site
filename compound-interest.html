@@ -32,6 +32,15 @@ let A=p.value*Math.pow(1+r.value/100,t.value);
 document.getElementById("result").innerHTML="Total: $"+A.toFixed(2);
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul><li><strong>Principal, rate %, years</strong> — Growth of a lump sum at compounded interest.</li></ul>
+<h3>Formula used</h3>
+<p><em>A = P × (1 + r/100)<sup>t</sup></em> (compounding per implementation on the page—often annual).</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

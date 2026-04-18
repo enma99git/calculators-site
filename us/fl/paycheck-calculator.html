@@ -117,6 +117,22 @@ function calcPaycheck() {
     "<br>Taxable income after standard deduction: $" + federal.taxableIncome.toFixed(2);
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Annual gross salary</strong> — Pre-tax yearly income.</li>
+<li><strong>Federal tax year</strong> — Selects IRS bracket and standard deduction values baked into this tool.</li>
+<li><strong>Filing status</strong> — Chooses single, married filing jointly, or head of household for federal brackets and standard deduction.</li>
+</ul>
+<h3>Formula used</h3>
+<p>Federal income tax is estimated with <strong>progressive brackets</strong> after the <strong>standard deduction</strong> for the chosen status and year.</p>
+<p><strong>Florida state tax</strong> is approximated as a flat <strong>0.0%</strong> of gross (pilot assumption—not a full state return).</p>
+<p><em>Net ≈ gross − estimated federal tax − estimated state tax</em>; then divided into monthly / biweekly / weekly for display.</p>
+<p class="small">Not payroll advice. Real paychecks include FICA, local taxes, pre-tax deductions, and withholding adjustments.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This paycheck calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

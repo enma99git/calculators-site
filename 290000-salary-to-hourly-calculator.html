@@ -45,6 +45,20 @@ function calcHourly() {
   document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "salary" } }));
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Annual salary ($)</strong> — Gross yearly pay; defaults to <strong>$290,000</strong>.</li>
+<li><strong>Hours per week</strong> — Typical working hours in one week.</li>
+<li><strong>Weeks per year</strong> — Often 52; adjust if you use a different work-year assumption.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Hourly rate = annual salary ÷ (hours per week × weeks per year)</em></p>
+<p class="small">Does not subtract taxes, benefits, or unpaid time off—use as a quick gross estimate.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This salary calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

@@ -7,6 +7,7 @@
 - Validate that intentionally `noindex` pages remain excluded.
 
 ## Monetization Readiness
+- Work through **`ADSENSE_READINESS_CHECKLIST.md`** before applying to AdSense or enabling ads.
 - Verify trust blocks remain present on top finance/currency templates.
 - Spot-check policy pages and contact page availability.
 - Confirm ad slots (when enabled) do not appear before core calculator interaction.

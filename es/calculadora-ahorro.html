@@ -46,6 +46,17 @@ function calcular() {
   document.getElementById("result").textContent = "Saldo estimado: $" + saldo.toFixed(2);
 }
 </script>
+<details class="methodology-block">
+<summary>Cómo funciona este cálculo</summary>
+<div>
+<h3>Qué significa cada dato</h3>
+<ul>
+<li><strong>Aporte inicial, aporte mensual, tasa, años</strong> — Entradas para proyección con interés compuesto periódico.</li>
+</ul>
+<h3>Regla</h3>
+<p>Crecimiento por períodos con la tasa indicada (estimación educativa).</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>Información sobre este cálculo</h2>
 <p class="desc">El resultado se genera con los datos ingresados por el usuario.</p>

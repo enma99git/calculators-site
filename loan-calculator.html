@@ -48,6 +48,17 @@ document.getElementById("result").innerHTML =
 document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Loan amount, interest rate (% yearly), years</strong> — Same amortization inputs as the mortgage tool.</li>
+</ul>
+<h3>Formula used</h3>
+<p>Monthly payment uses standard amortization (see mortgage methodology). Script may use equivalent rearrangement of the same formula.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

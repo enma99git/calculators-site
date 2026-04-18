@@ -52,6 +52,21 @@ function calcPayment() {
   document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Loan amount ($)</strong> — Principal; defaults to <strong>$195,000</strong> for this page. You can change it.</li>
+<li><strong>Annual interest rate (%)</strong> — Nominal yearly rate; converted to a monthly rate <em>r = (annual ÷ 100) ÷ 12</em>.</li>
+<li><strong>Loan term (years)</strong> — Number of monthly payments <em>n = years × 12</em>.</li>
+</ul>
+<h3>Formula used</h3>
+<p>Fixed-rate amortization (equal monthly payments):</p>
+<p><em>M = P × r / (1 − (1 + r)<sup>−n</sup>)</em></p>
+<p class="small">If the rate is 0%, payment = P / n. Does not include escrow, PMI, or lender-specific rounding.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This loan calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

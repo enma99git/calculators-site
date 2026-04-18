@@ -156,6 +156,43 @@ button:hover{
   margin:10px 0;
 }
 
+.methodology-block{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid #d9e2ec;
+  border-radius:12px;
+  background:#fff;
+}
+
+.methodology-block summary{
+  cursor:pointer;
+  font-weight:600;
+  color:#1e3a5f;
+}
+
+.methodology-block h3{
+  margin:14px 0 8px;
+  font-size:16px;
+  font-weight:600;
+  color:#101828;
+}
+
+.methodology-block h3:first-of-type{
+  margin-top:0;
+}
+
+.methodology-block ul{
+  margin:8px 0;
+  padding-left:1.2em;
+  color:#475467;
+}
+
+.methodology-block p{
+  margin:8px 0 0;
+  color:#475467;
+  line-height:1.5;
+}
+
 .faq-block{
   margin-top:18px;
   padding:16px;

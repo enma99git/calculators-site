@@ -33,6 +33,19 @@ r.innerHTML = "Tax: $" + t.toFixed(2);
 document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "tax" } }));
 }
 </script>
+<details class="methodology-block">
+<summary>How this calculation works</summary>
+<div>
+<h3>What each input means</h3>
+<ul>
+<li><strong>Income</strong> — Amount the tax percentage applies to.</li>
+<li><strong>Tax %</strong> — Effective or marginal rate you choose for a quick estimate.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Tax ≈ income × (tax% ÷ 100)</em></p>
+<p class="small">Not a full tax return—no brackets, deductions, or credits.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
 <p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>

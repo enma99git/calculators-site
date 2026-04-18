@@ -42,6 +42,19 @@ function calcular() {
   document.getElementById("result").textContent = "IMC: " + bmi.toFixed(2) + " (" + etiqueta + ")";
 }
 </script>
+<details class="methodology-block">
+<summary>Cómo funciona este cálculo</summary>
+<div>
+<h3>Qué significa cada dato</h3>
+<ul>
+<li><strong>Estatura (cm)</strong> — Altura en centímetros.</li>
+<li><strong>Peso (kg)</strong> — Masa en kilogramos.</li>
+</ul>
+<h3>Fórmula</h3>
+<p><em>IMC = peso (kg) ÷ (estatura (m))²</em> con estatura en metros (cm ÷ 100).</p>
+<p class="small">Clasificación orientativa; no sustituye evaluación médica.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>Información sobre este cálculo</h2>
 <p class="desc">El resultado se genera con los datos ingresados por el usuario.</p>

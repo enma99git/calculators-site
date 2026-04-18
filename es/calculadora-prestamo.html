@@ -46,6 +46,19 @@ function calcular() {
   document.getElementById("result").textContent = "Pago mensual: $" + pago.toFixed(2);
 }
 </script>
+<details class="methodology-block">
+<summary>Cómo funciona este cálculo</summary>
+<div>
+<h3>Qué significa cada dato</h3>
+<ul>
+<li><strong>Monto</strong> — Capital del préstamo.</li>
+<li><strong>Tasa anual (%)</strong> — Se convierte a tasa mensual.</li>
+<li><strong>Años</strong> — Plazo en años (pagos mensuales).</li>
+</ul>
+<h3>Fórmula</h3>
+<p>Amortización con cuota fija: <em>M = P × r / (1 − (1 + r)<sup>−n</sup>)</em>, con <em>r</em> mensual y <em>n</em> meses.</p>
+</div>
+</details>
 <div class="trust-block">
 <h2>Información sobre este cálculo</h2>
 <p class="desc">El resultado se genera con los datos ingresados por el usuario.</p>

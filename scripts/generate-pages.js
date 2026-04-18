@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { buildMethodologySection } = require(path.join(__dirname, "methodology-sections.js"));
 
 const root = process.cwd();
 const configPath = path.join(root, "pages.config.json");
@@ -108,7 +109,10 @@ const LOCALE_LABELS = {
     trustItem2: "Results are informational and not financial, tax, legal, or medical advice.",
     trustItem3: "For high-impact decisions, confirm with a licensed professional.",
     trustReviewed: "Last reviewed",
-    faqTitle: "Frequently asked questions"
+    faqTitle: "Frequently asked questions",
+    methodologyTitle: "How this calculation works",
+    methodologyInputs: "What each input means",
+    methodologyFormula: "Formula used"
   },
   es: {
     browseCategories: "Explorar categorías",
@@ -131,7 +135,10 @@ const LOCALE_LABELS = {
     trustItem2: "Para decisiones relevantes, verifique la información o consulte a un profesional.",
     trustItem3: "",
     trustReviewed: "Última revisión",
-    faqTitle: "Preguntas frecuentes"
+    faqTitle: "Preguntas frecuentes",
+    methodologyTitle: "Cómo funciona este cálculo",
+    methodologyInputs: "Qué significa cada dato",
+    methodologyFormula: "Fórmula o regla"
   }
 };
 
@@ -151,6 +158,7 @@ const EN_INFO_PAGES = [
 <p class="desc">Practical Calculators is a free website that provides simple online calculators and conversion tools for everyday use.</p>
 <p>The goal of this site is to make common calculations easier to access without downloads or signups.</p>
 <p>Topics include finance, loans, percentages, currency conversion, business tools, savings, and other practical utilities.</p>
+<p>Tools are built for quick estimates. For tax, legal, lending, or medical decisions, confirm results with qualified professionals and official sources.</p>
 <p>New tools may be added over time as the site grows.</p>
 <p>If you notice an issue or would like to suggest a calculator, please use the <a href="contact.html">contact page</a>.</p>`
   },
@@ -180,13 +188,29 @@ const EN_INFO_PAGES = [
     title: "Privacy Policy | Practical Calculators",
     description: "Read the Practical Calculators privacy policy and how limited usage information may be handled.",
     body: `<h1>Privacy Policy</h1>
-<p class="desc">Practical Calculators respects your privacy.</p>
-<p>This website may collect limited non-personal data such as browser type, device information, pages visited, and usage statistics through analytics or hosting providers.</p>
-<p>If advertising services are used, third-party vendors may use cookies to serve ads or measure performance.</p>
-<p>This site does not require account creation.</p>
-<p>If you contact us by email, the information you provide may be used only to respond to your message.</p>
-<p>External links may lead to third-party websites with their own privacy practices.</p>
-<p>This policy may be updated over time.</p>`
+<p class="desc">Practical Calculators respects your privacy. This policy describes how information may be collected and used on this site.</p>
+
+<h2>Analytics</h2>
+<p>We may use analytics tools (such as Google Analytics) to understand aggregate usage: for example, pages viewed, approximate location at region level, device type, and events like calculator interactions. These tools typically use cookies or similar technologies. You can learn how Google handles data at <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a> and how Google uses information from sites that use its services at <a href="https://policies.google.com/technologies/partner-sites">Google’s Partner Sites page</a>.</p>
+
+<h2>Advertising and cookies</h2>
+<p>If display advertising (such as Google AdSense) is enabled, ad partners may use cookies, local storage, or similar technologies to show ads, cap frequency, measure performance, and detect fraud. Ads may be personalized or non-personalized depending on your region and consent settings where required.</p>
+<p>You can manage certain ad preferences through <a href="https://adssettings.google.com/authenticated">Google Ads Settings</a> (when signed in to Google). Vendors’ own privacy notices describe additional cookie and storage practices.</p>
+
+<h2>Hosting and technical data</h2>
+<p>This site is hosted on GitHub Pages. Like most hosts, GitHub may process technical data (such as IP address, user agent, and request logs) to deliver pages and maintain security. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">GitHub’s Privacy Statement</a> for details.</p>
+
+<h2>Contact and form submissions</h2>
+<p>This site does not require account creation. If you use the contact form, your message and email address are processed by our form provider (Formspree) solely to deliver your inquiry to us and to reduce spam.</p>
+
+<h2>Children</h2>
+<p>This site is not directed at children under 13, and we do not knowingly collect personal information from children.</p>
+
+<h2>External links</h2>
+<p>Links to third-party sites are provided for convenience. Those sites have their own privacy practices.</p>
+
+<h2>Changes</h2>
+<p>We may update this policy from time to time. Continued use of the site after changes means you accept the updated policy.</p>`
   },
   {
     fileName: "terms.html",
@@ -198,7 +222,13 @@ const EN_INFO_PAGES = [
 <p>No guarantee is made regarding completeness or suitability for financial, legal, tax, medical, or professional decisions.</p>
 <p>Users should verify important results independently.</p>
 <p>This website may update, change, or remove tools at any time without notice.</p>
-<p>Use of this site is at your own risk.</p>`
+<p>Use of this site is at your own risk.</p>
+
+<h2>Advertising</h2>
+<p>If advertising is shown, it may be served by third-party networks (such as Google AdSense). Those providers may use cookies or similar technologies to deliver and measure ads. Advertising is subject to the applicable network’s policies. We do not control which specific third-party ads appear.</p>
+
+<h2>Intellectual property</h2>
+<p>Site layout, branding, and original text belong to the site operator unless otherwise noted. Calculator logic is provided for personal, non-commercial use unless you obtain permission for other uses.</p>`
   }
 ];
 
@@ -212,7 +242,7 @@ const ES_INFO_PAGES = [
 <p>El objetivo del sitio es facilitar cálculos comunes sin descargas ni registros.</p>
 <p>Incluye herramientas de finanzas, préstamos, porcentajes, conversión de divisas, negocios, ahorro y otras utilidades prácticas.</p>
 <p>Se pueden agregar nuevas herramientas con el tiempo.</p>
-<p>Si encuentras un problema o deseas sugerir una calculadora, visita la <a href="../es/contact.html">página de contacto</a>.</p>`
+<p>Si encuentras un problema o deseas sugerir una calculadora, visita la <a href="contact.html">página de contacto</a>.</p>`
   },
   {
     fileName: "es/contact.html",
@@ -240,13 +270,29 @@ const ES_INFO_PAGES = [
     title: "Privacidad | Practical Calculators",
     description: "Lee la política de privacidad de Practical Calculators en español.",
     body: `<h1>Política de Privacidad</h1>
-<p class="desc">Practical Calculators respeta tu privacidad.</p>
-<p>Este sitio puede recopilar datos no personales limitados, como tipo de navegador, dispositivo, páginas visitadas y estadísticas de uso mediante herramientas de análisis o proveedores de alojamiento.</p>
-<p>Si se utilizan servicios publicitarios, terceros pueden usar cookies para mostrar anuncios o medir rendimiento.</p>
-<p>Este sitio no requiere creación de cuentas.</p>
-<p>Si nos contactas mediante formulario o correo, la información enviada puede usarse únicamente para responder tu mensaje.</p>
-<p>Los enlaces externos pueden dirigir a sitios de terceros con sus propias políticas.</p>
-<p>Esta política puede actualizarse con el tiempo.</p>`
+<p class="desc">Practical Calculators respeta tu privacidad. Esta política describe cómo puede recopilarse y usarse la información en este sitio.</p>
+
+<h2>Analítica</h2>
+<p>Podemos usar herramientas de analítica (como Google Analytics) para entender el uso agregado: por ejemplo, páginas vistas, ubicación aproximada a nivel regional, tipo de dispositivo e interacciones con calculadoras. Estas herramientas suelen usar cookies o tecnologías similares. Puedes consultar cómo Google trata los datos en la <a href="https://policies.google.com/privacy?hl=es">Política de Privacidad de Google</a> y el uso de información de sitios asociados en la <a href="https://policies.google.com/technologies/partner-sites?hl=es">página de sitios asociados de Google</a>.</p>
+
+<h2>Publicidad y cookies</h2>
+<p>Si se habilita publicidad display (como Google AdSense), los socios publicitarios pueden usar cookies, almacenamiento local u otras tecnologías para mostrar anuncios, limitar frecuencia, medir rendimiento y detectar fraude. Los anuncios pueden ser personalizados o no personalizados según tu región y la configuración de consentimiento cuando corresponda.</p>
+<p>Puedes gestionar ciertas preferencias de anuncios en la <a href="https://adssettings.google.com/authenticated">configuración de anuncios de Google</a> (cuando tengas sesión iniciada en Google).</p>
+
+<h2>Alojamiento y datos técnicos</h2>
+<p>Este sitio se aloja en GitHub Pages. Como la mayoría de proveedores, GitHub puede procesar datos técnicos (por ejemplo, dirección IP, agente de usuario y registros de solicitud) para entregar páginas y mantener la seguridad. Consulta la <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">Declaración de privacidad de GitHub</a>.</p>
+
+<h2>Contacto y formularios</h2>
+<p>Este sitio no requiere crear una cuenta. Si usas el formulario de contacto, tu mensaje y correo se procesan a través del proveedor del formulario (Formspree) únicamente para entregarnos tu consulta y reducir spam.</p>
+
+<h2>Menores</h2>
+<p>Este sitio no está dirigido a menores de 13 años y no recopilamos a sabiendas datos personales de menores.</p>
+
+<h2>Enlaces externos</h2>
+<p>Los enlaces a sitios de terceros se ofrecen por conveniencia; esos sitios tienen sus propias políticas.</p>
+
+<h2>Cambios</h2>
+<p>Podemos actualizar esta política ocasionalmente. El uso continuado del sitio tras cambios implica la aceptación de la política actualizada.</p>`
   },
   {
     fileName: "es/terms.html",
@@ -258,7 +304,13 @@ const ES_INFO_PAGES = [
 <p>No se garantiza integridad, disponibilidad o idoneidad para decisiones financieras, legales, fiscales, médicas o profesionales.</p>
 <p>Se recomienda verificar resultados importantes de forma independiente.</p>
 <p>Este sitio puede actualizar, cambiar o eliminar herramientas en cualquier momento y sin aviso previo.</p>
-<p>El uso del sitio es bajo tu propia responsabilidad.</p>`
+<p>El uso del sitio es bajo tu propia responsabilidad.</p>
+
+<h2>Publicidad</h2>
+<p>Si se muestra publicidad, puede ser servida por redes de terceros (como Google AdSense). Esos proveedores pueden usar cookies o tecnologías similares para entregar y medir anuncios. La publicidad está sujeta a las políticas de la red correspondiente. No controlamos qué anuncios de terceros aparecen en cada momento.</p>
+
+<h2>Propiedad intelectual</h2>
+<p>El diseño del sitio, la marca y los textos originales pertenecen al operador del sitio salvo que se indique lo contrario. La lógica de las calculadoras se ofrece para uso personal y no comercial salvo permiso expreso para otros usos.</p>`
   }
 ];
 
@@ -478,6 +530,23 @@ const footerInfoLinksHtml = `<p class="footer-meta">
 </p>`;
 
 const trustUpdatedDate = config.trust?.updatedDate || "2026-04-17";
+
+/** Short site-level notice for About / Contact / Privacy / Terms (not calculator methodology). */
+function informationalFooterHtml(lang = "en") {
+  const locale = localeCode(lang);
+  if (locale === "es") {
+    return `<div class="trust-block">
+<h2>Información del sitio</h2>
+<p class="desc">Las calculadoras ofrecen estimaciones para planificación; no sustituyen asesoría profesional. Los detalles sobre datos, cookies y publicidad están en la <a href="privacy.html">Política de privacidad</a>.</p>
+<p class="small">${LOCALE_LABELS.es.trustReviewed}: ${escapeHtml(trustUpdatedDate)}</p>
+</div>`;
+  }
+  return `<div class="trust-block">
+<h2>Site information</h2>
+<p class="desc">Calculator results are for planning and learning; they are not professional advice. For data practices, cookies, and advertising, see the <a href="privacy.html">Privacy Policy</a>.</p>
+<p class="small">Last reviewed: ${escapeHtml(trustUpdatedDate)}</p>
+</div>`;
+}
 
 function trustBlockHtml(topic = "calculator", lang = "en") {
   const locale = localeCode(lang);
@@ -966,6 +1035,7 @@ function currencyTemplate(entry, entries) {
 <h2 id="result" class="result">Result: -</h2>
 
 <script src="${currencyScriptHref}" data-currency-page data-from="${entry.fromCode}" data-to="${entry.toCode}" data-amount-id="amount" data-rate-id="rate" data-result-id="result" defer></script>
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml("currency converter", entry.lang)}
 ${faqSectionHtml(faqItems, entry.lang)}
 ${faqSchemaHtml(faqItems)}
@@ -1019,6 +1089,7 @@ function calcPayment() {
   document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "loan" } }));
 }
 </script>
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml("loan calculator", entry.lang)}
 ${faqSectionHtml(faqItems, entry.lang)}
 ${faqSchemaHtml(faqItems)}
@@ -1063,6 +1134,7 @@ function calcHourly() {
   document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type: "salary" } }));
 }
 </script>
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml("salary calculator", entry.lang)}
 ${faqSectionHtml(faqItems, entry.lang)}
 ${faqSchemaHtml(faqItems)}
@@ -1296,6 +1368,7 @@ function spanishPilotTemplate(entry, entries) {
     body: `<h1>${entry.h1}</h1>
 <p class="desc">${entry.intro}</p>
 ${spanishFormulaScript(entry.formulaType)}
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml("calculadora", "es")}
 ${faqSectionHtml(faqItems, "es")}
 ${faqSchemaHtml(faqItems)}
@@ -1412,6 +1485,7 @@ function calcPaycheck() {
     "<br>Taxable income after standard deduction: $" + federal.taxableIncome.toFixed(2);
 }
 </script>
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml("paycheck calculator", entry.lang)}
 ${faqSectionHtml(faqItems, entry.lang)}
 ${faqSchemaHtml(faqItems)}
@@ -1445,6 +1519,7 @@ function legacyStaticTemplate(entry, entries) {
     robotsDirective: entry.indexable === false ? "noindex, follow" : "index, follow",
     canonicalPath,
     body: `${normalizedBody}
+${methodologyBlockHtml(entry)}
 ${trustBlockHtml(entry.trustTopic || "calculator", pageLang)}
 ${faqSectionHtml(faqItems, pageLang)}
 ${faqSchemaHtml(faqItems)}
@@ -1638,6 +1713,17 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
+function methodologyBlockHtml(entry) {
+  return buildMethodologySection(entry, {
+    escapeHtml,
+    formatAmount,
+    localeCode,
+    LOCALE_LABELS,
+    capitalize,
+    codeNames
+  });
+}
+
 function groupEntriesByCategory(entries) {
   return entries.reduce((acc, entry) => {
     if (!acc[entry.category]) {
@@ -1650,6 +1736,171 @@ function groupEntriesByCategory(entries) {
 
 function compareEntryPathsForHub(a, b) {
   return normalizePath(a.pagePath || a.fileName).localeCompare(normalizePath(b.pagePath || b.fileName));
+}
+
+/** Insert or update `<link rel="canonical">` in static hub HTML (not full htmlShell pages). */
+function ensureStandalonePageCanonical(fileName) {
+  const base = config.siteUrl ? String(config.siteUrl).replace(/\/$/, "") : "";
+  if (!base) {
+    return;
+  }
+  const filePath = path.join(root, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+  const canonicalHref = `${base}/${normalizePath(fileName)}`;
+  const canonicalTag = `<link rel="canonical" href="${escapeHtml(canonicalHref)}">`;
+  let content = fs.readFileSync(filePath, "utf8");
+  if (/<link\s+rel=["']canonical["']\s+href=/i.test(content)) {
+    content = content.replace(/<link\s+rel=["']canonical["']\s+href=["'][^"']*["']\s*>/i, canonicalTag);
+  } else {
+    const inserted = content.replace(
+      /(<meta\s+name=["']viewport["'][^>]*>\s*)/i,
+      `$1${canonicalTag}\n`
+    );
+    content = inserted;
+  }
+  fs.writeFileSync(filePath, content, "utf8");
+}
+
+/** Order currency "from" groups: core majors first (from pages.config qualityRules), then A–Z. */
+function orderedHubCurrencyFromCodes(fromCodes) {
+  const upperSet = new Set(fromCodes.map((c) => String(c).toUpperCase()));
+  const core = (config.qualityRules?.currencyIndexCore || []).map((c) => String(c).toUpperCase());
+  const ordered = [];
+  for (const c of core) {
+    if (upperSet.has(c)) {
+      ordered.push(c);
+    }
+  }
+  const rest = [...upperSet]
+    .filter((c) => !ordered.includes(c))
+    .sort((a, b) => a.localeCompare(b));
+  return ordered.concat(rest);
+}
+
+/**
+ * Financial hub: popular picks (deduped), loan ladder, salary ladder, then remaining tools.
+ * Uses the same GENERATED_CATEGORY_LINKS markers as other hubs.
+ */
+function upsertFinancialHubSplitSection(entries) {
+  const fileName = "financial-calculators.html";
+  const filePath = path.join(root, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  const englishEntries = entries.filter(
+    (entry) => (entry.marketId || "en") === "en" && entry.indexable !== false
+  );
+  const financial = englishEntries.filter((entry) => entry.category === "Financial");
+
+  const FINANCIAL_HUB_POPULAR_PATHS = [
+    "mortgage-calculator.html",
+    "loan-calculator.html",
+    "compound-interest.html",
+    "savings-calculator.html",
+    "debt-payoff.html",
+    "tax-calculator.html",
+    "inflation-calculator.html",
+    "retirement-calculator.html",
+    "break-even-calculator.html",
+    "profit-margin-calculator.html",
+    "discount-calculator.html",
+    "tip-calculator.html"
+  ];
+
+  const popularSet = new Set();
+  const popularEntries = [];
+  for (const rel of FINANCIAL_HUB_POPULAR_PATHS) {
+    const norm = normalizePath(rel).toLowerCase();
+    const entry = financial.find(
+      (e) => normalizePath(e.pagePath || e.fileName).toLowerCase() === norm
+    );
+    if (entry) {
+      popularEntries.push(entry);
+      popularSet.add(normalizePath(entry.pagePath || entry.fileName).toLowerCase());
+    }
+  }
+
+  const loanEntries = financial
+    .filter((e) => e.family === "loanPaymentByAmount")
+    .slice()
+    .sort((a, b) => Number(a.amount) - Number(b.amount));
+
+  const salaryEntries = financial
+    .filter((e) => e.family === "salaryToHourlyByAmount")
+    .slice()
+    .sort((a, b) => Number(a.amount) - Number(b.amount));
+
+  const otherEntries = financial
+    .filter((e) => {
+      if (e.family === "loanPaymentByAmount" || e.family === "salaryToHourlyByAmount") {
+        return false;
+      }
+      const p = normalizePath(e.pagePath || e.fileName).toLowerCase();
+      return !popularSet.has(p);
+    })
+    .slice()
+    .sort(compareEntryPathsForHub);
+
+  const startMarker = "<!-- GENERATED_CATEGORY_LINKS_START -->";
+  const endMarker = "<!-- GENERATED_CATEGORY_LINKS_END -->";
+  const hubPath = normalizePath(fileName);
+  const linkItem = (item) =>
+    `<li><a href="${toHref(hubPath, item.pagePath || item.fileName)}">${escapeHtml(item.h1)}</a></li>`;
+
+  const blocks = [];
+  if (popularEntries.length > 0) {
+    blocks.push(`<h2>Popular financial calculators</h2>
+<p class="small">Core tools for payments, savings, taxes, and planning.</p>
+<ul>
+${popularEntries.map(linkItem).join("\n")}
+</ul>`);
+  }
+  if (loanEntries.length > 0) {
+    blocks.push(`<h2>Loan payment calculators by amount (${loanEntries.length})</h2>
+<p class="small">Estimate a monthly payment for a specific loan principal.</p>
+<ul>
+${loanEntries.map(linkItem).join("\n")}
+</ul>`);
+  }
+  if (salaryEntries.length > 0) {
+    blocks.push(`<h2>Salary to hourly calculators by annual salary (${salaryEntries.length})</h2>
+<p class="small">Convert a yearly salary to an approximate hourly rate.</p>
+<ul>
+${salaryEntries.map(linkItem).join("\n")}
+</ul>`);
+  }
+  if (otherEntries.length > 0) {
+    blocks.push(`<h2>More financial calculators (${otherEntries.length})</h2>
+<p class="small">Additional tools for debt, investing, housing, and business planning.</p>
+<ul>
+${otherEntries.map(linkItem).join("\n")}
+</ul>`);
+  }
+
+  const section = `${startMarker}
+${blocks.join("\n\n")}
+${endMarker}`;
+
+  let content = fs.readFileSync(filePath, "utf8");
+  if (content.includes(startMarker) && content.includes(endMarker)) {
+    const replacePattern = new RegExp(`\\n?${startMarker}[\\s\\S]*?${endMarker}\\n?`, "m");
+    content = content.replace(replacePattern, "\n");
+  }
+
+  if (content.includes("<hr>")) {
+    content = content.replace("<hr>", `${section}\n\n<hr>`);
+  } else if (/<\/div>\s*<div class="footer">/i.test(content)) {
+    content = content.replace(/<\/div>\s*<div class="footer">/i, `${section}\n</div>\n\n<div class="footer">`);
+  } else if (content.includes("</body>")) {
+    content = content.replace("</body>", `${section}\n</body>`);
+  } else {
+    content += `\n${section}\n`;
+  }
+
+  fs.writeFileSync(filePath, content, "utf8");
 }
 
 /** Conversion hub: split currency pairs from other Conversions tools (same markers as upsertCategoryHubSection). */
@@ -1681,18 +1932,43 @@ function upsertConversionHubSplitSection(entries) {
 
   const blocks = [];
   if (unitTime.length > 0) {
-    blocks.push(`<h2>Unit & time converters (${unitTime.length})</h2>
+    blocks.push(`<h2>All unit & time converters (${unitTime.length})</h2>
 <!-- Generated from pages.config.json -->
 <ul>
 ${unitTime.map(linkItem).join("\n")}
 </ul>`);
   }
   if (currency.length > 0) {
-    blocks.push(`<h2>Currency converters (${currency.length})</h2>
+    const byFrom = new Map();
+    for (const entry of currency) {
+      const from = String(entry.fromCode || "").toUpperCase();
+      if (!byFrom.has(from)) {
+        byFrom.set(from, []);
+      }
+      byFrom.get(from).push(entry);
+    }
+    for (const list of byFrom.values()) {
+      list.sort((a, b) => String(a.toCode).localeCompare(String(b.toCode)));
+    }
+    const fromKeysOrdered = orderedHubCurrencyFromCodes([...byFrom.keys()]);
+    const currencyParts = [
+      `<h2>Currency converters (${currency.length})</h2>
+<p class="small">Grouped by <strong>from</strong> currency (the currency you are converting from). Pairs are listed A–Z by target currency within each group.</p>`
+    ];
+    for (const fromCode of fromKeysOrdered) {
+      const list = byFrom.get(fromCode);
+      if (!list || list.length === 0) {
+        continue;
+      }
+      const nameKey = String(fromCode).toLowerCase();
+      const fullName = codeNames[nameKey] || fromCode;
+      currencyParts.push(`<h3>From ${fromCode} — ${escapeHtml(fullName)}</h3>
 <!-- Generated from pages.config.json -->
 <ul>
-${currency.map(linkItem).join("\n")}
+${list.map(linkItem).join("\n")}
 </ul>`);
+    }
+    blocks.push(currencyParts.join("\n\n"));
   }
   const section = `${startMarker}
 ${blocks.join("\n\n")}
@@ -1781,11 +2057,7 @@ function syncMainCategoryPages(entries) {
   const healthGenerated = englishEntries.filter((entry) => entry.category === "Health");
 
   if (financialGenerated.length > 0) {
-    upsertCategoryHubSection(
-      "financial-calculators.html",
-      `More Financial Calculators (${financialGenerated.length})`,
-      financialGenerated
-    );
+    upsertFinancialHubSplitSection(entries);
   }
   if (conversionGenerated.length > 0) {
     upsertConversionHubSplitSection(entries);
@@ -1793,7 +2065,7 @@ function syncMainCategoryPages(entries) {
   if (careerGenerated.length > 0) {
     upsertCategoryHubSection(
       "career-calculators.html",
-      `More Career Calculators (${careerGenerated.length})`,
+      `All career calculators (${careerGenerated.length})`,
       careerGenerated
     );
   } else {
@@ -1802,11 +2074,25 @@ function syncMainCategoryPages(entries) {
   if (healthGenerated.length > 0) {
     upsertCategoryHubSection(
       "health-calculators.html",
-      `More Health Calculators (${healthGenerated.length})`,
+      `All health calculators (${healthGenerated.length})`,
       healthGenerated
     );
   } else {
     removeCategoryHubSection("health-calculators.html");
+  }
+
+  const categoryHubFiles = [
+    "financial-calculators.html",
+    "health-calculators.html",
+    "career-calculators.html",
+    "conversion-calculators.html",
+    "es/financial-calculators.html",
+    "es/health-calculators.html",
+    "es/career-calculators.html",
+    "es/conversion-calculators.html"
+  ];
+  for (const hubFile of categoryHubFiles) {
+    ensureStandalonePageCanonical(hubFile);
   }
 }
 
@@ -1865,6 +2151,7 @@ ${sections}`
         canonicalPath: hubPath,
         body: `<h1>Calculadoras de ${escapeHtml(categoryLabel)}</h1>
 <p class="desc">Índice piloto para herramientas de ${escapeHtml(categoryLabel.toLowerCase())}.</p>
+<h2>Todas las calculadoras (${categoryEntries.length})</h2>
 <ul>
 ${hubLinks}
 </ul>`
@@ -1992,6 +2279,11 @@ ${currencyList}
     })
     .join("\n\n");
 
+  const base = config.siteUrl ? String(config.siteUrl).replace(/\/$/, "") : "";
+  const homeCanonicalLine = base
+    ? `<link rel="canonical" href="${escapeHtml(`${base}/index.html`)}">\n`
+    : "";
+
   const page = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1999,7 +2291,7 @@ ${currencyList}
 <meta name="description" content="Use free online calculators for finance, health, conversions, and more. Simple tools with instant results.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
-<link rel="stylesheet" href="styles.css">
+${homeCanonicalLine}<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="top">
@@ -2087,13 +2379,14 @@ function writeInformationalPages() {
   for (const page of pages) {
     const lang = page.fileName.startsWith("es/") ? "es" : "en";
     const body = `${page.body}
-${trustBlockHtml("general", lang)}`;
+${informationalFooterHtml(lang)}`;
     const html = htmlShell({
       title: page.title,
       description: page.description,
       body,
       lang,
-      pagePath: page.fileName
+      pagePath: page.fileName,
+      canonicalPath: normalizePath(page.fileName)
     });
     const targetPath = path.join(root, page.fileName);
     fs.mkdirSync(path.dirname(targetPath), { recursive: true });
