@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="apr-calculator.html">
 <head>
-<title>APR Calculator (Free) - Estimate Annual Percentage Rate</title>
-<meta name="description" content="Estimate APR from total loan fees, principal amount, and loan term for quick comparison.">
+<title>Loan Fee Annualizer (Free) – Simple Yearly Rate for Comparison</title>
+<meta name="description" content="Annualizes total upfront loan fees as a simple percent of principal per year. For planning only—not a Truth-in-Lending (TILA) disclosure APR.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/apr-calculator.html">
@@ -13,15 +13,20 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="apr-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
 <div class="card">
-<h1>APR Estimator</h1>
-<p class="desc">Quickly estimate APR using principal, fees, and term.</p>
-<label for="principal">Loan principal</label>
+<h1>Loan fee annualizer (simple)</h1>
+<p class="desc">Spread total upfront fees evenly over the loan term. The result is a simple yearly percentage for rough comparison only—it is not the APR on a federal Truth in Lending disclosure.</p>
+<label for="principal">Loan principal ($)</label>
 <input id="principal" type="number" step="any" placeholder="20000">
-<label for="fees">Total loan fees</label>
+<label for="fees">Total upfront fees ($)</label>
 <input id="fees" type="number" step="any" placeholder="800">
 <label for="years">Loan term (years)</label>
 <input id="years" type="number" step="any" value="5">
@@ -33,24 +38,34 @@ function calc(){
   const fees = parseFloat(document.getElementById('fees').value);
   const years = parseFloat(document.getElementById('years').value);
   if (!Number.isFinite(principal) || !Number.isFinite(fees) || !Number.isFinite(years) || principal <= 0 || years <= 0) {
-    document.getElementById('result').innerHTML = 'Enter valid values.';
+    document.getElementById('result').innerHTML = 'Enter a valid principal and term (both greater than zero).';
     return;
   }
-  const apr = (fees / principal) / years * 100;
-  document.getElementById('result').innerHTML = 'Estimated APR impact from fees: ' + apr.toFixed(2) + '% per year';
+  if (fees < 0) {
+    document.getElementById('result').innerHTML = 'Fees cannot be negative.';
+    return;
+  }
+  const rate = (fees / principal) / years * 100;
+  document.getElementById('result').innerHTML = 'Simple annualized fee rate: ' + rate.toFixed(2) + '% per year (fees / principal / years). Planning shortcut only—not lender disclosure APR.';
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Loan principal</strong> — Amount borrowed (denominator).</li>
+<li><strong>Total upfront fees</strong> — One-time charges you want to annualize (for example origination or points you group together). This tool does not split financed fees from cash fees.</li>
+<li><strong>Loan term (years)</strong> — Used only as a simple divisor to spread the fee load.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Simple annualized fee rate (%) ≈ (fees ÷ principal ÷ years) × 100</em></p>
+<p class="small">This is a planning shortcut, not Truth-in-Lending APR: it ignores payment timing, compounding, nominal interest rate, and lender rounding rules.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This loan APR calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This loan fee comparison tool provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>
@@ -61,15 +76,19 @@ function calc(){
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
 <details>
-<summary>Is this calculator result exact?</summary>
-<p>It is an estimate based on your inputs and may differ from official or provider-specific calculations.</p>
+<summary>Is this the same APR as on my loan paperwork?</summary>
+<p>No. The APR on a Truth in Lending disclosure reflects your nominal rate, payment schedule, how finance charges and fees are applied over time, and other regulatory rules. This page only annualizes the total upfront fee dollars you enter, spread evenly by principal and years.</p>
 </details>
 <details>
-<summary>Can I rely on this for final financial decisions?</summary>
-<p>Use it for planning and verify important numbers with official sources or licensed professionals.</p>
+<summary>What does the percentage here mean?</summary>
+<p>It is (total upfront fees ÷ loan principal ÷ years in the loan) × 100, expressed as a simple percent per year. It is a rough fee load, not a full APR.</p>
+</details>
+<details>
+<summary>When should I use this?</summary>
+<p>For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals.</p>
 </details>
 </div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this calculator result exact?","acceptedAnswer":{"@type":"Answer","text":"It is an estimate based on your inputs and may differ from official or provider-specific calculations."}},{"@type":"Question","name":"Can I rely on this for final financial decisions?","acceptedAnswer":{"@type":"Answer","text":"Use it for planning and verify important numbers with official sources or licensed professionals."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this the same APR as on my loan paperwork?","acceptedAnswer":{"@type":"Answer","text":"No. The APR on a Truth in Lending disclosure reflects your nominal rate, payment schedule, how finance charges and fees are applied over time, and other regulatory rules. This page only annualizes the total upfront fee dollars you enter, spread evenly by principal and years."}},{"@type":"Question","name":"What does the percentage here mean?","acceptedAnswer":{"@type":"Answer","text":"It is (total upfront fees ÷ loan principal ÷ years in the loan) × 100, expressed as a simple percent per year. It is a rough fee load, not a full APR."}},{"@type":"Question","name":"When should I use this?","acceptedAnswer":{"@type":"Answer","text":"For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals."}}]}</script>
 <p><a href="index.html">Home</a> | <a href="financial-calculators.html">Category Hub</a></p>
 <h2>Related Calculators</h2>
 <ul>
@@ -137,5 +156,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

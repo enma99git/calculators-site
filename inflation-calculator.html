@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="inflation-calculator.html">
 <head>
 <title>Inflation Calculator (Free) – Calculate Future Value Instantly</title>
 <meta name="description" content="Estimate the future value of money based on an inflation rate over time.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="inflation-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -37,13 +42,19 @@ r.innerHTML = "Future value: $" + future.toFixed(2);
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Amount</strong> — Starting dollars.</li>
+<li><strong>Inflation %</strong> — Assumed constant annual rate.</li>
+<li><strong>Years</strong> — Number of compounding periods (annual compounding).</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Future value ≈ amount × (1 + inflation% ÷ 100)<sup>years</sup></em> as implemented on the page.</p>
+<p class="small">Does not vary the rate year-to-year or model partial years.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This inflation projection calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>
@@ -130,5 +141,6 @@ r.innerHTML = "Future value: $" + future.toFixed(2);
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

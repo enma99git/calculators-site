@@ -52,8 +52,16 @@ function appendClassToTag(tag, className) {
   return tag.replace(/^<([a-z0-9]+)/i, `<$1 class="${className}"`);
 }
 
+function escapeAttr(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
 function removeExistingShell(content) {
   let updated = content;
+  updated = updated.replace(/\s*<script\b[^>]*\bsite-search\.js[^>]*>\s*<\/script>\s*$/i, "");
   updated = updated.replace(/^\s*<div class="top">[\s\S]*?<\/div>\s*/i, "");
   updated = updated.replace(/\s*<div class="footer">[\s\S]*?<\/div>\s*$/i, "");
   const emptyShellPrefix = /^\s*(?:<div class="wrap">\s*)?<div class="card">\s*<\/div>\s*(?:<\/div>\s*)?/i;
@@ -147,10 +155,19 @@ function buildFooterMarkup() {
 </div>`;
 }
 
-function rebuildBody(main) {
+function rebuildBody(main, currentFileName) {
+  const pagePath = String(currentFileName || "").replace(/\\/g, "/");
+  const searchBlock = `<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="${escapeAttr(
+    pagePath
+  )}" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>`;
   return `<div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+${searchBlock}
 </div>
 </div>
 <div class="wrap">
@@ -158,11 +175,17 @@ function rebuildBody(main) {
 ${main}
 </div>
 ${buildFooterMarkup()}
-</div>`;
+</div>
+<script src="site-search.js" defer></script>`;
 }
 
 function migrateFile(filePath) {
   const raw = fs.readFileSync(filePath, "utf8");
+  // Pages built by generate-pages.js (htmlShell) carry data-page-path on <html>.
+  // Re-running shell extraction on them duplicates wrappers and empties the card.
+  if (/<html[^>]*\bdata-page-path=/i.test(raw)) {
+    return false;
+  }
   const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   if (!bodyMatch) {
     return false;
@@ -176,7 +199,7 @@ function migrateFile(filePath) {
   bodyInner = addResultPlaceholders(bodyInner);
   bodyInner = normalizeSpacing(bodyInner);
   const split = splitFooter(bodyInner);
-  const rebuilt = rebuildBody(split.main);
+  const rebuilt = rebuildBody(split.main, path.basename(filePath));
 
   let next = raw.replace(/<body[^>]*>[\s\S]*?<\/body>/i, `<body>\n${rebuilt}\n</body>`);
   const nestedEmptyWrapperPattern =

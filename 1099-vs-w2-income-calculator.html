@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="1099-vs-w2-income-calculator.html">
 <head>
 <title>1099 vs W2 Income Calculator - Compare Estimated Take-Home Pay</title>
 <meta name="description" content="Compare rough after-tax income between W2 employment and 1099 contractor pay assumptions.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="1099-vs-w2-income-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -43,21 +48,22 @@ function calc(){
   const taxable1099 = Math.max(0, gross - expenses1099);
   const net1099 = taxable1099 * (1 - tax1099 / 100);
   const diff = net1099 - w2Net;
-  document.getElementById('result').innerHTML = 'Estimated W2 net: 
-</html>
- + w2Net.toFixed(2) + '<br>Estimated 1099 net: 
-</html>
- + net1099.toFixed(2) + '<br>Difference (1099 - W2): 
-</html>
- + diff.toFixed(2);
+  document.getElementById('result').innerHTML = 'Estimated W2 net: $' + w2Net.toFixed(2) + '<br>Estimated 1099 net: $' + net1099.toFixed(2) + '<br>Difference (1099 - W2): $' + diff.toFixed(2);
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Gross annual income</strong> — Same gross used for both columns before tax-specific adjustments.</li>
+<li><strong>W2 total tax estimate (%)</strong> — Effective or blended rate you assign to W2 withholding; applied as <em>W2 net = gross × (1 − W2% ÷ 100)</em>.</li>
+<li><strong>1099 total tax estimate (%)</strong> — Rate you assign to contractor/self-employed income after expenses.</li>
+<li><strong>1099 deductible business expenses</strong> — Subtracted from gross before the 1099 rate: <em>taxable 1099 = max(0, gross − expenses)</em>.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>1099 net ≈ taxable 1099 × (1 − 1099% ÷ 100)</em>; difference = 1099 net − W2 net.</p>
+<p class="small">Uses your percentage guesses only—not full payroll, FICA splits, QBI, state rules, or phase-outs.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -121,5 +127,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

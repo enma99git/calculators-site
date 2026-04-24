@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="roi-calculator.html">
 <head>
 <title>ROI Calculator (Free) - Estimate Return on Investment</title>
 <meta name="description" content="Calculate ROI percentage and total profit from your investment amount and final value.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="roi-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -35,17 +40,20 @@ function calc(){
   }
   const profit = finalValue - initial;
   const roi = (profit / initial) * 100;
-  document.getElementById('result').innerHTML = 'Profit: 
-</html>
- + profit.toFixed(2) + '<br>ROI: ' + roi.toFixed(2) + '%';
+  document.getElementById('result').innerHTML = 'Profit: $' + profit.toFixed(2) + '<br>ROI: ' + roi.toFixed(2) + '%';
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Initial investment</strong> — Starting outlay.</li>
+<li><strong>Final value</strong> — Ending value of the investment.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Profit = final − initial</em>; <em>ROI % = (profit ÷ initial) × 100</em> when initial &gt; 0.</p>
+<p class="small">Ignores time horizon, cash flows mid-period, and annualization.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -137,5 +145,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

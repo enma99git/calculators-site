@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="hourly-to-salary-after-tax-calculator.html">
 <head>
 <title>Hourly to Salary After Tax Calculator - Estimate Net Income</title>
 <meta name="description" content="Convert hourly pay into annual and monthly net income after tax assumptions.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="hourly-to-salary-after-tax-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -41,19 +46,20 @@ function calc(){
   }
   const grossAnnual = hourly * hours * weeks;
   const netAnnual = grossAnnual * (1 - taxRate / 100);
-  document.getElementById('result').innerHTML = 'Estimated net annual: 
-</html>
- + netAnnual.toFixed(2) + '<br>Estimated net monthly: 
-</html>
- + (netAnnual / 12).toFixed(2);
+  document.getElementById('result').innerHTML = 'Estimated net annual: $' + netAnnual.toFixed(2) + '<br>Estimated net monthly: $' + (netAnnual / 12).toFixed(2);
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Hourly wage, hours per week, weeks per year</strong> — Build gross annual pay.</li>
+<li><strong>Total tax estimate (%)</strong> — Single effective rate applied to gross.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Gross annual ≈ hourly × hours × weeks</em>; <em>Net annual ≈ gross × (1 − tax% ÷ 100)</em>; monthly/biweekly derived by division.</p>
+<p class="small">One blended tax rate only; not paycheck withholding math.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -117,5 +123,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

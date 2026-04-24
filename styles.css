@@ -33,7 +33,9 @@ body{
   min-height:52px;
   display:flex;
   align-items:center;
-  justify-content:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
 .brand{
@@ -46,6 +48,134 @@ body{
 .brand:hover{
   color:#dbe8ff;
   text-decoration:underline;
+}
+
+.visually-hidden{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.site-search{
+  position:relative;
+  flex:1 1 140px;
+  max-width:280px;
+  min-width:120px;
+  margin-left:auto;
+}
+
+.site-search-input{
+  width:100%;
+  box-sizing:border-box;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  padding:7px 10px;
+  font-size:14px;
+  outline:none;
+}
+
+.site-search-input::placeholder{
+  color:rgba(255,255,255,.65);
+}
+
+.site-search-input:focus{
+  border-color:#dbe8ff;
+  background:rgba(255,255,255,.18);
+}
+
+.site-search-dropdown{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  left:auto;
+  min-width:100%;
+  width:max(100%, min(320px, calc(100vw - 36px)));
+  max-height:min(60vh, 360px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:#fff;
+  color:#1d2939;
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+  border:1px solid rgba(15,23,42,.1);
+  z-index:30;
+}
+
+.site-search-empty{
+  padding:12px 14px;
+  font-size:14px;
+  color:#475467;
+}
+
+.site-search-item{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px 12px;
+  text-decoration:none;
+  color:#1d2939;
+  border-bottom:1px solid #eef2f7;
+  font-size:14px;
+  line-height:1.35;
+}
+
+.site-search-item:last-child{
+  border-bottom:none;
+}
+
+.site-search-item:hover,
+.site-search-item:focus{
+  background:#f4f7fc;
+  outline:none;
+}
+
+.site-search-lang{
+  flex-shrink:0;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.04em;
+  color:#1e3a5f;
+  background:#e8effb;
+  border-radius:4px;
+  padding:2px 5px;
+  line-height:1.2;
+  margin-top:1px;
+}
+
+.site-search-item-text{
+  flex:1 1 140px;
+  min-width:0;
+  font-weight:500;
+}
+
+.site-search-item-cat{
+  flex-basis:100%;
+  margin-left:28px;
+  font-size:12px;
+  color:#64748b;
+}
+
+@media (max-width:520px){
+  .site-search{
+    flex:1 1 100%;
+    max-width:none;
+    margin-left:0;
+  }
+
+  .site-search-dropdown{
+    right:0;
+    left:0;
+    width:auto;
+  }
 }
 
 /* MAIN CARD */

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="biweekly-to-annual-salary-calculator.html">
 <head>
 <title>Biweekly to Annual Salary Calculator (Free) - Convert Paycheck to Yearly Income</title>
 <meta name="description" content="Convert a biweekly paycheck amount into annual, monthly, and weekly gross pay estimates.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="biweekly-to-annual-salary-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -33,21 +38,19 @@ function calc(){
   const annual = biweekly * 26;
   const monthly = annual / 12;
   const weekly = annual / 52;
-  document.getElementById('result').innerHTML = 'Annual: 
-</html>
- + annual.toFixed(2) + '<br>Monthly: 
-</html>
- + monthly.toFixed(2) + '<br>Weekly: 
-</html>
- + weekly.toFixed(2);
+  document.getElementById('result').innerHTML = 'Annual: $' + annual.toFixed(2) + '<br>Monthly: $' + monthly.toFixed(2) + '<br>Weekly: $' + weekly.toFixed(2);
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Biweekly gross pay</strong> — Gross amount per paycheck on a biweekly schedule (26 pay periods per year).</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Annual ≈ biweekly × 26</em>; <em>Monthly ≈ annual ÷ 12</em>; <em>Weekly ≈ annual ÷ 52</em>.</p>
+<p class="small">Gross-only; ignores taxes, pre-tax deductions, and employers that use 24 or 27 pay periods.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -111,5 +114,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

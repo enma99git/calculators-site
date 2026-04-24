@@ -241,6 +241,15 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <ul><li><strong>Price</strong> and <strong>discount %</strong>.</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>Final price = price × (1 − discount/100)</em></p>`,
+    "apr-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Loan principal</strong> — Amount borrowed (denominator).</li>
+<li><strong>Total upfront fees</strong> — One-time charges you want to annualize (for example origination or points you group together). This tool does not split financed fees from cash fees.</li>
+<li><strong>Loan term (years)</strong> — Used only as a simple divisor to spread the fee load.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Simple annualized fee rate (%) ≈ (fees ÷ principal ÷ years) × 100</em></p>
+<p class="small">This is a planning shortcut, not Truth-in-Lending APR: it ignores payment timing, compounding, nominal interest rate, and lender rounding rules.</p>`,
     "percentage-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Mode</strong> — Choose <em>Find value (X% of Y)</em> or <em>Find percent (X is what % of Y)</em>; the first two fields relabel automatically.</li>
@@ -281,7 +290,318 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 </ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>GPA = total grade points ÷ credits</em></p>
-<p class="small">This tool divides the two totals you enter; it does not add rows per course. Your school’s rounding or weighting rules may differ.</p>`
+<p class="small">This tool divides the two totals you enter; it does not add rows per course. Your school’s rounding or weighting rules may differ.</p>`,
+    "1099-vs-w2-income-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Gross annual income</strong> — Same gross used for both columns before tax-specific adjustments.</li>
+<li><strong>W2 total tax estimate (%)</strong> — Effective or blended rate you assign to W2 withholding; applied as <em>W2 net = gross × (1 − W2% ÷ 100)</em>.</li>
+<li><strong>1099 total tax estimate (%)</strong> — Rate you assign to contractor/self-employed income after expenses.</li>
+<li><strong>1099 deductible business expenses</strong> — Subtracted from gross before the 1099 rate: <em>taxable 1099 = max(0, gross − expenses)</em>.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>1099 net ≈ taxable 1099 × (1 − 1099% ÷ 100)</em>; difference = 1099 net − W2 net.</p>
+<p class="small">Uses your percentage guesses only—not full payroll, FICA splits, QBI, state rules, or phase-outs.</p>`,
+    "401k-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Annual salary</strong> — Base used to compute dollar contributions from the percentages below.</li>
+<li><strong>Your contribution (%) + employer match (%)</strong> — Combined into one annual cash flow: <em>annual contribution = salary × (your% + match%) ÷ 100</em>.</li>
+<li><strong>Expected annual return (%)</strong> — Constant growth rate <em>r</em> each year.</li>
+<li><strong>Years to invest</strong> — Number of compounding periods (same as “years” in the formula below).</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Future value of a constant end-of-year contribution stream:</p>
+<p><em>FV ≈ PMT × ((1 + r)<sup>n</sup> − 1) ÷ r</em>, with <em>PMT</em> = annual contribution, <em>r</em> = return ÷ 100, <em>n</em> = years. If return is 0, FV = PMT × n.</p>
+<p class="small">Ignores contribution limits, vesting schedules, catch-up, fees, taxes on withdrawal, and irregular raises.</p>`,
+    "age-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Birth date</strong> — Calendar date used as the start of the interval.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Computes whole years between the birth date and today: subtract calendar years, then subtract one if the birthday has not yet occurred this year.</p>
+<p class="small">Uses the browser’s local date; does not account for time zones across midnight.</p>`,
+    "biweekly-to-annual-salary-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Biweekly gross pay</strong> — Gross amount per paycheck on a biweekly schedule (26 pay periods per year).</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Annual ≈ biweekly × 26</em>; <em>Monthly ≈ annual ÷ 12</em>; <em>Weekly ≈ annual ÷ 52</em>.</p>
+<p class="small">Gross-only; ignores taxes, pre-tax deductions, and employers that use 24 or 27 pay periods.</p>`,
+    "break-even-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Fixed costs</strong> — Overhead that does not change with each unit sold.</li>
+<li><strong>Price per unit</strong> and <strong>cost per unit</strong> — Used to form contribution margin per unit.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Break-even units = fixed costs ÷ (price per unit − cost per unit)</em> when the denominator is positive.</p>
+<p class="small">Assumes linear unit economics; does not model discounts, capacity limits, or mixed product lines.</p>`,
+    "closing-cost-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Home purchase price</strong> — Basis for the percentage fee estimate.</li>
+<li><strong>Closing cost estimate (%)</strong> — Applied as <em>fees = price × (% ÷ 100)</em>.</li>
+<li><strong>Prepaid taxes/insurance estimate</strong> — Added as a flat dollar amount to the fee subtotal.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Total cash to close (fees + prepaid) = closing fees + prepaid</em> (as implemented on the page).</p>
+<p class="small">Does not itemize title, recording, points, or lender-specific rules.</p>`,
+    "commission-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Sales amount</strong> — Revenue the commission rate applies to.</li>
+<li><strong>Commission rate (%)</strong> — Percent of sales paid as commission.</li>
+<li><strong>Base pay (optional)</strong> — Flat dollars added after commission.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Commission = sales × (rate ÷ 100)</em>; total shown = commission + base.</p>
+<p class="small">Does not tier rates, split draws, or clawbacks.</p>`,
+    "credit-card-interest-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Card balance</strong> — Balance interest accrues on for the month.</li>
+<li><strong>APR (%)</strong> — Nominal annual rate; converted to monthly periodic rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Estimated monthly interest ≈ balance × r</em> (simple interest on the current balance; not minimum-payment schedules).</p>
+<p class="small">Real cards use daily balance methods, grace periods, and promo rates—confirm with your issuer.</p>`,
+    "debt-avalanche-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Total debt balance</strong> — Single combined balance the tool treats as one loan (strategy label is informational).</li>
+<li><strong>Average APR (%)</strong> — Converted to monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
+<li><strong>Monthly payment budget</strong> — Constant payment applied each month.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Uses the standard amortization payoff-time solve for one balance: months from <em>log</em> formula on payment, rate, and principal (same numeric model as the snowball page on this site).</p>
+<p class="small">Does not reorder multiple debts; use it as a quick single-balance illustration, not a full avalanche schedule.</p>`,
+    "debt-snowball-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Total debt balance</strong> — Aggregated balance modeled as one account.</li>
+<li><strong>Average APR (%)</strong> — Monthly rate <em>r = APR ÷ 100 ÷ 12</em>.</li>
+<li><strong>Monthly payment budget</strong> — Applied until the balance is paid.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Same payoff-months math as the avalanche page here: one-balance amortization closed form using log of payment ratio.</p>
+<p class="small">Snowball ordering of multiple debts is not simulated—only one combined principal.</p>`,
+    "debt-to-income-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Monthly gross income</strong> — Denominator for the ratio.</li>
+<li><strong>Monthly debt payments</strong> — Total minimum obligations the tool compares to income.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>DTI (%) ≈ (monthly debt ÷ monthly gross income) × 100</em> as implemented.</p>
+<p class="small">Lenders use front-end/back-end definitions and exclude some debts; this is a generic ratio only.</p>`,
+    "emergency-fund-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Monthly expenses</strong> — Spending level you want covered.</li>
+<li><strong>Target months of expenses</strong> — Multiplier for the fund size.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Target emergency fund ≈ monthly expenses × months</em>.</p>
+<p class="small">Does not adjust for inflation, irregular bills, or invested vs cash holdings.</p>`,
+    "extra-payment-loan-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Loan balance, annual rate (%), remaining term (years)</strong> — Used to compute the baseline amortizing payment.</li>
+<li><strong>Extra payment per month</strong> — Added to that payment; payoff months recomputed from the same monthly rate.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. New payoff months from the closed-form log expression with the increased payment.</p>
+<p class="small">Assumes the extra pays down principal immediately; ignores fees, taxes, and escrow.</p>`,
+    "freelance-tax-estimate-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Annual freelance revenue</strong> and <strong>business expenses</strong> — <em>Taxable income ≈ max(0, revenue − expenses)</em>.</li>
+<li><strong>Combined tax estimate (%)</strong> — One effective rate applied to taxable income.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Estimated annual tax ≈ taxable × (combined% ÷ 100)</em>; <em>estimated quarterly ≈ annual ÷ 4</em>.</p>
+<p class="small">Not IRS Form 1040-ES; ignores SE tax split, brackets, QBI, and state taxes.</p>`,
+    "hourly-to-salary-after-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Hourly wage, hours per week, weeks per year</strong> — Build gross annual pay.</li>
+<li><strong>Total tax estimate (%)</strong> — Single effective rate applied to gross.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Gross annual ≈ hourly × hours × weeks</em>; <em>Net annual ≈ gross × (1 − tax% ÷ 100)</em>; monthly/biweekly derived by division.</p>
+<p class="small">One blended tax rate only; not paycheck withholding math.</p>`,
+    "hours-to-days-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Hours</strong> or <strong>days</strong> — Enter one; the other is computed.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Days = hours ÷ 24</em>; <em>hours = days × 24</em> (fixed conversion).</p>`,
+    "inflation-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Amount</strong> — Starting dollars.</li>
+<li><strong>Inflation %</strong> — Assumed constant annual rate.</li>
+<li><strong>Years</strong> — Number of compounding periods (annual compounding).</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Future value ≈ amount × (1 + inflation% ÷ 100)<sup>years</sup></em> as implemented on the page.</p>
+<p class="small">Does not vary the rate year-to-year or model partial years.</p>`,
+    "interest-rate-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Principal</strong> — Dollar base.</li>
+<li><strong>Rate %</strong> — Annual simple rate.</li>
+<li><strong>Time (years)</strong> — Whole years in the product (not converted to months).</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Interest ≈ principal × (rate ÷ 100) × time</em> (simple interest; no compounding within the period).</p>`,
+    "kilograms-to-pounds-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Kilograms</strong> or <strong>pounds</strong> — Enter one field to convert.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Uses <em>1 kg = 2.2046226218 lb</em> in the script (high-precision constant).</p>`,
+    "liters-to-gallons-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Liters</strong> or <strong>US gallons</strong> — Enter one field to convert.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Uses <em>1 L = 0.2641720524 US gal</em> as coded on the page.</p>`,
+    "macros-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Calorie target</strong> — Daily calories to split into macros.</li>
+<li><strong>Goal style / ratio</strong> — Preset protein/carbs/fat percentages that sum to 100%.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Atwater-style grams: <em>protein g = calories × (P% ÷ 100) ÷ 4</em>, <em>carbs g = calories × (C% ÷ 100) ÷ 4</em>, <em>fat g = calories × (F% ÷ 100) ÷ 9</em>.</p>
+<p class="small">Educational split only—not a meal plan or medical advice.</p>`,
+    "minutes-to-hours-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Minutes</strong> or <strong>hours</strong> — Enter one field to convert.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Hours = minutes ÷ 60</em>; <em>minutes = hours × 60</em>.</p>`,
+    "mortgage-affordability-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Gross monthly income</strong> and <strong>target DTI limit (%)</strong> — Housing budget cap ≈ <em>income × (DTI ÷ 100) − other monthly debts</em>.</li>
+<li><strong>Estimated mortgage rate (%)</strong> and <strong>loan term (years)</strong> — Convert payment capacity into a loan principal using the amortization identity.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Payment-to-loan principal: <em>loan ≈ max housing × ((1 + r)<sup>n</sup> − 1) ÷ (r(1 + r)<sup>n</sup>)</em> with monthly <em>r</em> and <em>n = years × 12</em>; if <em>r = 0</em>, <em>loan = max housing × n</em>.</p>
+<p class="small">Ignores taxes, insurance in the payment, PMI, and underwriting overlays.</p>`,
+    "net-worth-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Total assets</strong> — Everything you count as positive value.</li>
+<li><strong>Total liabilities</strong> — Debts subtracted from assets.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Net worth = assets − liabilities</em>.</p>
+<p class="small">Classification of items as asset/liability is yours to define consistently.</p>`,
+    "overtime-pay-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Hourly rate</strong> — Base pay per hour before overtime.</li>
+<li><strong>Overtime hours</strong> — Hours paid at the multiplier.</li>
+<li><strong>Overtime multiplier</strong> — Often 1.5 (time-and-a-half); editable.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Overtime pay ≈ hourly × hours × multiplier</em> (gross; no tax withholding).</p>`,
+    "ovulation-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>First day of last period</strong> — Anchor date.</li>
+<li><strong>Cycle length (days)</strong> — Typical menstrual cycle length you enter.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Adds <em>(cycle length − 14)</em> days to the last-period date to approximate mid-cycle ovulation.</p>
+<p class="small">Simplified calendar estimate—not medical timing or fertility treatment guidance.</p>`,
+    "payback-period-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Upfront investment</strong> — One-time cash outlay.</li>
+<li><strong>Expected monthly net cash flow</strong> — Constant benefit each month.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Payback months ≈ investment ÷ monthly cash flow</em> (then displayed with rounding as on the page).</p>
+<p class="small">No discounting; ignores uneven cash flows after payback.</p>`,
+    "profit-margin-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Revenue</strong> and <strong>cost</strong> — Used as dollars in the margin ratio.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Margin % ≈ ((revenue − cost) ÷ revenue) × 100</em> when revenue ≠ 0.</p>
+<p class="small">Markup vs margin differ; this is margin on revenue only.</p>`,
+    "property-tax-estimate-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Home value</strong> — Assessed or market value you choose as the base.</li>
+<li><strong>Property tax rate (%)</strong> — Effective annual rate applied to that value.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Annual tax ≈ value × (rate ÷ 100)</em>; <em>monthly ≈ annual ÷ 12</em>.</p>
+<p class="small">Real bills use mill rates, exemptions, and caps; this is a flat percentage model.</p>`,
+    "raise-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Current annual salary</strong> — Pre-raise base.</li>
+<li><strong>Raise (%)</strong> — Percent increase applied once.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>New salary ≈ current × (1 + raise% ÷ 100)</em>; annual gain = new − current; monthly gain = annual gain ÷ 12.</p>`,
+    "refinance-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Loan balance, remaining term (years)</strong> — Same principal and term for old vs new rate scenarios.</li>
+<li><strong>Current rate (%)</strong> vs <strong>new rate (%)</strong> — Each produces a fixed-rate amortizing payment.</li>
+<li><strong>Refinance closing costs</strong> — Divided by monthly savings to show break-even months when savings &gt; 0.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Monthly payment <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with monthly <em>r</em>. Savings = current payment − new payment; break-even months ≈ costs ÷ savings.</p>
+<p class="small">Assumes balance and term unchanged; ignores cash-out, points, and tax effects.</p>`,
+    "rent-vs-buy-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Monthly rent</strong> — Annualized as <em>rent × 12</em>.</li>
+<li><strong>Monthly mortgage payment</strong> — Annualized as <em>mortgage × 12</em>, then <strong>annual property tax + insurance</strong> and <strong>annual maintenance</strong> are added for the buy side.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Annual buy cost = mortgage×12 + taxes/insurance + maintenance</em>; compared to annual rent.</p>
+<p class="small">Omits opportunity cost, appreciation, transaction costs, and tax deductions.</p>`,
+    "retirement-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Current savings</strong> — Starting balance.</li>
+<li><strong>Monthly contribution</strong> — Multiplied by <em>12 × years</em> in the page script.</li>
+<li><strong>Years</strong> — Horizon length.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>As coded: <em>Total shown ≈ current savings + (monthly × 12 × years)</em>—a sum of contributions without investment growth.</p>
+<p class="small">Not a future-value-of-savings model; see the 401(k) tool for growth assumptions.</p>`,
+    "roi-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Initial investment</strong> — Starting outlay.</li>
+<li><strong>Final value</strong> — Ending value of the investment.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Profit = final − initial</em>; <em>ROI % = (profit ÷ initial) × 100</em> when initial &gt; 0.</p>
+<p class="small">Ignores time horizon, cash flows mid-period, and annualization.</p>`,
+    "salary-after-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Gross annual salary</strong> — Before deductions.</li>
+<li><strong>Federal, state, and payroll tax estimates (%)</strong> — Summed into one effective rate.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Net annual ≈ gross × (1 − (federal% + state% + payroll%) ÷ 100)</em>; <em>net monthly ≈ net annual ÷ 12</em>.</p>
+<p class="small">Flat percentages only—not real withholding tables or pre-tax benefits.</p>`,
+    "salary-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Hourly rate ($)</strong> — Gross pay per hour.</li>
+<li><strong>Hours per week</strong> — Typical work week length.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Yearly gross ≈ hourly × hours × 52</em>; <em>monthly ≈ yearly ÷ 12</em> (the page assumes 52 work weeks).</p>
+<p class="small">Gross only; no PTO, overtime, or tax adjustments.</p>`,
+    "seconds-to-minutes-converter.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Seconds</strong> or <strong>minutes</strong> — Enter one field to convert.</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Minutes = seconds ÷ 60</em>; <em>seconds = minutes × 60</em>.</p>`,
+    "self-employment-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Net business income</strong> — Profit base the rate applies to.</li>
+<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% placeholder for combined Social Security/Medicare style estimates.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Estimated SE tax ≈ income × (rate ÷ 100)</em> as a single line item.</p>
+<p class="small">Not Schedule SE—ignores wage base limits, half deduction, or additional Medicare tax.</p>`,
+    "side-hustle-income-tax-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Annual side hustle income</strong> — Extra taxable dollars.</li>
+<li><strong>Marginal tax estimate (%)</strong> — Applied to that income only.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Extra tax ≈ side income × (marginal% ÷ 100)</em>; <em>net side income ≈ side income − extra tax</em>.</p>
+<p class="small">Flat marginal rate; ignores SE tax, phase-outs, and state taxes.</p>`,
+    "take-home-paycheck-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Gross paycheck</strong> — Per-period gross.</li>
+<li><strong>Tax withholding (%)</strong> and <strong>other deductions (%)</strong> — Combined before applying to gross.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Net ≈ gross × (1 − (tax% + other%) ÷ 100)</em>.</p>
+<p class="small">Percent-of-gross only; not actual W-4 or benefit elections.</p>`,
+    "weight-loss-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Same units (as you enter them).</li></ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p><em>Weight to lose ≈ start − goal</em> (subtraction only).</p>
+<p class="small">No timeline, calorie deficit, or health screening—informational subtraction only.</p>`
   };
 
   if (specific[key]) {

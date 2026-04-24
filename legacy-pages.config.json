@@ -10,7 +10,7 @@
       "title": "Age Calculator (Free) – Calculate Exact Age Instantly",
       "description": "Calculate your age in years based on your birthdate instantly.",
       "h1": "Age Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "age-from-birthdate calculator",
       "indexable": true,
       "body": "<h1>Age Calculator</h1>\r\n<p class=\"desc\">Select your birth date, then tap Calculate to see your age in years.</p>\r\n\r\n<label for=\"birth\">Birth date</label>\r\n<input type=\"date\" id=\"birth\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet birth = new Date(document.getElementById(\"birth\").value);\r\nlet today = new Date();\r\n\r\nlet age = today.getFullYear() - birth.getFullYear();\r\nlet m = today.getMonth() - birth.getMonth();\r\n\r\nif(m < 0 || (m === 0 && today.getDate() < birth.getDate())){\r\nage--;\r\n}\r\n\r\ndocument.getElementById(\"result\").innerHTML = \"Age: \" + age;\r\n}\r\n</script>"
     },
@@ -24,7 +24,7 @@
       "title": "BMI Calculator (Free) – Calculate Body Mass Index Instantly",
       "description": "Calculate your BMI and understand your body weight category instantly.",
       "h1": "BMI Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "BMI calculator",
       "indexable": true,
       "body": "<h1>BMI Calculator</h1>\r\n\r\n<input id=\"w\" placeholder=\"Weight (kg)\">\r\n<input id=\"h\" placeholder=\"Height (m)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nconst weight = parseFloat(w.value);\r\nconst height = parseFloat(h.value);\r\nif (!Number.isFinite(weight) || !Number.isFinite(height) || height <= 0) {\r\n  r.innerHTML = \"Please enter valid weight and height.\";\r\n  return;\r\n}\r\nconst bmi = weight / (height * height);\r\nlet tag = \"Obese\";\r\nif (bmi < 18.5) {\r\n  tag = \"Underweight\";\r\n} else if (bmi < 25) {\r\n  tag = \"Normal\";\r\n} else if (bmi < 30) {\r\n  tag = \"Overweight\";\r\n}\r\nr.innerHTML=\"BMI: \" + bmi.toFixed(2) + \" (\" + tag + \")\";\r\n}\r\n</script>"
     },
@@ -38,7 +38,7 @@
       "title": "Break Even Calculator (Free) – Calculate Profitability Instantly",
       "description": "Find your break-even point and determine when your business becomes profitable.",
       "h1": "Break-Even Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "break-even unit calculator",
       "indexable": true,
       "body": "<h1>Break-Even Calculator</h1>\r\n\r\n<input id=\"fixed\" placeholder=\"Fixed costs\">\r\n<input id=\"price\" placeholder=\"Price per unit\">\r\n<input id=\"cost\" placeholder=\"Cost per unit\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet units = fixed.value / (price.value - cost.value);\r\nr.innerHTML = \"Break-even units: \" + units.toFixed(0);\r\n}\r\n</script>"
     },
@@ -52,7 +52,7 @@
       "title": "Calorie Calculator (Free) – Estimate Daily Calories Instantly",
       "description": "Estimate your daily calorie needs based on your weight, height, and age.",
       "h1": "Daily Calorie Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "daily calorie needs estimator",
       "indexable": true,
       "body": "<h1>Daily Calorie Calculator</h1>\r\n<p class=\"desc\">Estimate your maintenance calories and suggested targets for weight loss or weight gain.</p>\r\n<label for=\"age\">Age</label>\r\n<input id=\"age\" type=\"number\" min=\"1\" step=\"1\" placeholder=\"Enter age\">\r\n<label for=\"sex\">Sex</label>\r\n<select id=\"sex\">\r\n<option value=\"male\">Male</option>\r\n<option value=\"female\">Female</option>\r\n</select>\r\n<label for=\"height\">Height (cm)</label>\r\n<input id=\"height\" type=\"number\" min=\"1\" step=\"any\" placeholder=\"Enter height in cm\">\r\n<label for=\"weight\">Weight (kg)</label>\r\n<input id=\"weight\" type=\"number\" min=\"1\" step=\"any\" placeholder=\"Enter weight in kg\">\r\n<label for=\"activity\">Activity Level</label>\r\n<select id=\"activity\">\r\n<option value=\"1.2\">Sedentary (little or no exercise)</option>\r\n<option value=\"1.375\">Lightly active (1-3 days/week)</option>\r\n<option value=\"1.55\">Moderately active (3-5 days/week)</option>\r\n<option value=\"1.725\">Very active (6-7 days/week)</option>\r\n<option value=\"1.9\">Extra active (intense daily activity)</option>\r\n</select>\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nconst age = parseFloat(document.getElementById(\"age\").value);\r\nconst height = parseFloat(document.getElementById(\"height\").value);\r\nconst weight = parseFloat(document.getElementById(\"weight\").value);\r\nconst sex = document.getElementById(\"sex\").value;\r\nconst activity = parseFloat(document.getElementById(\"activity\").value);\r\n\r\nif (!Number.isFinite(age) || !Number.isFinite(height) || !Number.isFinite(weight)) {\r\n  r.innerHTML = \"Please enter valid age, height, and weight.\";\r\n  return;\r\n}\r\n\r\nconst bmr = sex === \"female\"\r\n  ? 10 * weight + 6.25 * height - 5 * age - 161\r\n  : 10 * weight + 6.25 * height - 5 * age + 5;\r\nconst maintenance = bmr * activity;\r\nconst weightLoss = maintenance - 500;\r\nconst weightGain = maintenance + 300;\r\n\r\nr.innerHTML =\r\n  \"Maintenance calories: \" + maintenance.toFixed(0) + \" kcal/day<br>\" +\r\n  \"Weight loss calories: \" + Math.max(weightLoss, 1200).toFixed(0) + \" kcal/day<br>\" +\r\n  \"Weight gain calories: \" + weightGain.toFixed(0) + \" kcal/day\";\r\n}\r\n</script>"
     },
@@ -66,7 +66,7 @@
       "title": "Celsius to Fahrenheit Converter (Free)",
       "description": "Convert Celsius to Fahrenheit and Fahrenheit to Celsius instantly with this free bidirectional converter.",
       "h1": "Celsius and Fahrenheit Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "Celsius and Fahrenheit converter",
       "indexable": true,
       "body": "<h1>Celsius and Fahrenheit Converter</h1>\n<p class=\"desc\">Enter either Celsius or Fahrenheit, then convert both ways.</p>\n<label for=\"celsius\">Celsius</label>\n<input type=\"number\" id=\"celsius\" step=\"any\" placeholder=\"Enter Celsius\">\n<label for=\"fahrenheit\">Fahrenheit</label>\n<input type=\"number\" id=\"fahrenheit\" step=\"any\" placeholder=\"Enter Fahrenheit\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const cField = document.getElementById(\"celsius\");\n  const fField = document.getElementById(\"fahrenheit\");\n  const c = parseFloat(cField.value);\n  const f = parseFloat(fField.value);\n  if (Number.isFinite(c) && !Number.isFinite(f)) {\n    const out = (c * 9 / 5) + 32;\n    fField.value = out.toFixed(4);\n    document.getElementById(\"result\").innerHTML = c.toFixed(4) + \" C = \" + out.toFixed(4) + \" F\";\n    return;\n  }\n  if (!Number.isFinite(c) && Number.isFinite(f)) {\n    const out = (f - 32) * 5 / 9;\n    cField.value = out.toFixed(4);\n    document.getElementById(\"result\").innerHTML = f.toFixed(4) + \" F = \" + out.toFixed(4) + \" C\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -80,7 +80,7 @@
       "title": "Compound Interest Calculator (Free) – Calculate Investment Growth Instantly",
       "description": "Calculate compound interest and see how your investments grow over time with this free calculator.",
       "h1": "Compound Interest Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "compound growth calculator",
       "indexable": true,
       "body": "<h1>Compound Interest Calculator</h1>\r\n\r\n<input id=\"p\" placeholder=\"Principal\">\r\n<input  id=\"r\" placeholder=\"Rate %\">\r\n<input id=\"t\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet A=p.value*Math.pow(1+r.value/100,t.value);\r\ndocument.getElementById(\"result\").innerHTML=\"Total: $\"+A.toFixed(2);\r\n}\r\n</script>"
     },
@@ -94,7 +94,7 @@
       "title": "Debt Payoff Calculator (Free) – Calculate Repayment Time Instantly",
       "description": "Calculate how long it will take to pay off your debt and total interest with this free calculator.",
       "h1": "Debt Payoff Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "debt payoff timeline calculator",
       "indexable": true,
       "body": "<h1>Debt Payoff Calculator</h1>\r\n\r\n<input id=\"d\" placeholder=\"Debt\">\r\n<input id=\"p\" placeholder=\"Monthly payment\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet months=d.value/p.value;\r\nr.innerHTML=\"Months: \"+months.toFixed(0);\r\n}\r\n</script>"
     },
@@ -108,7 +108,7 @@
       "title": "Discount Calculator (Free) – Calculate Final Price Instantly",
       "description": "Calculate discounted price based on original price and discount percentage.",
       "h1": "Discount Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "discount price calculator",
       "indexable": true,
       "body": "<h1>Discount Calculator</h1>\r\n\r\n<input id=\"p\" placeholder=\"Price\">\r\n<input id=\"d\" placeholder=\"Discount %\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet f=p.value*(1-d.value/100);\r\nr.innerHTML=\"Final price: $\"+f;\r\n}\r\n</script>"
     },
@@ -122,7 +122,7 @@
       "title": "GPA Calculator (Free) – Calculate Grade Point Average Instantly",
       "description": "Calculate your GPA quickly based on your grades and credits.",
       "h1": "GPA Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "GPA calculator",
       "indexable": true,
       "body": "<h1>GPA Calculator</h1>\r\n\r\n<input id=\"g\" placeholder=\"Total grade points\">\r\n<input id=\"c\" placeholder=\"Credits\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nr.innerHTML=\"GPA: \"+(g.value/c.value).toFixed(2);\r\n}\r\n</script>"
     },
@@ -136,7 +136,7 @@
       "title": "Hours to Days Converter (Free)",
       "description": "Convert hours to days and days to hours instantly with this free bidirectional time converter.",
       "h1": "Hours and Days Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "hours and days converter",
       "indexable": true,
       "body": "<h1>Hours and Days Converter</h1>\n<p class=\"desc\">Enter either hours or days, then convert both ways.</p>\n<label for=\"hours\">Hours</label>\n<input type=\"number\" id=\"hours\" step=\"any\" placeholder=\"Enter hours\">\n<label for=\"days\">Days</label>\n<input type=\"number\" id=\"days\" step=\"any\" placeholder=\"Enter days\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const hField = document.getElementById(\"hours\");\n  const dField = document.getElementById(\"days\");\n  const h = parseFloat(hField.value);\n  const d = parseFloat(dField.value);\n  if (Number.isFinite(h) && !Number.isFinite(d)) {\n    const out = h / 24;\n    dField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = h.toFixed(6) + \" hr = \" + out.toFixed(6) + \" days\";\n    return;\n  }\n  if (!Number.isFinite(h) && Number.isFinite(d)) {\n    const out = d * 24;\n    hField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = d.toFixed(6) + \" days = \" + out.toFixed(6) + \" hr\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -150,7 +150,7 @@
       "title": "Inflation Calculator (Free) – Calculate Future Value Instantly",
       "description": "Estimate the future value of money based on an inflation rate over time.",
       "h1": "Inflation Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "inflation projection calculator",
       "indexable": true,
       "body": "<h1>Inflation Calculator</h1>\r\n\r\n<input id=\"amount\" placeholder=\"Amount\">\r\n<input id=\"rate\" placeholder=\"Inflation %\">\r\n<input id=\"years\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet future = amount.value * Math.pow(1 + rate.value/100, years.value);\r\nr.innerHTML = \"Future value: $\" + future.toFixed(2);\r\n}\r\n</script>"
     },
@@ -164,7 +164,7 @@
       "title": "Interest Rate Calculator (Free) – Calculate Interest Instantly",
       "description": "Calculate simple interest based on principal, rate, and time with this free calculator.",
       "h1": "Simple Interest Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "simple interest calculator",
       "indexable": true,
       "body": "<h1>Simple Interest Calculator</h1>\r\n\r\n<input id=\"p\" placeholder=\"Principal\">\r\n<input  id=\"r\" placeholder=\"Rate %\">\r\n<input id=\"t\" placeholder=\"Time (years)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet interest = p.value * (r.value/100) * t.value;\r\ndocument.getElementById(\"result\").innerHTML = \"Interest: $\" + interest.toFixed(2);\r\n}\r\n</script>"
     },
@@ -178,7 +178,7 @@
       "title": "Kilograms to Pounds Converter (Free)",
       "description": "Convert kilograms to pounds and pounds to kilograms instantly with this free bidirectional converter.",
       "h1": "Kilograms and Pounds Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "kilograms and pounds converter",
       "indexable": true,
       "body": "<h1>Kilograms and Pounds Converter</h1>\n<p class=\"desc\">Enter either kilograms or pounds, then convert both ways.</p>\n<label for=\"kg\">Kilograms</label>\n<input type=\"number\" id=\"kg\" step=\"any\" placeholder=\"Enter kilograms\">\n<label for=\"lb\">Pounds</label>\n<input type=\"number\" id=\"lb\" step=\"any\" placeholder=\"Enter pounds\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const kgField = document.getElementById(\"kg\");\n  const lbField = document.getElementById(\"lb\");\n  const kg = parseFloat(kgField.value);\n  const lb = parseFloat(lbField.value);\n  if (Number.isFinite(kg) && !Number.isFinite(lb)) {\n    const out = kg * 2.2046226218;\n    lbField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = kg.toFixed(6) + \" kg = \" + out.toFixed(6) + \" lb\";\n    return;\n  }\n  if (!Number.isFinite(kg) && Number.isFinite(lb)) {\n    const out = lb / 2.2046226218;\n    kgField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = lb.toFixed(6) + \" lb = \" + out.toFixed(6) + \" kg\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -192,7 +192,7 @@
       "title": "Kilometers to Miles Converter (Free)",
       "description": "Convert kilometers to miles and miles to kilometers instantly with this free bidirectional converter.",
       "h1": "Kilometers and Miles Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "kilometers and miles converter",
       "indexable": true,
       "body": "<h1>Kilometers and Miles Converter</h1>\n<p class=\"desc\">Enter either kilometers or miles, then convert both ways.</p>\n<label for=\"km\">Kilometers</label>\n<input type=\"number\" id=\"km\" step=\"any\" placeholder=\"Enter kilometers\">\n<label for=\"mi\">Miles</label>\n<input type=\"number\" id=\"mi\" step=\"any\" placeholder=\"Enter miles\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const kmField = document.getElementById(\"km\");\n  const miField = document.getElementById(\"mi\");\n  const km = parseFloat(kmField.value);\n  const mi = parseFloat(miField.value);\n  if (Number.isFinite(km) && !Number.isFinite(mi)) {\n    const out = km * 0.621371;\n    miField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = km.toFixed(6) + \" km = \" + out.toFixed(6) + \" mi\";\n    return;\n  }\n  if (!Number.isFinite(km) && Number.isFinite(mi)) {\n    const out = mi / 0.621371;\n    kmField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = mi.toFixed(6) + \" mi = \" + out.toFixed(6) + \" km\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -206,7 +206,7 @@
       "title": "Liters to Gallons Converter (Free)",
       "description": "Convert liters to gallons and gallons to liters instantly with this free bidirectional converter.",
       "h1": "Liters and Gallons Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "liters and US gallons converter",
       "indexable": true,
       "body": "<h1>Liters and Gallons Converter</h1>\n<p class=\"desc\">Enter either liters or US gallons, then convert both ways.</p>\n<label for=\"liters\">Liters</label>\n<input type=\"number\" id=\"liters\" step=\"any\" placeholder=\"Enter liters\">\n<label for=\"gallons\">Gallons (US)</label>\n<input type=\"number\" id=\"gallons\" step=\"any\" placeholder=\"Enter gallons\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const lField = document.getElementById(\"liters\");\n  const gField = document.getElementById(\"gallons\");\n  const l = parseFloat(lField.value);\n  const g = parseFloat(gField.value);\n  if (Number.isFinite(l) && !Number.isFinite(g)) {\n    const out = l * 0.2641720524;\n    gField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = l.toFixed(6) + \" L = \" + out.toFixed(6) + \" gal\";\n    return;\n  }\n  if (!Number.isFinite(l) && Number.isFinite(g)) {\n    const out = g / 0.2641720524;\n    lField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = g.toFixed(6) + \" gal = \" + out.toFixed(6) + \" L\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -220,7 +220,7 @@
       "title": "Loan Payment Calculator (Free) – Calculate Monthly Payments Instantly",
       "description": "Calculate your monthly loan payment based on loan amount, interest rate, and term.",
       "h1": "Loan Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "loan payment calculator",
       "indexable": true,
       "body": "<h1>Loan Calculator</h1>\r\n\r\n<label>Loan Amount:</label>\r\n<input id=\"amount\">\r\n\r\n\r\n<label>Interest Rate (% yearly):</label>\r\n<input id=\"rate\">\r\n\r\n\r\n<label>Years:</label>\r\n<input id=\"years\">\r\n\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet P = parseFloat(document.getElementById(\"amount\").value);\r\nlet r = parseFloat(document.getElementById(\"rate\").value)/100/12;\r\nlet n = parseFloat(document.getElementById(\"years\").value)*12;\r\n\r\nlet payment = (P*r)/(1-Math.pow(1+r,-n));\r\n\r\ndocument.getElementById(\"result\").innerHTML =\r\n\"Monthly Payment: $\" + payment.toFixed(2);\r\ndocument.dispatchEvent(new CustomEvent(\"pc:calculator_result\", { detail: { type: \"loan\" } }));\r\n}\r\n</script>"
     },
@@ -234,7 +234,7 @@
       "title": "Macros Calculator (Free) – Calculate Protein, Carbs, and Fat Instantly",
       "description": "Estimate protein, carbohydrate, and fat intake based on total calorie input.",
       "h1": "Macros Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "macro split calculator",
       "indexable": true,
       "body": "<h1>Macros Calculator</h1>\r\n<p class=\"desc\">Enter your calorie target and choose a goal style to get daily macro gram targets.</p>\r\n<label for=\"cal\">Calorie Target</label>\r\n<input id=\"cal\" type=\"number\" min=\"1\" step=\"any\" placeholder=\"Calories per day\">\r\n<label for=\"ratio\">Goal Style / Ratio</label>\r\n<select id=\"ratio\">\r\n<option value=\"30,40,30\">Balanced (30% Protein / 40% Carbs / 30% Fat)</option>\r\n<option value=\"35,35,30\">High Protein (35% Protein / 35% Carbs / 30% Fat)</option>\r\n<option value=\"30,50,20\">High Carb (30% Protein / 50% Carbs / 20% Fat)</option>\r\n<option value=\"35,20,45\">Low Carb (35% Protein / 20% Carbs / 45% Fat)</option>\r\n<option value=\"25,5,70\">Keto Style (25% Protein / 5% Carbs / 70% Fat)</option>\r\n</select>\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nconst calories = parseFloat(document.getElementById(\"cal\").value);\r\nconst ratio = document.getElementById(\"ratio\").value.split(\",\").map(Number);\r\nif (!Number.isFinite(calories)) {\r\n  r.innerHTML = \"Please enter a valid calorie target.\";\r\n  return;\r\n}\r\n\r\nconst protein = calories * (ratio[0] / 100) / 4;\r\nconst carbs = calories * (ratio[1] / 100) / 4;\r\nconst fat = calories * (ratio[2] / 100) / 9;\r\n\r\nr.innerHTML = \r\n\"Protein: \" + protein.toFixed(1) + \"g<br>\" +\r\n\"Carbs: \" + carbs.toFixed(1) + \"g<br>\" +\r\n\"Fat: \" + fat.toFixed(1) + \"g\";\r\n}\r\n</script>"
     },
@@ -248,7 +248,7 @@
       "title": "Minutes to Hours Converter (Free)",
       "description": "Convert minutes to hours and hours to minutes instantly with this free bidirectional time converter.",
       "h1": "Minutes and Hours Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "minutes and hours converter",
       "indexable": true,
       "body": "<h1>Minutes and Hours Converter</h1>\n<p class=\"desc\">Enter either minutes or hours, then convert both ways.</p>\n<label for=\"minutes\">Minutes</label>\n<input type=\"number\" id=\"minutes\" step=\"any\" placeholder=\"Enter minutes\">\n<label for=\"hours\">Hours</label>\n<input type=\"number\" id=\"hours\" step=\"any\" placeholder=\"Enter hours\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const mField = document.getElementById(\"minutes\");\n  const hField = document.getElementById(\"hours\");\n  const m = parseFloat(mField.value);\n  const h = parseFloat(hField.value);\n  if (Number.isFinite(m) && !Number.isFinite(h)) {\n    const out = m / 60;\n    hField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = m.toFixed(6) + \" min = \" + out.toFixed(6) + \" hr\";\n    return;\n  }\n  if (!Number.isFinite(m) && Number.isFinite(h)) {\n    const out = h * 60;\n    mField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = h.toFixed(6) + \" hr = \" + out.toFixed(6) + \" min\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -262,7 +262,7 @@
       "title": "Mortgage Calculator (Free) – Calculate Monthly Mortgage Payments Instantly",
       "description": "Calculate your monthly mortgage payment based on loan amount, interest rate, and term instantly.",
       "h1": "Mortgage Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "mortgage payment calculator",
       "indexable": true,
       "body": "<h1>Mortgage Calculator</h1>\r\n\r\n<input id=\"amount\" placeholder=\"Loan Amount\">\r\n\r\n<input id=\"rate\" placeholder=\"Interest %\">\r\n\r\n<input id=\"years\" placeholder=\"Years\">\r\n\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet P=amount.value;\r\nlet r=rate.value/100/12;\r\nlet n=years.value*12;\r\nlet m=(P*r)/(1-Math.pow(1+r,-n));\r\nresult.innerHTML=\"Monthly: $\"+m.toFixed(2);\r\ndocument.dispatchEvent(new CustomEvent(\"pc:calculator_result\", { detail: { type: \"mortgage\" } }));\r\n}\r\n</script>"
     },
@@ -276,7 +276,7 @@
       "title": "Ovulation Calculator (Free) – Predict Fertility Window Instantly",
       "description": "Estimate your ovulation date based on your last period and cycle length.",
       "h1": "Ovulation Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "cycle-based ovulation estimator",
       "indexable": true,
       "body": "<h1>Ovulation Calculator</h1>\r\n<p class=\"desc\">Enter the first day of your last period and your usual cycle length.</p>\r\n\r\n<label for=\"last\">First day of last period</label>\r\n<input type=\"date\" id=\"last\">\r\n<label for=\"cycle\">Cycle length (days)</label>\r\n<input type=\"number\" id=\"cycle\" placeholder=\"Cycle length (days)\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet d = new Date(last.value);\r\nd.setDate(d.getDate() + (cycle.value - 14));\r\nr.innerHTML = \"Estimated ovulation: \" + d.toDateString();\r\n}\r\n</script>"
     },
@@ -290,7 +290,7 @@
       "title": "Percentage Calculator (Free) – Calculate Percentages Instantly",
       "description": "Calculate percentages based on input values instantly.",
       "h1": "Percentage Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "percentage math calculator",
       "indexable": true,
       "body": "<h1>Percentage Calculator</h1>\r\n<p class=\"desc\">Calculate percentages in both directions: value from percent, or percent from two values.</p>\r\n<label for=\"mode\">Mode:</label>\r\n<select id=\"mode\">\r\n<option value=\"part\">Find value (X% of Y)</option>\r\n<option value=\"percent\">Find percent (X is what % of Y)</option>\r\n</select>\r\n<label for=\"valueA\" id=\"labelA\">Percentage (%):</label>\r\n<input id=\"valueA\" type=\"number\" step=\"any\" placeholder=\"e.g. 15\">\r\n<label for=\"valueB\" id=\"labelB\">Base value:</label>\r\n<input id=\"valueB\" type=\"number\" step=\"any\" placeholder=\"e.g. 240\">\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction syncLabels() {\r\n  const mode = document.getElementById(\"mode\").value;\r\n  document.getElementById(\"labelA\").innerHTML = mode === \"part\" ? \"Percentage (%):\" : \"Part value:\";\r\n  document.getElementById(\"labelB\").innerHTML = mode === \"part\" ? \"Base value:\" : \"Total value:\";\r\n}\r\ndocument.getElementById(\"mode\").addEventListener(\"change\", syncLabels);\r\nsyncLabels();\r\nfunction calc(){\r\nconst mode = document.getElementById(\"mode\").value;\r\nconst a = parseFloat(document.getElementById(\"valueA\").value);\r\nconst b = parseFloat(document.getElementById(\"valueB\").value);\r\nif (!Number.isFinite(a) || !Number.isFinite(b)) {\r\n  document.getElementById(\"result\").innerHTML = \"Enter valid values.\";\r\n  return;\r\n}\r\nif (mode === \"part\") {\r\n  const result = b * (a / 100);\r\n  document.getElementById(\"result\").innerHTML = \"Result: \" + result.toFixed(2);\r\n  return;\r\n}\r\nif (b === 0) {\r\n  document.getElementById(\"result\").innerHTML = \"Total value cannot be zero.\";\r\n  return;\r\n}\r\nconst result = (a / b) * 100;\r\ndocument.getElementById(\"result\").innerHTML = \"Result: \" + result.toFixed(2) + \"%\";\r\n}\r\n</script>"
     },
@@ -304,7 +304,7 @@
       "title": "Profit Margin Calculator (Free) – Calculate Margin Instantly",
       "description": "Calculate profit margin based on revenue and costs instantly.",
       "h1": "Profit Margin Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "profit margin calculator",
       "indexable": true,
       "body": "<h1>Profit Margin Calculator</h1>\r\n\r\n<input id=\"revenue\" placeholder=\"Revenue\">\r\n<input id=\"cost\" placeholder=\"Cost\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet margin = ((revenue.value - cost.value) / revenue.value) * 100;\r\nr.innerHTML = \"Margin: \" + margin.toFixed(2) + \"%\";\r\n}\r\n</script>"
     },
@@ -318,7 +318,7 @@
       "title": "Retirement Calculator (Free) – Estimate Future Savings Instantly",
       "description": "Calculate how much you need for retirement and estimate your future savings instantly.",
       "h1": "Retirement Savings Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "retirement savings sum calculator",
       "indexable": true,
       "body": "<h1>Retirement Savings Calculator</h1>\r\n\r\n<input id=\"current\" placeholder=\"Current savings\">\r\n<input id=\"monthly\" placeholder=\"Monthly contribution\">\r\n<input id=\"years\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet total = Number(current.value) + (monthly.value * 12 * years.value);\r\nr.innerHTML = \"Total: $\" + total.toFixed(2);\r\n}\r\n</script>"
     },
@@ -332,7 +332,7 @@
       "title": "Salary Calculator (Free) – Estimate Earnings Instantly",
       "description": "Calculate salary, monthly income, and yearly earnings instantly.",
       "h1": "Hourly to Salary Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "hourly-to-annual salary calculator",
       "indexable": true,
       "body": "<h1>Hourly to Salary Calculator</h1>\r\n\r\n<label>Hourly Rate ($):</label>\r\n<input type=\"number\" id=\"hourly\">\r\n\r\n\r\n<label>Hours per week:</label>\r\n<input type=\"number\" id=\"hours\">\r\n\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"result\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet h = document.getElementById(\"hourly\").value;\r\nlet w = document.getElementById(\"hours\").value;\r\n\r\nlet yearly = h * w * 52;\r\nlet monthly = yearly / 12;\r\n\r\ndocument.getElementById(\"result\").innerHTML =\r\n\"Yearly: $\" + yearly.toFixed(2) + \"<br>Monthly: $\" + monthly.toFixed(2);\r\ndocument.dispatchEvent(new CustomEvent(\"pc:calculator_result\", { detail: { type: \"salary\" } }));\r\n}\r\n</script>"
     },
@@ -346,7 +346,7 @@
       "title": "Savings Calculator (Free) – Estimate Future Savings Instantly",
       "description": "Estimate how much your savings will grow over time with this free savings calculator.",
       "h1": "Savings Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "monthly savings total calculator",
       "indexable": true,
       "body": "<h1>Savings Calculator</h1>\r\n\r\n<input id=\"m\" placeholder=\"Monthly saving\">\r\n<input id=\"y\" placeholder=\"Years\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet total=m.value*12*y.value;\r\nr.innerHTML=\"Total: $\"+total;\r\n}\r\n</script>"
     },
@@ -360,7 +360,7 @@
       "title": "Seconds to Minutes Converter (Free)",
       "description": "Convert seconds to minutes and minutes to seconds instantly with this free bidirectional time converter.",
       "h1": "Seconds and Minutes Converter",
-      "trustTopic": "calculator",
+      "trustTopic": "seconds and minutes converter",
       "indexable": true,
       "body": "<h1>Seconds and Minutes Converter</h1>\n<p class=\"desc\">Enter either seconds or minutes, then convert both ways.</p>\n<label for=\"seconds\">Seconds</label>\n<input type=\"number\" id=\"seconds\" step=\"any\" placeholder=\"Enter seconds\">\n<label for=\"minutes\">Minutes</label>\n<input type=\"number\" id=\"minutes\" step=\"any\" placeholder=\"Enter minutes\">\n<button onclick=\"convert()\">Convert</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction convert() {\n  const sField = document.getElementById(\"seconds\");\n  const mField = document.getElementById(\"minutes\");\n  const s = parseFloat(sField.value);\n  const m = parseFloat(mField.value);\n  if (Number.isFinite(s) && !Number.isFinite(m)) {\n    const out = s / 60;\n    mField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = s.toFixed(6) + \" sec = \" + out.toFixed(6) + \" min\";\n    return;\n  }\n  if (!Number.isFinite(s) && Number.isFinite(m)) {\n    const out = m * 60;\n    sField.value = out.toFixed(6);\n    document.getElementById(\"result\").innerHTML = m.toFixed(6) + \" min = \" + out.toFixed(6) + \" sec\";\n    return;\n  }\n  document.getElementById(\"result\").innerHTML = \"Fill exactly one field to convert.\";\n}\n</script>"
     },
@@ -374,7 +374,7 @@
       "title": "Tax Calculator (Free) – Estimate Taxes Instantly",
       "description": "Calculate income tax quickly and estimate how much you owe with this free tax calculator.",
       "h1": "Tax Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "flat-rate income tax estimator",
       "indexable": true,
       "body": "<h1>Tax Calculator</h1>\r\n\r\n<input id=\"income\" placeholder=\"Income\">\r\n<input id=\"tax\" placeholder=\"Tax %\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet t = income.value * (tax.value / 100);\r\nr.innerHTML = \"Tax: $\" + t.toFixed(2);\r\ndocument.dispatchEvent(new CustomEvent(\"pc:calculator_result\", { detail: { type: \"tax\" } }));\r\n}\r\n</script>"
     },
@@ -388,7 +388,7 @@
       "title": "Tip Calculator (Free) – Calculate Tips Instantly",
       "description": "Calculate tips and split bills instantly with this free tip calculator.",
       "h1": "Tip Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "tip amount calculator",
       "indexable": true,
       "body": "<h1>Tip Calculator</h1>\r\n\r\n<input id=\"bill\" placeholder=\"Bill\">\r\n<input id=\"tip\" placeholder=\"Tip %\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet t=bill.value*(tip.value/100);\r\nr.innerHTML=\"Tip: $\"+t;\r\n}\r\n</script>"
     },
@@ -402,7 +402,7 @@
       "title": "Weight Loss Calculator (Free) – Estimate Fat Loss Instantly",
       "description": "Calculate how much weight you need to lose and plan your goals effectively.",
       "h1": "Weight Loss Calculator",
-      "trustTopic": "calculator",
+      "trustTopic": "weight-difference calculator",
       "indexable": true,
       "body": "<h1>Weight Loss Calculator</h1>\r\n\r\n<input id=\"start\" placeholder=\"Start weight\">\r\n<input id=\"end\" placeholder=\"Goal weight\">\r\n\r\n<button onclick=\"calc()\">Calculate</button>\r\n\r\n<h2 class=\"result\" id=\"r\">Result: -</h2>\r\n\r\n<script>\r\nfunction calc(){\r\nlet loss = start.value - end.value;\r\nr.innerHTML = \"Weight to lose: \" + loss;\r\n}\r\n</script>"
     },
@@ -539,12 +539,12 @@
       "marketId": "en",
       "category": "Financial",
       "hubPath": "financial-calculators.html",
-      "title": "APR Calculator (Free) - Estimate Annual Percentage Rate",
-      "description": "Estimate APR from total loan fees, principal amount, and loan term for quick comparison.",
-      "h1": "APR Estimator",
-      "trustTopic": "loan APR calculator",
+      "title": "Loan Fee Annualizer (Free) – Simple Yearly Rate for Comparison",
+      "description": "Annualizes total upfront loan fees as a simple percent of principal per year. For planning only—not a Truth-in-Lending (TILA) disclosure APR.",
+      "h1": "Loan fee annualizer (simple)",
+      "trustTopic": "loan fee comparison tool",
       "indexable": true,
-      "body": "<h1>APR Estimator</h1>\n<p class=\"desc\">Quickly estimate APR using principal, fees, and term.</p>\n<label for=\"principal\">Loan principal</label>\n<input id=\"principal\" type=\"number\" step=\"any\" placeholder=\"20000\">\n<label for=\"fees\">Total loan fees</label>\n<input id=\"fees\" type=\"number\" step=\"any\" placeholder=\"800\">\n<label for=\"years\">Loan term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"5\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const principal = parseFloat(document.getElementById('principal').value);\n  const fees = parseFloat(document.getElementById('fees').value);\n  const years = parseFloat(document.getElementById('years').value);\n  if (!Number.isFinite(principal) || !Number.isFinite(fees) || !Number.isFinite(years) || principal <= 0 || years <= 0) {\n    document.getElementById('result').innerHTML = 'Enter valid values.';\n    return;\n  }\n  const apr = (fees / principal) / years * 100;\n  document.getElementById('result').innerHTML = 'Estimated APR impact from fees: ' + apr.toFixed(2) + '% per year';\n}\n</script>"
+      "body": "<h1>Loan fee annualizer (simple)</h1>\n<p class=\"desc\">Spread total upfront fees evenly over the loan term. The result is a simple yearly percentage for rough comparison only—it is not the APR on a federal Truth in Lending disclosure.</p>\n<label for=\"principal\">Loan principal ($)</label>\n<input id=\"principal\" type=\"number\" step=\"any\" placeholder=\"20000\">\n<label for=\"fees\">Total upfront fees ($)</label>\n<input id=\"fees\" type=\"number\" step=\"any\" placeholder=\"800\">\n<label for=\"years\">Loan term (years)</label>\n<input id=\"years\" type=\"number\" step=\"any\" value=\"5\">\n<button onclick=\"calc()\">Calculate</button>\n<h2 class=\"result\" id=\"result\">Result: -</h2>\n<script>\nfunction calc(){\n  const principal = parseFloat(document.getElementById('principal').value);\n  const fees = parseFloat(document.getElementById('fees').value);\n  const years = parseFloat(document.getElementById('years').value);\n  if (!Number.isFinite(principal) || !Number.isFinite(fees) || !Number.isFinite(years) || principal <= 0 || years <= 0) {\n    document.getElementById('result').innerHTML = 'Enter a valid principal and term (both greater than zero).';\n    return;\n  }\n  if (fees < 0) {\n    document.getElementById('result').innerHTML = 'Fees cannot be negative.';\n    return;\n  }\n  const rate = (fees / principal) / years * 100;\n  document.getElementById('result').innerHTML = 'Simple annualized fee rate: ' + rate.toFixed(2) + '% per year (fees / principal / years). Planning shortcut only—not lender disclosure APR.';\n}\n</script>"
     },
     {
       "fileName": "commission-calculator.html",

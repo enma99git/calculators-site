@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-page-path="es/contact.html">
 <head>
 <title>Contacto | Practical Calculators</title>
 <meta name="description" content="Contacta a Practical Calculators con preguntas, comentarios y sugerencias de nuevas calculadoras.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="../es/index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="../search-index.json" data-page-path="es/contact.html" data-pref-lang="es" data-no-results="Sin resultados">
+<label class="visually-hidden" for="site-search-q">Buscar calculadoras</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Buscar calculadoras…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Buscar calculadoras"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -56,5 +61,6 @@
 </p>
 </div>
 </div>
+<script src="../site-search.js" defer></script>
 </body>
 </html>

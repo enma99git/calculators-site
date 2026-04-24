@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="weight-loss-calculator.html">
 <head>
 <title>Weight Loss Calculator (Free) – Estimate Fat Loss Instantly</title>
 <meta name="description" content="Calculate how much weight you need to lose and plan your goals effectively.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="weight-loss-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -36,13 +41,15 @@ r.innerHTML = "Weight to lose: " + loss;
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul><li><strong>Start weight</strong> and <strong>goal weight</strong> — Same units (as you enter them).</li></ul>
+<h3>Formula used</h3>
+<p><em>Weight to lose ≈ start − goal</em> (subtraction only).</p>
+<p class="small">No timeline, calorie deficit, or health screening—informational subtraction only.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This weight-difference calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>
@@ -71,6 +78,7 @@ r.innerHTML = "Weight to lose: " + loss;
 <li><a href="macros-calculator.html">Macros Calculator</a></li>
 <li><a href="ovulation-calculator.html">Ovulation Calculator</a></li>
 </ul>
+
 </div>
 <div class="footer">
 <p>Browse Categories</p>
@@ -89,5 +97,6 @@ r.innerHTML = "Weight to lose: " + loss;
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

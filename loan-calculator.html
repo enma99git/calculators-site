@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="loan-calculator.html">
 <head>
 <title>Loan Payment Calculator (Free) – Calculate Monthly Payments Instantly</title>
 <meta name="description" content="Calculate your monthly loan payment based on loan amount, interest rate, and term.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="loan-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -65,7 +70,7 @@ document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type:
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This loan payment calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>
@@ -152,5 +157,6 @@ document.dispatchEvent(new CustomEvent("pc:calculator_result", { detail: { type:
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

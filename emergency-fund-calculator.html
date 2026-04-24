@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="emergency-fund-calculator.html">
 <head>
 <title>Emergency Fund Calculator (Free) - Set Your Savings Target</title>
 <meta name="description" content="Calculate a target emergency fund based on monthly expenses and savings timeline.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="emergency-fund-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -38,17 +43,20 @@ function calc(){
   }
   const target = expenses * months;
   const monthsToGoal = Number.isFinite(monthlySave) && monthlySave > 0 ? target / monthlySave : null;
-  document.getElementById('result').innerHTML = 'Target fund: 
-</html>
- + target.toFixed(2) + (monthsToGoal ? '<br>Months to goal: ' + monthsToGoal.toFixed(1) : '');
+  document.getElementById('result').innerHTML = 'Target fund: $' + target.toFixed(2) + (monthsToGoal ? '<br>Months to goal: ' + monthsToGoal.toFixed(1) : '');
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Monthly expenses</strong> — Spending level you want covered.</li>
+<li><strong>Target months of expenses</strong> — Multiplier for the fund size.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Target emergency fund ≈ monthly expenses × months</em>.</p>
+<p class="small">Does not adjust for inflation, irregular bills, or invested vs cash holdings.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -140,5 +148,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

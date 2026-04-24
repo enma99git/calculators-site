@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="extra-payment-loan-calculator.html">
 <head>
 <title>Extra Payment Loan Calculator - Estimate Interest and Time Saved</title>
 <meta name="description" content="Estimate how extra monthly payments can reduce loan payoff time and total interest cost.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="extra-payment-loan-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -55,19 +60,20 @@ function calc(){
   }
   const monthsNew = Math.log(newPay / (newPay - balance * monthlyRate)) / Math.log(1 + monthlyRate);
   const savedMonths = monthsBase - monthsNew;
-  document.getElementById('result').innerHTML = 'Base payment: 
-</html>
- + base.toFixed(2) + '<br>New payment: 
-</html>
- + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months';
+  document.getElementById('result').innerHTML = 'Base payment: $' + base.toFixed(2) + '<br>New payment: $' + newPay.toFixed(2) + '<br>Estimated time saved: ' + Math.max(0, savedMonths).toFixed(1) + ' months';
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Loan balance, annual rate (%), remaining term (years)</strong> — Used to compute the baseline amortizing payment.</li>
+<li><strong>Extra payment per month</strong> — Added to that payment; payoff months recomputed from the same monthly rate.</li>
+</ul>
+<h3>Formula used</h3>
+<p>Baseline payment uses fixed-rate amortization <em>M = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</em> with <em>r</em> monthly and <em>n</em> months. New payoff months from the closed-form log expression with the increased payment.</p>
+<p class="small">Assumes the extra pays down principal immediately; ignores fees, taxes, and escrow.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -159,5 +165,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

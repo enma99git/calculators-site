@@ -46,7 +46,8 @@
         "intro": "Calcula un valor a partir de un porcentaje o descubre qué porcentaje representa un valor sobre otro.",
         "category": "Conversions",
         "hubPath": "es/conversion-calculators.html",
-        "formulaType": "percentage"
+        "formulaType": "percentage",
+        "trustTopic": "La calculadora de porcentajes"
       },
       {
         "slug": "calculadora-imc",
@@ -56,7 +57,8 @@
         "intro": "Ingresa estatura y peso para calcular el IMC y ver una clasificación general.",
         "category": "Health",
         "hubPath": "es/health-calculators.html",
-        "formulaType": "bmi"
+        "formulaType": "bmi",
+        "trustTopic": "La calculadora de IMC"
       },
       {
         "slug": "calculadora-hipoteca",
@@ -66,7 +68,8 @@
         "intro": "Usa monto, tasa y años para estimar el pago mensual de una hipoteca.",
         "category": "Financial",
         "hubPath": "es/financial-calculators.html",
-        "formulaType": "loan"
+        "formulaType": "loan",
+        "trustTopic": "La calculadora de hipoteca"
       },
       {
         "slug": "calculadora-prestamo",
@@ -76,7 +79,8 @@
         "intro": "Calcula pagos mensuales según monto, tasa anual y plazo en años.",
         "category": "Financial",
         "hubPath": "es/financial-calculators.html",
-        "formulaType": "loan"
+        "formulaType": "loan",
+        "trustTopic": "La calculadora de préstamos"
       },
       {
         "slug": "calculadora-ahorro",
@@ -86,7 +90,8 @@
         "intro": "Proyecta tu saldo futuro usando aporte inicial, aporte mensual, tasa y años.",
         "category": "Financial",
         "hubPath": "es/financial-calculators.html",
-        "formulaType": "savings"
+        "formulaType": "savings",
+        "trustTopic": "La calculadora de ahorro"
       },
       {
         "slug": "convertidor-kilometros-millas",
@@ -96,7 +101,8 @@
         "intro": "Ingresa kilómetros o millas y convierte en ambas direcciones.",
         "category": "Conversions",
         "hubPath": "es/conversion-calculators.html",
-        "formulaType": "kmMi"
+        "formulaType": "kmMi",
+        "trustTopic": "El convertidor de kilómetros y millas"
       },
       {
         "slug": "convertidor-celsius-fahrenheit",
@@ -106,7 +112,8 @@
         "intro": "Convierte temperaturas fácilmente de Celsius a Fahrenheit y viceversa.",
         "category": "Conversions",
         "hubPath": "es/conversion-calculators.html",
-        "formulaType": "cF"
+        "formulaType": "cF",
+        "trustTopic": "El convertidor de Celsius y Fahrenheit"
       },
       {
         "slug": "calculadora-salario-hora",
@@ -116,7 +123,8 @@
         "intro": "Convierte salario anual en tarifa por hora usando horas y semanas trabajadas.",
         "category": "Career",
         "hubPath": "es/career-calculators.html",
-        "formulaType": "salary"
+        "formulaType": "salary",
+        "trustTopic": "La calculadora de salario por hora"
       },
       {
         "slug": "calculadora-descuento",
@@ -126,7 +134,8 @@
         "intro": "Ingresa precio original y porcentaje de descuento para ver el precio final.",
         "category": "Financial",
         "hubPath": "es/financial-calculators.html",
-        "formulaType": "discount"
+        "formulaType": "discount",
+        "trustTopic": "La calculadora de descuentos"
       },
       {
         "slug": "calculadora-propinas",
@@ -136,7 +145,8 @@
         "intro": "Ingresa total de cuenta y porcentaje de propina para calcular total a pagar.",
         "category": "Financial",
         "hubPath": "es/financial-calculators.html",
-        "formulaType": "tip"
+        "formulaType": "tip",
+        "trustTopic": "La calculadora de propinas"
       }
     ],
     "statePages": [

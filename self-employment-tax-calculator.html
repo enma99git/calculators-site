@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="self-employment-tax-calculator.html">
 <head>
 <title>Self-Employment Tax Calculator - Estimate SE Tax</title>
 <meta name="description" content="Estimate self-employment tax from net business income for freelancers and contractors.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="self-employment-tax-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -34,17 +39,20 @@ function calc(){
     return;
   }
   const tax = income * (seRate / 100);
-  document.getElementById('result').innerHTML = 'Estimated self-employment tax: 
-</html>
- + tax.toFixed(2);
+  document.getElementById('result').innerHTML = 'Estimated self-employment tax: $' + tax.toFixed(2);
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Net business income</strong> — Profit base the rate applies to.</li>
+<li><strong>Self-employment tax rate (%)</strong> — Default 15.3% placeholder for combined Social Security/Medicare style estimates.</li>
+</ul>
+<h3>Formula used</h3>
+<p><em>Estimated SE tax ≈ income × (rate ÷ 100)</em> as a single line item.</p>
+<p class="small">Not Schedule SE—ignores wage base limits, half deduction, or additional Medicare tax.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -108,5 +116,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

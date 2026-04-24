@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="mortgage-affordability-calculator.html">
 <head>
 <title>Mortgage Affordability Calculator - Estimate Home Price Range</title>
 <meta name="description" content="Estimate affordable mortgage payment and home price range based on income, debts, and down payment.">
@@ -13,6 +13,11 @@
 <div class="top">
 <div class="wrap top-inner">
 <a class="brand" href="index.html">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="mortgage-affordability-calculator.html" data-pref-lang="en" data-no-results="No matches">
+<label class="visually-hidden" for="site-search-q">Search calculators</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
+</div>
 </div>
 </div>
 <div class="wrap">
@@ -50,19 +55,20 @@ function calc(){
   const r = rate / 100 / 12;
   const n = years * 12;
   const loan = r === 0 ? maxHousing * n : maxHousing * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
-  document.getElementById('result').innerHTML = 'Estimated max housing payment: 
-</html>
- + maxHousing.toFixed(2) + '<br>Approx loan amount: 
-</html>
- + loan.toFixed(2);
+  document.getElementById('result').innerHTML = 'Estimated max housing payment: $' + maxHousing.toFixed(2) + '<br>Approx loan amount: $' + loan.toFixed(2);
 }
 </script>
 <details class="methodology-block">
 <summary>How this calculation works</summary>
 <div>
 <h3>What each input means</h3>
-<p class="desc">Enter the values requested above, then use <strong>Calculate</strong>. The result is computed immediately in your browser from those inputs.</p>
-<p class="small">Outputs are planning-level estimates. For taxes, credit, health, or legal decisions, confirm figures and definitions with an authoritative source or professional.</p>
+<ul>
+<li><strong>Gross monthly income</strong> and <strong>target DTI limit (%)</strong> — Housing budget cap ≈ <em>income × (DTI ÷ 100) − other monthly debts</em>.</li>
+<li><strong>Estimated mortgage rate (%)</strong> and <strong>loan term (years)</strong> — Convert payment capacity into a loan principal using the amortization identity.</li>
+</ul>
+<h3>Formula used</h3>
+<p>Payment-to-loan principal: <em>loan ≈ max housing × ((1 + r)<sup>n</sup> − 1) ÷ (r(1 + r)<sup>n</sup>)</em> with monthly <em>r</em> and <em>n = years × 12</em>; if <em>r = 0</em>, <em>loan = max housing × n</em>.</p>
+<p class="small">Ignores taxes, insurance in the payment, PMI, and underwriting overlays.</p>
 </div>
 </details>
 <div class="trust-block">
@@ -154,5 +160,6 @@ function calc(){
 </p>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>

@@ -112,7 +112,10 @@ const LOCALE_LABELS = {
     faqTitle: "Frequently asked questions",
     methodologyTitle: "How this calculation works",
     methodologyInputs: "What each input means",
-    methodologyFormula: "Formula used"
+    methodologyFormula: "Formula used",
+    searchLabel: "Search calculators",
+    searchPlaceholder: "Search calculators…",
+    searchNoResults: "No matches"
   },
   es: {
     browseCategories: "Explorar categorías",
@@ -130,7 +133,8 @@ const LOCALE_LABELS = {
     moreRelated: "Más calculadoras relacionadas",
     categoryHub: "Índice de categoría",
     trustTitle: "Información sobre este cálculo",
-    trustDescription: "El resultado se genera con los datos ingresados por el usuario.",
+    trustDescription:
+      "{topic} ofrece resultados estimados a partir de los valores que ingresas. Revisa los supuestos y verifica las decisiones importantes de manera independiente.",
     trustItem1: "Los valores mostrados pueden incluir redondeos y son solo informativos.",
     trustItem2: "Para decisiones relevantes, verifique la información o consulte a un profesional.",
     trustItem3: "",
@@ -138,7 +142,10 @@ const LOCALE_LABELS = {
     faqTitle: "Preguntas frecuentes",
     methodologyTitle: "Cómo funciona este cálculo",
     methodologyInputs: "Qué significa cada dato",
-    methodologyFormula: "Fórmula o regla"
+    methodologyFormula: "Fórmula o regla",
+    searchLabel: "Buscar calculadoras",
+    searchPlaceholder: "Buscar calculadoras…",
+    searchNoResults: "Sin resultados"
   }
 };
 
@@ -383,6 +390,33 @@ function getCurrencyPairs(currencyFamily) {
   return pairs;
 }
 
+function topBarHtml({ pagePath, lang }) {
+  const locale = localeCode(lang);
+  const labels = LOCALE_LABELS[locale];
+  const isSpanishPath = normalizePath(pagePath).startsWith("es/");
+  const homeHref = toHref(pagePath, isSpanishPath ? "es/index.html" : "index.html");
+  const searchIndexHref = toHref(pagePath, "search-index.json");
+  const normPath = normalizePath(pagePath);
+  return `<div class="top">
+<div class="wrap top-inner">
+<a class="brand" href="${homeHref}">Practical Calculators</a>
+<div class="site-search" data-site-search data-search-index="${escapeHtml(
+    searchIndexHref
+  )}" data-page-path="${escapeHtml(normPath)}" data-pref-lang="${escapeHtml(
+    locale
+  )}" data-no-results="${escapeHtml(labels.searchNoResults)}">
+<label class="visually-hidden" for="site-search-q">${escapeHtml(labels.searchLabel)}</label>
+<input type="search" id="site-search-q" class="site-search-input" placeholder="${escapeHtml(
+    labels.searchPlaceholder
+  )}" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="${escapeHtml(
+    labels.searchLabel
+  )}"></div>
+</div>
+</div>
+</div>`;
+}
+
 function htmlShell({
   title,
   description,
@@ -439,8 +473,9 @@ function htmlShell({
   const homeLinksHtml = isSpanishPath
     ? `<p><a class="home-link" href="${homeHref}">${labels.home}</a> | <a class="home-link" href="${englishHomeHref}">${labels.englishHome}</a></p>`
     : `<p><a class="home-link" href="${homeHref}">${labels.home}</a></p>`;
+  const searchScriptHref = toHref(pagePath, "site-search.js");
   return `<!DOCTYPE html>
-<html lang="${lang}">
+<html lang="${lang}" data-page-path="${escapeHtml(normalizePath(pagePath))}">
 <head>
 <title>${title}</title>
 <meta name="description" content="${description}">
@@ -449,11 +484,7 @@ ${robots}${canonical}<link rel="stylesheet" href="${stylesHref}">
 ${analyticsLoader}
 </head>
 <body>
-<div class="top">
-<div class="wrap top-inner">
-<a class="brand" href="${homeHref}">Practical Calculators</a>
-</div>
-</div>
+${topBarHtml({ pagePath, lang })}
 <div class="wrap">
 <div class="card">
 ${body}
@@ -470,6 +501,7 @@ ${homeLinksHtml}
 ${footerInfoLinksHtml}
 </div>
 </div>
+<script src="${searchScriptHref}" defer></script>
 </body>
 </html>
 `;
@@ -651,6 +683,29 @@ function faqItemsForEntry(entry) {
         answer: "Use it as a planning estimate and compare with your payroll provider for exact numbers."
       }
     ];
+  }
+
+  if (entry.family === "legacyStaticPage") {
+    const legacyKey = normalizePath(entry.pagePath || entry.fileName).toLowerCase();
+    if (legacyKey === "apr-calculator.html") {
+      return [
+        {
+          question: "Is this the same APR as on my loan paperwork?",
+          answer:
+            "No. The APR on a Truth in Lending disclosure reflects your nominal rate, payment schedule, how finance charges and fees are applied over time, and other regulatory rules. This page only annualizes the total upfront fee dollars you enter, spread evenly by principal and years."
+        },
+        {
+          question: "What does the percentage here mean?",
+          answer:
+            "It is (total upfront fees ÷ loan principal ÷ years in the loan) × 100, expressed as a simple percent per year. It is a rough fee load, not a full APR."
+        },
+        {
+          question: "When should I use this?",
+          answer:
+            "For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals."
+        }
+      ];
+    }
   }
 
   return [
@@ -1377,7 +1432,7 @@ function spanishPilotTemplate(entry, entries) {
 <p class="desc">${entry.intro}</p>
 ${spanishFormulaScript(entry.formulaType)}
 ${methodologyBlockHtml(entry)}
-${trustBlockHtml("calculadora", "es")}
+${trustBlockHtml(entry.trustTopic || entry.h1 || "calculadora", "es")}
 ${faqSectionHtml(faqItems, "es")}
 ${faqSchemaHtml(faqItems)}
 ${relatedHtml(entries, entry)}`
@@ -1629,6 +1684,7 @@ function buildEntries() {
       h1: page.h1 || "Calculadora",
       intro: page.intro || "",
       formulaType: page.formulaType || "percentage",
+      trustTopic: page.trustTopic || page.h1 || "Calculadora",
       indexable: true
     });
   }
@@ -2196,7 +2252,7 @@ ${stateLinks}
 
 function writeGeneratedIndex(entries) {
   const page = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="">
 <head>
 <title>Generated Calculators Index</title>
 <meta name="description" content="Legacy URL redirecting to home calculator index.">
@@ -2208,11 +2264,7 @@ function writeGeneratedIndex(entries) {
 <!-- Generated from pages.config.json -->
 </head>
 <body>
-<div class="top">
-<div class="wrap top-inner">
-<a class="brand" href="index.html">Practical Calculators</a>
-</div>
-</div>
+${topBarHtml({ pagePath: "", lang: "en" })}
 <div class="wrap">
 <div class="card">
 <h1>Generated Calculators Index</h1>
@@ -2222,6 +2274,7 @@ window.location.replace("index.html");
 </script>
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>
 `;
@@ -2293,7 +2346,7 @@ ${currencyList}
     : "";
 
   const page = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page-path="">
 <head>
 <title>Free Online Calculators - Financial, Health, Conversion & More</title>
 <meta name="description" content="Use free online calculators for finance, health, conversions, and more. Simple tools with instant results.">
@@ -2302,11 +2355,7 @@ ${currencyList}
 ${homeCanonicalLine}<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="top">
-<div class="wrap top-inner">
-<a class="brand" href="index.html">Practical Calculators</a>
-</div>
-</div>
+${topBarHtml({ pagePath: "", lang: "en" })}
 <div class="wrap">
 <div class="card">
 <h1>Free Online Calculators</h1>
@@ -2337,10 +2386,85 @@ ${sections}
 ${footerInfoLinksHtml}
 </div>
 </div>
+<script src="site-search.js" defer></script>
 </body>
 </html>
 `;
   fs.writeFileSync(path.join(root, "index.html"), page, "utf8");
+}
+
+function writeSearchIndex(entries) {
+  const records = new Map();
+
+  function add(u, title, h1, lang, cat) {
+    const pagePath = normalizePath(u);
+    const l = lang === "es" ? "es" : "en";
+    const key = `${pagePath}\t${l}`;
+    records.set(key, {
+      u: pagePath,
+      t: String(title || "").trim(),
+      h: String(h1 || title || "").trim(),
+      l,
+      c: String(cat || "").trim()
+    });
+  }
+
+  add(
+    "index.html",
+    "Free Online Calculators - Financial, Health, Conversion & More",
+    "Free Online Calculators",
+    "en",
+    "Home"
+  );
+
+  const enHubs = [
+    ["financial-calculators.html", "Financial Calculators | Practical Calculators", "Financial Calculators", "Financial"],
+    ["health-calculators.html", "Health Calculators | Practical Calculators", "Health Calculators", "Health"],
+    ["career-calculators.html", "Career Calculators | Practical Calculators", "Career Calculators", "Career"],
+    ["conversion-calculators.html", "Conversion Calculators | Practical Calculators", "Conversion Calculators", "Conversions"]
+  ];
+  for (const row of enHubs) {
+    add(row[0], row[1], row[2], "en", row[3]);
+  }
+
+  const spanishEntries = entries.filter((entry) => entry.marketId === "es");
+  if (spanishEntries.length > 0) {
+    add("es/index.html", "Calculadoras Gratis en Español", "Calculadoras en Español", "es", "Inicio");
+    const esHubs = [
+      ["es/financial-calculators.html", "Calculadoras de Finanzas", "Finanzas"],
+      ["es/health-calculators.html", "Calculadoras de Salud", "Salud"],
+      ["es/career-calculators.html", "Calculadoras de Carrera", "Carrera"],
+      ["es/conversion-calculators.html", "Calculadoras de Conversiones", "Conversiones"]
+    ];
+    for (const row of esHubs) {
+      add(row[0], `${row[1]} | Practical Calculators`, row[1], "es", row[2]);
+    }
+  }
+
+  const stateEntries = entries.filter((entry) => entry.family === "statePaycheckPilotPage");
+  if (stateEntries.length > 0) {
+    add("us/index.html", "US State Calculators | Practical Calculators", "U.S. State Calculators", "en", "Regional");
+  }
+
+  for (const page of EN_INFO_PAGES) {
+    const shortTitle = page.title.split("|")[0].trim();
+    add(page.fileName, page.title, shortTitle, "en", "Site");
+  }
+  for (const page of ES_INFO_PAGES) {
+    const shortTitle = page.title.split("|")[0].trim();
+    add(page.fileName, page.title, shortTitle, "es", "Sitio");
+  }
+
+  for (const entry of entries) {
+    const u = normalizePath(entry.pagePath || entry.fileName);
+    const lang = entry.lang === "es" || entry.marketId === "es" ? "es" : "en";
+    const catEn = entry.category || "";
+    const cat = lang === "es" ? SPANISH_CATEGORY_LABELS[catEn] || catEn : catEn;
+    add(u, entry.title, entry.h1, lang, cat);
+  }
+
+  const items = Array.from(records.values());
+  fs.writeFileSync(path.join(root, "search-index.json"), JSON.stringify({ v: 1, items }), "utf8");
 }
 
 function writeSitemap(entries) {
@@ -2427,12 +2551,15 @@ function main() {
   writeMarketPilotIndexes(entries);
   writeGeneratedIndex(entries);
   writeInformationalPages();
+  writeSearchIndex(entries);
   writeSitemap(entries);
 
   console.log(`Generated entries configured: ${entries.length}`);
   console.log(`Pages created/updated: ${created}`);
   console.log(`Pages skipped (existing): ${skipped}`);
-  console.log(`Wrote index.html, ${config.generatedIndexFile || "generated-calculators.html"}, and sitemap.xml`);
+  console.log(
+    `Wrote index.html, search-index.json, ${config.generatedIndexFile || "generated-calculators.html"}, and sitemap.xml`
+  );
 }
 
 main();
