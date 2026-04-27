@@ -161,7 +161,7 @@ function rebuildBody(main, currentFileName) {
     pagePath
   )}" data-pref-lang="en" data-no-results="No matches">
 <label class="visually-hidden" for="site-search-q">Search calculators</label>
-<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" role="combobox" aria-haspopup="listbox" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
 <div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
 </div>`;
   return `<div class="top">

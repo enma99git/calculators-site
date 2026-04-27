@@ -90,9 +90,20 @@
       return;
     }
 
+    if (!dropdown.id) {
+      dropdown.id = "site-search-results";
+    }
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-haspopup", "listbox");
+    input.setAttribute("aria-controls", dropdown.id);
+
+    const originalPlaceholder = input.getAttribute("placeholder") || "";
+
     let items = [];
     let loaded = false;
     let loadError = false;
+    let activeIndex = -1;
+    let searchDebounceTimer = null;
 
     function noResultsLabel() {
       return (
@@ -104,6 +115,73 @@
     function setOpen(open) {
       dropdown.hidden = !open;
       input.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function optionAnchors() {
+      return dropdown.querySelectorAll("a.site-search-item");
+    }
+
+    function clearActive() {
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+      const anchors = optionAnchors();
+      for (let i = 0; i < anchors.length; i += 1) {
+        anchors[i].classList.remove("site-search-item-active");
+        anchors[i].removeAttribute("aria-selected");
+      }
+    }
+
+    function applyActive(index) {
+      clearActive();
+      const anchors = optionAnchors();
+      if (index < 0 || index >= anchors.length) {
+        return;
+      }
+      activeIndex = index;
+      const el = anchors[index];
+      el.classList.add("site-search-item-active");
+      el.setAttribute("aria-selected", "true");
+      input.setAttribute("aria-activedescendant", el.id);
+      try {
+        el.scrollIntoView({ block: "nearest" });
+      } catch (e) {
+        /* ignore */
+      }
+    }
+
+    function showLoadError() {
+      dropdown.textContent = "";
+      const box = document.createElement("div");
+      box.className = "site-search-error";
+      box.setAttribute("role", "alert");
+      const msg =
+        prefLang === "es"
+          ? "No se pudo cargar el índice de búsqueda. Comprueba la conexión o vuelve a intentarlo."
+          : "Could not load the search index. Check your connection or try again.";
+      box.appendChild(document.createTextNode(msg));
+
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "site-search-retry";
+      retry.textContent = prefLang === "es" ? "Reintentar" : "Retry";
+      retry.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+      });
+      retry.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        loadError = false;
+        loaded = false;
+        items = [];
+        input.disabled = false;
+        input.setAttribute("placeholder", originalPlaceholder);
+        dropdown.textContent = "";
+        setOpen(false);
+        loadIndex();
+      });
+      box.appendChild(retry);
+      dropdown.appendChild(box);
+      setOpen(true);
     }
 
     function loadIndex() {
@@ -120,17 +198,16 @@
         .then(function (data) {
           items = Array.isArray(data.items) ? data.items : [];
           loaded = true;
-          // First input often fires before fetch finishes; re-run so the dropdown appears.
-          runSearch();
+          performSearch();
         })
         .catch(function () {
           loadError = true;
-          input.placeholder = prefLang === "es" ? "Búsqueda no disponible" : "Search unavailable";
-          input.disabled = true;
+          showLoadError();
         });
     }
 
     function renderList(matchesList) {
+      clearActive();
       dropdown.textContent = "";
       if (!matchesList.length) {
         const empty = document.createElement("div");
@@ -147,6 +224,8 @@
         a.className = "site-search-item";
         a.href = hrefToTarget(pagePath, it.u);
         a.setAttribute("role", "option");
+        a.setAttribute("tabindex", "-1");
+        a.id = dropdown.id + "-opt-" + i;
 
         const lang = document.createElement("span");
         lang.className = "site-search-lang";
@@ -165,11 +244,17 @@
         if (cat.textContent) {
           a.appendChild(cat);
         }
+        a.addEventListener("mouseenter", function () {
+          applyActive(i);
+        });
         dropdown.appendChild(a);
       }
     }
 
-    function runSearch() {
+    function performSearch() {
+      if (loadError) {
+        return;
+      }
       if (!loaded) {
         loadIndex();
         return;
@@ -178,6 +263,7 @@
       if (!tokens.length) {
         dropdown.textContent = "";
         setOpen(false);
+        clearActive();
         return;
       }
       const hits = [];
@@ -191,26 +277,104 @@
       setOpen(true);
     }
 
-    const debounced = debounce(runSearch, 160);
+    function scheduleSearch() {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(performSearch, 160);
+    }
+
+    function flushSearch() {
+      clearTimeout(searchDebounceTimer);
+      performSearch();
+    }
 
     input.addEventListener("focus", function () {
       loadIndex();
     });
 
     input.addEventListener("input", function () {
-      debounced();
+      scheduleSearch();
     });
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Escape") {
         setOpen(false);
+        clearActive();
         input.blur();
+        return;
+      }
+
+      const tokens = tokenize(input.value);
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (!tokens.length) {
+          return;
+        }
+        if (!loaded) {
+          loadIndex();
+          return;
+        }
+        if (loadError) {
+          e.preventDefault();
+          return;
+        }
+        e.preventDefault();
+        flushSearch();
+        const anchors = optionAnchors();
+        if (!anchors.length) {
+          return;
+        }
+        if (e.key === "ArrowDown") {
+          if (!dropdown.hidden && activeIndex >= 0) {
+            applyActive(Math.min(activeIndex + 1, anchors.length - 1));
+          } else {
+            applyActive(0);
+          }
+        } else {
+          if (!dropdown.hidden && activeIndex > 0) {
+            applyActive(activeIndex - 1);
+          } else if (!dropdown.hidden && activeIndex === 0) {
+            clearActive();
+          } else {
+            applyActive(anchors.length - 1);
+          }
+        }
+        return;
+      }
+
+      if (e.key === "Home" && !dropdown.hidden) {
+        const anchors = optionAnchors();
+        if (anchors.length) {
+          e.preventDefault();
+          applyActive(0);
+        }
+        return;
+      }
+
+      if (e.key === "End" && !dropdown.hidden) {
+        const anchors = optionAnchors();
+        if (anchors.length) {
+          e.preventDefault();
+          applyActive(anchors.length - 1);
+        }
+        return;
+      }
+
+      if (e.key === "Enter") {
+        const anchors = optionAnchors();
+        if (dropdown.hidden || activeIndex < 0 || activeIndex >= anchors.length) {
+          return;
+        }
+        e.preventDefault();
+        const href = anchors[activeIndex].getAttribute("href");
+        if (href) {
+          window.location.href = anchors[activeIndex].href;
+        }
       }
     });
 
     document.addEventListener("click", function (e) {
       if (!wrap.contains(e.target)) {
         setOpen(false);
+        clearActive();
       }
     });
 
@@ -222,6 +386,7 @@
         }
         if (!wrap.contains(active)) {
           setOpen(false);
+          clearActive();
         }
       }, 120);
     });

@@ -244,7 +244,7 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <ul><li><strong>Price</strong> and <strong>discount %</strong>.</li></ul>
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>Final price = price × (1 − discount/100)</em></p>`,
-    "apr-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+    "loan-fee-annualizer.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Loan principal</strong> — Amount borrowed (denominator).</li>
 <li><strong>Total upfront fees</strong> — One-time charges you want to annualize (for example origination or points you group together). This tool does not split financed fees from cash fees.</li>
@@ -253,6 +253,16 @@ function methodologyLegacyByFileName(helpers, fileName, lang) {
 <h3>${escapeHtml(L.methodologyFormula)}</h3>
 <p><em>Simple annualized fee rate (%) ≈ (fees ÷ principal ÷ years) × 100</em></p>
 <p class="small">This is a planning shortcut, not Truth-in-Lending APR: it ignores payment timing, compounding, nominal interest rate, and lender rounding rules.</p>`,
+    "apr-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
+<ul>
+<li><strong>Loan principal / contract amount</strong> — Balance used to compute the level monthly payment at the stated note rate.</li>
+<li><strong>Stated interest rate</strong> — Nominal annual rate with <strong>monthly compounding</strong> (common U.S. mortgage convention for this estimate).</li>
+<li><strong>Loan term (years)</strong> — Converted to months (rounded) for payment count.</li>
+<li><strong>Upfront fees deducted from proceeds</strong> — Cash you receive at closing is <em>principal − fees</em>, while the scheduled payment still amortizes the full principal at the note rate.</li>
+</ul>
+<h3>${escapeHtml(L.methodologyFormula)}</h3>
+<p>Monthly payment <em>M</em> = standard amortization on principal <em>P</em> at monthly rate <em>i = (note% ÷ 100 ÷ 12)</em> for <em>n</em> months. Net proceeds <em>N = P − fees</em>. The tool finds monthly IRR <em>r</em> such that present value of <em>n</em> payments of <em>M</em> at rate <em>r</em> equals <em>N</em>, then reports <strong>actuarial APR ≈ 12 × r</strong> (and an effective annual rate for comparison).</p>
+<p class="small">Not a Reg Z / Loan Estimate substitute: ignores PMI, escrow, odd-day interest, APR tolerance rules, prepaid finance charges definitions, variable rates, and lender-specific cash-flow timing.</p>`,
     "percentage-calculator.html": `<h3>${escapeHtml(L.methodologyInputs)}</h3>
 <ul>
 <li><strong>Mode</strong> — Choose <em>Find value (X% of Y)</em> or <em>Find percent (X is what % of Y)</em>; the first two fields relabel automatically.</li>

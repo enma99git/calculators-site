@@ -115,7 +115,8 @@ const LOCALE_LABELS = {
     methodologyFormula: "Formula used",
     searchLabel: "Search calculators",
     searchPlaceholder: "Search calculators…",
-    searchNoResults: "No matches"
+    searchNoResults: "No matches",
+    siteBrand: "Practical Calculators"
   },
   es: {
     browseCategories: "Explorar categorías",
@@ -145,7 +146,8 @@ const LOCALE_LABELS = {
     methodologyFormula: "Fórmula o regla",
     searchLabel: "Buscar calculadoras",
     searchPlaceholder: "Buscar calculadoras…",
-    searchNoResults: "Sin resultados"
+    searchNoResults: "Sin resultados",
+    siteBrand: "Practical Calculators"
   }
 };
 
@@ -408,13 +410,70 @@ function topBarHtml({ pagePath, lang }) {
 <label class="visually-hidden" for="site-search-q">${escapeHtml(labels.searchLabel)}</label>
 <input type="search" id="site-search-q" class="site-search-input" placeholder="${escapeHtml(
     labels.searchPlaceholder
-  )}" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+  )}" autocomplete="off" spellcheck="false" role="combobox" aria-haspopup="listbox" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
 <div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="${escapeHtml(
     labels.searchLabel
   )}"></div>
 </div>
 </div>
 </div>`;
+}
+
+function siteBaseUrl() {
+  return String(config.siteUrl || "").trim().replace(/\/$/, "");
+}
+
+function absolutePageUrl(canonicalPath, pagePath) {
+  const base = siteBaseUrl();
+  if (!base) {
+    return "";
+  }
+  const rel = normalizePath(canonicalPath || pagePath || "index.html");
+  return `${base}/${rel}`;
+}
+
+function socialMetaTagsHtml(title, description, pageAbsUrl, lang) {
+  const t = escapeHtml(String(title || "").trim());
+  const d = escapeHtml(String(description || "").trim());
+  const site = escapeHtml(LOCALE_LABELS[localeCode(lang)]?.siteBrand || "Practical Calculators");
+  const lines = [
+    `<meta property="og:title" content="${t}">`,
+    `<meta property="og:description" content="${d}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="${site}">`,
+    `<meta name="twitter:card" content="summary">`,
+    `<meta name="twitter:title" content="${t}">`,
+    `<meta name="twitter:description" content="${d}">`
+  ];
+  if (pageAbsUrl) {
+    lines.splice(3, 0, `<meta property="og:url" content="${escapeHtml(pageAbsUrl)}">`);
+  }
+  return lines.join("\n");
+}
+
+function webApplicationJsonLdScript(title, description, pageAbsUrl) {
+  if (!pageAbsUrl) {
+    return "";
+  }
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: String(title || "").trim(),
+    description: String(description || "").trim(),
+    url: pageAbsUrl,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires JavaScript. Requires HTML5.",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+  };
+  return `<script type="application/ld+json">${JSON.stringify(schema)}</script>`;
+}
+
+function headFragmentSocialWebApp(title, description, canonicalPath, pagePath, lang) {
+  const absUrl = absolutePageUrl(canonicalPath, pagePath);
+  const social = socialMetaTagsHtml(title, description, absUrl, lang);
+  const webapp = webApplicationJsonLdScript(title, description, absUrl);
+  return webapp ? `${social}\n${webapp}` : social;
 }
 
 function htmlShell({
@@ -474,11 +533,13 @@ function htmlShell({
     ? `<p><a class="home-link" href="${homeHref}">${labels.home}</a> | <a class="home-link" href="${englishHomeHref}">${labels.englishHome}</a></p>`
     : `<p><a class="home-link" href="${homeHref}">${labels.home}</a></p>`;
   const searchScriptHref = toHref(pagePath, "site-search.js");
+  const socialWebApp = headFragmentSocialWebApp(title, description, canonicalPath, pagePath, lang);
   return `<!DOCTYPE html>
 <html lang="${lang}" data-page-path="${escapeHtml(normalizePath(pagePath))}">
 <head>
 <title>${title}</title>
 <meta name="description" content="${description}">
+${socialWebApp}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ${robots}${canonical}<link rel="stylesheet" href="${stylesHref}">
 ${analyticsLoader}
@@ -690,7 +751,7 @@ function faqItemsForEntry(entry) {
 
   if (entry.family === "legacyStaticPage") {
     const legacyKey = normalizePath(entry.pagePath || entry.fileName).toLowerCase();
-    if (legacyKey === "apr-calculator.html") {
+    if (legacyKey === "loan-fee-annualizer.html") {
       return [
         {
           question: "Is this the same APR as on my loan paperwork?",
@@ -706,6 +767,25 @@ function faqItemsForEntry(entry) {
           question: "When should I use this?",
           answer:
             "For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals."
+        }
+      ];
+    }
+    if (legacyKey === "apr-calculator.html") {
+      return [
+        {
+          question: "Is this the same APR as on my Loan Estimate or closing disclosure?",
+          answer:
+            "No. Official disclosures follow Truth in Lending / Regulation Z rules, fee inclusion lists, rounding, and timing details this tool does not model. This page gives a transparent actuarial-style estimate from a few inputs for planning only."
+        },
+        {
+          question: "What fee model does this calculator use?",
+          answer:
+            "It assumes upfront fees reduce the net cash you receive at closing to (loan principal − fees), while the monthly payment is computed as if the full principal is amortizing at the stated note rate. Other fee treatments (for example fees folded into principal) can change APR and are not implemented here."
+        },
+        {
+          question: "What does “actuarial APR” mean here?",
+          answer:
+            "The page finds the monthly interest rate that makes the present value of your fixed monthly payments equal that net cash amount, then multiplies by 12 for a quoted annual figure. It also shows an effective annual rate for comparison. Your lender may quote APR differently."
         }
       ];
     }
@@ -877,6 +957,7 @@ const FINANCE_INTERNAL_PILLAR_NAMES = [
   "mortgage-calculator.html",
   "debt-payoff.html",
   "apr-calculator.html",
+  "loan-fee-annualizer.html",
   "compound-interest.html",
   "savings-calculator.html",
   "tax-calculator.html",
@@ -1918,6 +1999,36 @@ function ensureStandalonePageCanonical(fileName) {
   fs.writeFileSync(filePath, content, "utf8");
 }
 
+/** Add Open Graph, Twitter Card, and WebApplication JSON-LD to static hub HTML when missing. */
+function ensureStandaloneSocialMeta(fileName) {
+  const base = siteBaseUrl();
+  if (!base) {
+    return;
+  }
+  const filePath = path.join(root, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+  let content = fs.readFileSync(filePath, "utf8");
+  if (/\bproperty=["']og:title["']/i.test(content)) {
+    return;
+  }
+  const titleMatch = content.match(/<title>([^<]*)<\/title>/i);
+  const descMatch = content.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']\s*>/i);
+  const title = titleMatch ? titleMatch[1].trim() : "";
+  const description = descMatch ? descMatch[1].trim() : "";
+  const lang = normalizePath(fileName).startsWith("es/") ? "es" : "en";
+  const absUrl = `${base}/${normalizePath(fileName)}`;
+  const block = headFragmentSocialWebApp(title, description, fileName, fileName, lang);
+  const withCanonical = content.replace(/(<link\s+rel=["']canonical["'][^>]*>\s*)/i, `$1${block}\n`);
+  if (withCanonical !== content) {
+    content = withCanonical;
+  } else {
+    content = content.replace(/(<meta\s+name=["']viewport["'][^>]*>\s*)/i, `$1${block}\n`);
+  }
+  fs.writeFileSync(filePath, content, "utf8");
+}
+
 /** Order currency "from" groups: core majors first (from pages.config qualityRules), then A–Z. */
 function orderedHubCurrencyFromCodes(fromCodes) {
   const upperSet = new Set(fromCodes.map((c) => String(c).toUpperCase()));
@@ -2248,6 +2359,7 @@ function syncMainCategoryPages(entries) {
   ];
   for (const hubFile of categoryHubFiles) {
     ensureStandalonePageCanonical(hubFile);
+    ensureStandaloneSocialMeta(hubFile);
   }
 }
 
@@ -2342,11 +2454,15 @@ ${stateLinks}
 }
 
 function writeGeneratedIndex(entries) {
+  const genTitle = "Generated Calculators Index";
+  const genDescription = "Legacy URL redirecting to home calculator index.";
+  const genSocial = headFragmentSocialWebApp(genTitle, genDescription, "generated-calculators.html", "", "en");
   const page = `<!DOCTYPE html>
 <html lang="en" data-page-path="">
 <head>
-<title>Generated Calculators Index</title>
-<meta name="description" content="Legacy URL redirecting to home calculator index.">
+<title>${genTitle}</title>
+<meta name="description" content="${genDescription}">
+${genSocial}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="index.html">
@@ -2435,12 +2551,17 @@ ${currencyList}
   const homeCanonicalLine = base
     ? `<link rel="canonical" href="${escapeHtml(`${base}/index.html`)}">\n`
     : "";
+  const homeTitle = "Free Online Calculators - Financial, Health, Conversion & More";
+  const homeDescription =
+    "Use free online calculators for finance, health, conversions, and more. Simple tools with instant results.";
+  const homeSocial = headFragmentSocialWebApp(homeTitle, homeDescription, "index.html", "", "en");
 
   const page = `<!DOCTYPE html>
 <html lang="en" data-page-path="">
 <head>
-<title>Free Online Calculators - Financial, Health, Conversion & More</title>
-<meta name="description" content="Use free online calculators for finance, health, conversions, and more. Simple tools with instant results.">
+<title>${homeTitle}</title>
+<meta name="description" content="${homeDescription}">
+${homeSocial}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 ${homeCanonicalLine}<link rel="stylesheet" href="styles.css">

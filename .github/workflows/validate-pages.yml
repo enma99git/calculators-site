@@ -22,3 +22,6 @@ jobs:
 
       - name: Validate HTML and metadata
         run: npm run validate:pages
+
+      - name: APR math unit tests
+        run: npm run test:apr

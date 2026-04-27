@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" data-page-path="apr-calculator.html">
 <head>
-<title>Loan Fee Annualizer (Free) – Simple Yearly Rate for Comparison</title>
-<meta name="description" content="Annualizes total upfront loan fees as a simple percent of principal per year. For planning only—not a Truth-in-Lending (TILA) disclosure APR.">
+<title>APR Calculator (Free) – Actuarial Estimate from Rate, Fees & Term</title>
+<meta name="description" content="Estimate APR on a fixed-rate amortizing loan when upfront fees reduce net proceeds: monthly IRR × 12. Not a Truth-in-Lending (TILA) disclosure substitute.">
+<meta property="og:title" content="APR Calculator (Free) – Actuarial Estimate from Rate, Fees &amp; Term">
+<meta property="og:description" content="Estimate APR on a fixed-rate amortizing loan when upfront fees reduce net proceeds: monthly IRR × 12. Not a Truth-in-Lending (TILA) disclosure substitute.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://enmahub.github.io/practical-calculators/apr-calculator.html">
+<meta property="og:site_name" content="Practical Calculators">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APR Calculator (Free) – Actuarial Estimate from Rate, Fees &amp; Term">
+<meta name="twitter:description" content="Estimate APR on a fixed-rate amortizing loan when upfront fees reduce net proceeds: monthly IRR × 12. Not a Truth-in-Lending (TILA) disclosure substitute.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"APR Calculator (Free) – Actuarial Estimate from Rate, Fees & Term","description":"Estimate APR on a fixed-rate amortizing loan when upfront fees reduce net proceeds: monthly IRR × 12. Not a Truth-in-Lending (TILA) disclosure substitute.","url":"https://enmahub.github.io/practical-calculators/apr-calculator.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://enmahub.github.io/practical-calculators/apr-calculator.html">
@@ -15,38 +24,48 @@
 <a class="brand" href="index.html">Practical Calculators</a>
 <div class="site-search" data-site-search data-search-index="search-index.json" data-page-path="apr-calculator.html" data-pref-lang="en" data-no-results="No matches">
 <label class="visually-hidden" for="site-search-q">Search calculators</label>
-<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
+<input type="search" id="site-search-q" class="site-search-input" placeholder="Search calculators…" autocomplete="off" spellcheck="false" role="combobox" aria-haspopup="listbox" aria-autocomplete="list" aria-controls="site-search-results" aria-expanded="false">
 <div class="site-search-dropdown" id="site-search-results" hidden role="listbox" aria-label="Search calculators"></div>
 </div>
 </div>
 </div>
 <div class="wrap">
 <div class="card">
-<h1>Loan fee annualizer (simple)</h1>
-<p class="desc">Spread total upfront fees evenly over the loan term. The result is a simple yearly percentage for rough comparison only—it is not the APR on a federal Truth in Lending disclosure.</p>
-<label for="principal">Loan principal ($)</label>
-<input id="principal" type="number" step="any" placeholder="20000">
-<label for="fees">Total upfront fees ($)</label>
-<input id="fees" type="number" step="any" placeholder="800">
+<h1>APR calculator (estimate)</h1>
+<p class="desc">Uses your <strong>stated note rate</strong> (compounded monthly), <strong>loan principal</strong>, <strong>term</strong>, and <strong>upfront fees</strong> that reduce <strong>net cash received</strong> at closing while payments still amortize the full principal. Solves the monthly rate so the present value of payments equals net proceeds, then shows <strong>actuarial APR ≈ 12 × monthly IRR</strong>. Ignores PMI, escrow, odd days, prepaid per-diem interest, and Reg Z fee rules—<strong>not your Loan Estimate APR</strong>. For a fee-only yearly spread with no interest rate, use the <a href="loan-fee-annualizer.html">loan fee annualizer</a>.</p>
+<label for="principal">Loan principal / contract amount ($)</label>
+<input id="principal" type="number" step="any" placeholder="320000">
+<label for="note">Stated interest rate (% per year)</label>
+<input id="note" type="number" step="any" value="6.5">
 <label for="years">Loan term (years)</label>
-<input id="years" type="number" step="any" value="5">
+<input id="years" type="number" step="any" value="30">
+<label for="fees">Upfront fees deducted from proceeds ($)</label>
+<input id="fees" type="number" step="any" placeholder="6500">
 <button onclick="calc()">Calculate</button>
 <h2 class="result" id="result">Result: -</h2>
+<script src="apr-math.js"></script>
 <script>
 function calc(){
   const principal = parseFloat(document.getElementById('principal').value);
-  const fees = parseFloat(document.getElementById('fees').value);
+  const note = parseFloat(document.getElementById('note').value);
   const years = parseFloat(document.getElementById('years').value);
-  if (!Number.isFinite(principal) || !Number.isFinite(fees) || !Number.isFinite(years) || principal <= 0 || years <= 0) {
-    document.getElementById('result').innerHTML = 'Enter a valid principal and term (both greater than zero).';
+  const fees = parseFloat(document.getElementById('fees').value) || 0;
+  const out = document.getElementById('result');
+  if (typeof AprMath === 'undefined') {
+    out.innerHTML = 'Could not load APR math script.';
     return;
   }
-  if (fees < 0) {
-    document.getElementById('result').innerHTML = 'Fees cannot be negative.';
+  const r = AprMath.solveApr(note, principal, fees, years);
+  if (!r.ok) {
+    out.innerHTML = r.error;
     return;
   }
-  const rate = (fees / principal) / years * 100;
-  document.getElementById('result').innerHTML = 'Simple annualized fee rate: ' + rate.toFixed(2) + '% per year (fees / principal / years). Planning shortcut only—not lender disclosure APR.';
+  let html = 'Monthly payment (on full principal at note rate): $' + r.monthlyPayment.toFixed(2) + '<br>';
+  html += 'Note rate: ' + note.toFixed(3) + '% per year<br>';
+  html += 'Estimated actuarial APR: <strong>' + r.aprActuarialPct.toFixed(3) + '%</strong> per year (12 × monthly IRR)<br>';
+  html += 'Corresponding effective annual rate: ' + r.effectiveAnnualPct.toFixed(3) + '% (for comparison only)';
+  out.innerHTML = html;
+  document.dispatchEvent(new CustomEvent('pc:calculator_result', { detail: { type: 'apr' } }));
 }
 </script>
 <details class="methodology-block">
@@ -54,18 +73,19 @@ function calc(){
 <div>
 <h3>What each input means</h3>
 <ul>
-<li><strong>Loan principal</strong> — Amount borrowed (denominator).</li>
-<li><strong>Total upfront fees</strong> — One-time charges you want to annualize (for example origination or points you group together). This tool does not split financed fees from cash fees.</li>
-<li><strong>Loan term (years)</strong> — Used only as a simple divisor to spread the fee load.</li>
+<li><strong>Loan principal / contract amount</strong> — Balance used to compute the level monthly payment at the stated note rate.</li>
+<li><strong>Stated interest rate</strong> — Nominal annual rate with <strong>monthly compounding</strong> (common U.S. mortgage convention for this estimate).</li>
+<li><strong>Loan term (years)</strong> — Converted to months (rounded) for payment count.</li>
+<li><strong>Upfront fees deducted from proceeds</strong> — Cash you receive at closing is <em>principal − fees</em>, while the scheduled payment still amortizes the full principal at the note rate.</li>
 </ul>
 <h3>Formula used</h3>
-<p><em>Simple annualized fee rate (%) ≈ (fees ÷ principal ÷ years) × 100</em></p>
-<p class="small">This is a planning shortcut, not Truth-in-Lending APR: it ignores payment timing, compounding, nominal interest rate, and lender rounding rules.</p>
+<p>Monthly payment <em>M</em> = standard amortization on principal <em>P</em> at monthly rate <em>i = (note% ÷ 100 ÷ 12)</em> for <em>n</em> months. Net proceeds <em>N = P − fees</em>. The tool finds monthly IRR <em>r</em> such that present value of <em>n</em> payments of <em>M</em> at rate <em>r</em> equals <em>N</em>, then reports <strong>actuarial APR ≈ 12 × r</strong> (and an effective annual rate for comparison).</p>
+<p class="small">Not a Reg Z / Loan Estimate substitute: ignores PMI, escrow, odd-day interest, APR tolerance rules, prepaid finance charges definitions, variable rates, and lender-specific cash-flow timing.</p>
 </div>
 </details>
 <div class="trust-block">
 <h2>How this result is estimated</h2>
-<p class="desc">This loan fee comparison tool provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
+<p class="desc">This APR estimate calculator provides estimate-level outputs based on the values you enter. Review assumptions and verify important decisions independently.</p>
 <ul>
 <li>Inputs are user-provided and may include rounding.</li>
 <li>Results are informational and not financial, tax, legal, or medical advice.</li>
@@ -76,19 +96,19 @@ function calc(){
 <div class="faq-block">
 <h2>Frequently asked questions</h2>
 <details>
-<summary>Is this the same APR as on my loan paperwork?</summary>
-<p>No. The APR on a Truth in Lending disclosure reflects your nominal rate, payment schedule, how finance charges and fees are applied over time, and other regulatory rules. This page only annualizes the total upfront fee dollars you enter, spread evenly by principal and years.</p>
+<summary>Is this the same APR as on my Loan Estimate or closing disclosure?</summary>
+<p>No. Official disclosures follow Truth in Lending / Regulation Z rules, fee inclusion lists, rounding, and timing details this tool does not model. This page gives a transparent actuarial-style estimate from a few inputs for planning only.</p>
 </details>
 <details>
-<summary>What does the percentage here mean?</summary>
-<p>It is (total upfront fees ÷ loan principal ÷ years in the loan) × 100, expressed as a simple percent per year. It is a rough fee load, not a full APR.</p>
+<summary>What fee model does this calculator use?</summary>
+<p>It assumes upfront fees reduce the net cash you receive at closing to (loan principal − fees), while the monthly payment is computed as if the full principal is amortizing at the stated note rate. Other fee treatments (for example fees folded into principal) can change APR and are not implemented here.</p>
 </details>
 <details>
-<summary>When should I use this?</summary>
-<p>For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals.</p>
+<summary>What does “actuarial APR” mean here?</summary>
+<p>The page finds the monthly interest rate that makes the present value of your fixed monthly payments equal that net cash amount, then multiplies by 12 for a quoted annual figure. It also shows an effective annual rate for comparison. Your lender may quote APR differently.</p>
 </details>
 </div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this the same APR as on my loan paperwork?","acceptedAnswer":{"@type":"Answer","text":"No. The APR on a Truth in Lending disclosure reflects your nominal rate, payment schedule, how finance charges and fees are applied over time, and other regulatory rules. This page only annualizes the total upfront fee dollars you enter, spread evenly by principal and years."}},{"@type":"Question","name":"What does the percentage here mean?","acceptedAnswer":{"@type":"Answer","text":"It is (total upfront fees ÷ loan principal ÷ years in the loan) × 100, expressed as a simple percent per year. It is a rough fee load, not a full APR."}},{"@type":"Question","name":"When should I use this?","acceptedAnswer":{"@type":"Answer","text":"For quick comparisons when you already have a ballpark for upfront costs and want a simple yearly figure. For borrowing decisions, rely on your lender’s official disclosures and qualified professionals."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this the same APR as on my Loan Estimate or closing disclosure?","acceptedAnswer":{"@type":"Answer","text":"No. Official disclosures follow Truth in Lending / Regulation Z rules, fee inclusion lists, rounding, and timing details this tool does not model. This page gives a transparent actuarial-style estimate from a few inputs for planning only."}},{"@type":"Question","name":"What fee model does this calculator use?","acceptedAnswer":{"@type":"Answer","text":"It assumes upfront fees reduce the net cash you receive at closing to (loan principal − fees), while the monthly payment is computed as if the full principal is amortizing at the stated note rate. Other fee treatments (for example fees folded into principal) can change APR and are not implemented here."}},{"@type":"Question","name":"What does “actuarial APR” mean here?","acceptedAnswer":{"@type":"Answer","text":"The page finds the monthly interest rate that makes the present value of your fixed monthly payments equal that net cash amount, then multiplies by 12 for a quoted annual figure. It also shows an effective annual rate for comparison. Your lender may quote APR differently."}}]}</script>
 <p><a href="index.html">Home</a> | <a href="financial-calculators.html">Category Hub</a></p>
 <h2>Related Calculators</h2>
 <ul>

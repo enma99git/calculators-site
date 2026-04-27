@@ -133,9 +133,38 @@ body{
 }
 
 .site-search-item:hover,
-.site-search-item:focus{
+.site-search-item:focus,
+.site-search-item-active{
   background:#f4f7fc;
   outline:none;
+}
+
+.site-search-item-active{
+  box-shadow:inset 3px 0 0 #2563eb;
+}
+
+.site-search-error{
+  padding:12px 14px;
+  font-size:14px;
+  color:#b42318;
+  line-height:1.45;
+}
+
+.site-search-retry{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  border-radius:8px;
+  border:1px solid rgba(180,35,24,.35);
+  background:#fff;
+  color:#b42318;
+}
+
+.site-search-retry:hover{
+  background:#fef3f2;
 }
 
 .site-search-lang{
